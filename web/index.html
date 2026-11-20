@@ -564,9 +564,9 @@
       rank: i + 1, point_id: p.id, point_name: p.name, error_rate: p.err, error_rate_text: pct(p.err), attempts: p.attempts,
       parent_id: p.parent_id, parent_name: p.parent_name, parent_external: p.parent_external,
       reason: p.parent_reason,
-      student_text: `「${p.parent_name}」学习仍有欠缺`,
-      teacher_text: `「${p.parent_name}」再讲一下吧`,
-      action: `先补「${p.parent_name}」，再回练「${p.name}」`
+      student_text: `「${p.parent_name}」需加强巩固`,
+      teacher_text: `「${p.parent_name}」需重点讲解`,
+      action: `先补齐「${p.parent_name}」，再回练「${p.name}」`
     }));
   }
 
