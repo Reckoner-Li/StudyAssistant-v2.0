@@ -726,7 +726,7 @@
       <div>
         <p class="eyebrow">SMART LEARNING COMPANION · 校赛演示</p>
         <h1>一次考试，看得见<br>每个错点<em>从哪来</em></h1>
-        <p class="lead">9 个知识点按逻辑关系连成一张图，红蓝两色区分记忆型和逻辑型；点开任意一个节点，能看到教材例题、推导过程和课后习题。学生端看自己的易错点，教师端看两个班的共性问题和教学建议。</p>
+        <p class="lead">9 个知识点按逻辑关系连成一张图，以红蓝两色区分记忆型和逻辑型。点开任意一个节点能看到教材例题、推导过程和课后习题。学生端用于查看个人易错点，教师端用于查看多个班级的共性问题并提供教学建议。</p>
         <div class="hero-actions">
           <button class="btn btn-primary" data-go="student">查看学生端 →</button>
           <button class="btn btn-ghost" data-go="teacher">进入教师端</button>
@@ -744,12 +744,12 @@
 
     <section class="section wrap" id="map-section">
       <div class="sec-head">
-        <div><p class="eyebrow">KNOWLEDGE MAP</p><h2>知识点是连成一条路的</h2><p>实线是学习顺序，虚线是跨主题迁移，点线是前置基础。颜色也有用处：红色偏记忆，蓝色偏逻辑（知识型）。</p></div>
+        <div><p class="eyebrow">KNOWLEDGE MAP</p><h2>知识点的联系贯通</h2><p>实线表示学习顺序，虚线表示跨主题迁移，点线表示前置基础。不同颜色代表这个知识点的能力倾向性，红色侧重记忆，蓝色侧重逻辑和知识。</p></div>
         <div class="legend"><span><i class="dot memory"></i>记忆型</span><span><i class="dot logic"></i>逻辑型（知识型）</span><span><i class="dot foundation"></i>前置基础</span></div>
       </div>
       <div class="card map-card">
         <div class="map-toolbar">
-          <div class="legend"><span>9 个知识点 · 3 条主题链 · 5 个前置基础节点</span></div>
+          <div class="legend"><span>9 个知识点 · 3 条主线 · 5 个前置基础节点</span></div>
           <div class="map-note">点击节点 → 教材例题 / 推导 / 课后习题 / 学情</div>
         </div>
         <div class="map-scroll">${renderMap()}</div>
@@ -769,25 +769,25 @@
 
     <section class="section wrap">
       <div class="sec-head">
-        <div><p class="eyebrow">EARLY WARNING</p><h2>学习预警：错得最多的三个点，问题多半在上一级</h2><p>取错误率最高的三个知识点，顺着前置关系往上找一层，往往能落到一个更早的概念上。学生端叫“学习仍有欠缺”，教师端叫“再讲一下吧”。</p></div>
+        <div><p class="eyebrow">EARLY WARNING</p><h2>学习预警：错误率最高的三点，往往代表着上一级知识点的缺漏。</h2><p>取错误率最高的三个知识点，沿前置关系向上，往往能找到一个存在缺陷的基础知识区域。对于学生，这表示学习仍然存在欠缺，应当巩固加强；对于教师，这表明这个知识点对于学生来说有挑战，值得加深讲解和反复强调。</p></div>
       </div>
       <div class="warn-grid">${M.warnings.map(w => `
         <article class="warn-card">
           <div class="warn-kicker">预警 0${w.rank} · ${esc(w.point_id)}</div>
           <div class="warn-trigger">错误率最高：<b>${esc(w.point_name)}</b> · ${w.error_rate_text}</div>
-          <div class="warn-arrow">↑ 往上找前置点</div>
+          <div class="warn-arrow">↑ 上溯前置点</div>
           <p class="warn-parent">「${esc(w.parent_name)}」</p>
           <p class="warn-reason">${esc(w.reason)}</p>
-          <div class="warn-chips"><span class="chip student">学生端 · 学习仍有欠缺</span><span class="chip teacher">教师端 · 再讲一下吧</span></div>
+          <div class="warn-chips"><span class="chip student">学生端 · 需加强巩固</span><span class="chip teacher">教师端 · 需深化讲解</span></div>
         </article>`).join("")}</div>
     </section>
 
     <section class="section wrap">
-      <div class="sec-head"><div><p class="eyebrow">HOW IT WORKS</p><h2>一张图，三件事</h2></div></div>
+      <div class="sec-head"><div><p class="eyebrow">HOW IT WORKS</p><h2>流程概述</h2></div></div>
       <div class="how-grid">
-        <article class="card how-card"><span class="how-num">01</span><h4>看清结构</h4><p>9 个知识点按“表示—化简—解释”“方程—方程组—应用”“不等式—不等式组—应用”三条链串起来，谁在谁前面，一眼能看清。</p></article>
-        <article class="card how-card"><span class="how-num">02</span><h4>定位漏洞</h4><p>个人错题按知识点归堆，先看错得最多的三个；再顺着前置关系往上找，那句“这题不会”往往能落到某个更早的概念上。</p></article>
-        <article class="card how-card"><span class="how-num">03</span><h4>给出动作</h4><p>学生端给出一句话的个人建议，教师端把最高频的建议模块汇总成班课动作，顺带圈出要重点关注的学生。</p></article>
+        <article class="card how-card"><span class="how-num">01</span><h4>看清结构</h4><p>将9 个知识点按“表示—化简—解释”“方程—方程组—应用”“不等式—不等式组—应用”三条链串起来，明晰前置基础关系。</p></article>
+        <article class="card how-card"><span class="how-num">02</span><h4>定位漏洞</h4><p>个人错题按知识点分类，先看错误率最高的三个；再向上追溯，确定基础部分的漏洞。</p></article>
+        <article class="card how-card"><span class="how-num">03</span><h4>给出建议</h4><p>学生端给出简明可执行的个人建议，教师端把最高频的建议模块汇总成班课策划，并标注出需要重点关注的学生。</p></article>
       </div>
     </section>`;
   }
@@ -816,7 +816,7 @@
     return `
     <section class="wrap">
       <div class="page-head">
-        <div><p class="eyebrow">STUDENT VIEW · 个人画像</p><h1>错题看懂了，下一步练什么</h1><div class="sub">个人易错高频考点 · 学习建议 · 学习预警</div></div>
+        <div><p class="eyebrow">STUDENT VIEW · 个人画像</p><h1>错题看懂了！下一步练什么？</h1><div class="sub">个人易错高频考点 · 学习建议 · 学习预警</div></div>
         <div class="selectors"><label class="sr" for="studentSel">选择学生</label><select class="select" id="studentSel">${options}</select></div>
       </div>
 
@@ -845,7 +845,7 @@
       <div class="grid-2">
         <section class="card panel">
           <h3>个人易错高频考点</h3>
-          <p class="ph-sub">按自己的错误率从高到低，取前三个；每一条后面都配了怎么练。</p>
+          <p class="ph-sub">按错误率降序排列，取前三个，附带练习建议。</p>
           ${weak.length ? weak.map((p, i) => {
             const lost = p.full - p.score;
             return `<article class="weak-card">
@@ -867,19 +867,19 @@
         <aside class="warn-side">
           <section class="card panel">
             <h3>学习预警</h3>
-            <p class="ph-sub">取自己错得最多的三个点，顺着前置关系往上找一层，看看卡在哪个更早的概念上。</p>
+            <p class="ph-sub">取错误率最高的三个点，上溯寻找基础薄弱处。</p>
             ${s.warnings.map(w => `
               <article class="warn-card">
                 <div class="warn-kicker">预警 0${w.rank} · ${esc(w.point_id)}</div>
                 <div class="warn-trigger"><b>${esc(w.point_name)}</b> 错误率 ${pct(w.error_rate)} · 作答 ${w.attempts || "-"} 次</div>
                 <div class="warn-arrow">↑ 可能未听懂</div>
-                <p class="warn-parent">「${esc(w.parent_name)}」<span style="font-size:11px;color:#A0523D;font-weight:600">学习仍有欠缺</span></p>
+                <p class="warn-parent">「${esc(w.parent_name)}」<span style="font-size:11px;color:#A0523D;font-weight:600">仍有欠缺</span></p>
                 <p class="warn-reason">${esc(w.reason)}</p>
                 <div class="warn-chips"><span class="chip student">先补前置，再回练当前点</span></div>
               </article>`).join("")}
           </section>
           <div class="advice-dark">
-            <h4>学习建议 · 一句话版</h4>
+            <h4>学习建议</h4>
             <p>${esc(s.advice_summary)}</p>
           </div>
         </aside>
@@ -948,7 +948,7 @@
 
       <section class="card panel">
         <h3>重点知识点汇总</h3>
-        <p class="ph-sub">按错误率从高到低排：最高的三成是重点（${focusCount} 个），中间四成是次重点（${midCount} 个），剩下三成算注意点（${noteCount} 个）。${all ? "" : `当前显示 ${esc(cls)} 的错误率；分层仍按全年级口径。`}</p>
+        <p class="ph-sub">按错误率降序排列：最高的三成是重点（${focusCount} 个），中间四成是次重点（${midCount} 个），剩下三成算注意点（${noteCount} 个）。${all ? "" : `当前显示 ${esc(cls)} 的错误率；按全年级口径分层。`}</p>
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead><tr><th>#</th><th>知识点</th><th>类型</th><th>错误率${all ? "" : "（" + esc(cls) + "）"}</th><th>层级</th><th>${cids.map(c => esc(c)).join(" / ")}</th><th>前置节点</th></tr></thead>
@@ -968,18 +968,18 @@
 
       <div class="two-col mt16">
         <section class="card panel">
-          <h3>成绩分布</h3><p class="ph-sub">按学生个人总得分率分档，观察尾部与头部。</p>
+          <h3>成绩分布</h3><p class="ph-sub">按学生个人总得分率分层，重点注意头部和尾部。</p>
           ${dist.map(d => `<div class="chart-row"><span class="lab">${esc(d.label)} <span style="color:#9AA9AF">${esc(d.range)}</span></span><div class="track"><i style="width:${(d.count / maxDist) * 100}%"></i></div><span class="val">${d.count} 人</span></div>`).join("")}
         </section>
         <section class="card panel">
-          <h3>主题得分率</h3><p class="ph-sub">三个主题的加权得分率，快速判断先补哪一块。</p>
+          <h3>主题得分率</h3><p class="ph-sub">三个主题的加权得分率，快速判断薄弱环节。</p>
           ${themes.map(t => `<div class="chart-row"><span class="lab">${esc(t.id)} ${esc(t.name)}</span><div class="track ${t.err >= 0.45 ? "red" : ""}"><i style="width:${Math.max(3, (1 - t.err) * 100)}%"></i></div><span class="val">${pct(1 - t.err)}</span></div>`).join("")}
-          <div class="hint">主题得分率：把该主题所有知识点的得分合起来，再除以满分合计；不能拿三个知识点的百分比直接平均。</div>
+          <div class="hint">主题得分率：把该主题所有知识点的得分合起来，再除以满分合计。</div>
         </section>
       </div>
 
       <section class="card panel mt16">
-        <h3>两班对比</h3><p class="ph-sub">逐知识点对比错误率；差值超过 10 个百分点标红，提示两班教学进度或掌握结构存在差异。</p>
+        <h3>两班对比</h3><p class="ph-sub">逐个知识点对比错误率；差值超过 10 个百分点标红，提示两班教学进度或掌握结构存在差异。</p>
         <div class="compare-row" style="font-size:10px;color:#7B8B91;letter-spacing:.08em"><span>知识点</span><span>${esc(cids[0] || "班级一")}</span><span>${esc(cids[1] || "班级二")}</span><span style="text-align:right">差值</span></div>
         ${points.map(p => {
           const a = p.classRates[cids[0]] ? p.classRates[cids[0]].err : null;
@@ -1004,7 +1004,7 @@
       </section>
 
       <section class="card panel mt16">
-        <h3>重点关注对象</h3><p class="ph-sub">什么算薄弱点：同一个知识点至少做过 2 次、错误率 ≥ 40%；按薄弱点个数从多到少排，个数一样时看总分。</p>
+        <h3>重点关注对象</h3><p class="ph-sub">薄弱点：同一个知识点至少做过 2 次、错误率 ≥ 40%；按薄弱点个数从多到少排序，个数一样时按照总分排序。</p>
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead><tr><th>#</th><th>学生</th><th>班级</th><th>得分率</th><th>薄弱点</th><th>主要薄弱知识点</th><th>关注级别</th></tr></thead>
@@ -1025,10 +1025,10 @@
           <div class="teaching-para">${esc(teaching.paragraph || "暂无足够数据生成教学建议。")}</div>
           <ul class="action-list">${teaching.actions.map(a => `<li>${esc(a)}</li>`).join("")}</ul>
           <div class="module-cloud">${teaching.top_modules.slice(0, 8).map(m => `<span>${esc(m.category)} · ${esc(m.label)} <b>${m.count}</b></span>`).join("")}</div>
-          <div class="hint">统计办法：每人的前三个薄弱点各算一次；同一个人同一个模块只记一次，免得被反复放大。</div>
+          <div class="hint">统计办法：每人的前三个薄弱点各算一次；同一个人同一个模块只记一次，避免反复放大。</div>
         </section>
         <section class="card panel">
-          <h3>班级学习预警</h3><p class="ph-sub">取错误率最高的三个点，再顺着前置关系往上找：那句“没听懂”可能出在更早的地方。</p>
+          <h3>班级学习预警</h3><p class="ph-sub">取错误率最高的三个点，上溯寻找问题根源。</p>
           ${warnings.map(w => `
             <article class="warn-card" style="margin-bottom:10px">
               <div class="warn-kicker">预警 0${w.rank} · ${esc(w.point_id)}</div>
