@@ -1,0 +1,201 @@
+{
+ "project": "智慧学伴 · 七年级数学学情分析",
+ "generated_at": "2026-11-20T14:47:52+08:00",
+ "data_quality": {
+  "responses": 813,
+  "students": 40,
+  "classes": 2,
+  "points": 9,
+  "coverage": 0.8194
+ },
+ "warnings": [
+  {
+   "rank": 1,
+   "point_id": "T03I3",
+   "point_name": "根据实际限制列不等式并解释取值范围",
+   "error_rate": 0.5455,
+   "error_rate_text": "54.5%",
+   "parent_id": "T03I2",
+   "parent_name": "求两个一元一次不等式解集的交集",
+   "parent_external": false,
+   "reason": "根据实际限制列不等式后，解集与取值范围的表达依赖不等式组。",
+   "student_text": "「求两个一元一次不等式解集的交集」学习仍有欠缺",
+   "teacher_text": "「求两个一元一次不等式解集的交集」再讲一下吧",
+   "action": "先补「求两个一元一次不等式解集的交集」，再回练「根据实际限制列不等式并解释取值范围」"
+  },
+  {
+   "rank": 2,
+   "point_id": "T01I1",
+   "point_name": "表示数量关系并代入求值",
+   "error_rate": 0.5022,
+   "error_rate_text": "50.2%",
+   "parent_id": "F01",
+   "parent_name": "字母表示数、代数式的概念",
+   "parent_external": true,
+   "reason": "列代数式的前提是用字母表示数，并识别代数式的书写规范。",
+   "student_text": "「字母表示数、代数式的概念」学习仍有欠缺",
+   "teacher_text": "「字母表示数、代数式的概念」再讲一下吧",
+   "action": "先补「字母表示数、代数式的概念」，再回练「表示数量关系并代入求值」"
+  },
+  {
+   "rank": 3,
+   "point_id": "T01I3",
+   "point_name": "用整式解释具体问题",
+   "error_rate": 0.4762,
+   "error_rate_text": "47.6%",
+   "parent_id": "T01I1",
+   "parent_name": "表示数量关系并代入求值",
+   "parent_external": false,
+   "reason": "先用代数式准确表示数量关系，才谈得上用整式解释问题。",
+   "student_text": "「表示数量关系并代入求值」学习仍有欠缺",
+   "teacher_text": "「表示数量关系并代入求值」再讲一下吧",
+   "action": "先补「表示数量关系并代入求值」，再回练「用整式解释具体问题」"
+  }
+ ],
+ "top_points": [
+  {
+   "id": "T03I3",
+   "name": "根据实际限制列不等式并解释取值范围",
+   "theme": "不等式与不等式组",
+   "theme_id": "T03",
+   "theme_goal": "能解一元一次不等式及简单不等式组，表示解集，并解决范围约束问题。",
+   "tags": [
+    "逻辑型"
+   ],
+   "primary_type": "逻辑型",
+   "importance": "基础掌握",
+   "error_tendency": [
+    "思路不清"
+   ],
+   "pages": "下册120—145",
+   "course_standard": "63 / 56",
+   "parent_id": "T03I2",
+   "parent_name": "求两个一元一次不等式解集的交集",
+   "parent_external": false,
+   "parent_reason": "根据实际限制列不等式后，解集与取值范围的表达依赖不等式组。",
+   "xlsx_parent": "T03I1/T03I2、实际问题审题",
+   "advice": "这类题先认出“至少、不超过、最多”这些说法，它们对应不同的不等号；列完式再结合实际想一想端点能不能取。练的时候先写清设的是什么，再列式、求解，最后用一句话说明答案在现实里是什么意思。卡住的话，回到「求两个一元一次不等式解集的交集」把公共部分那一步练熟。",
+   "attempts": 29,
+   "score": 25.0,
+   "full": 55.0,
+   "score_rate": 0.4545,
+   "error_rate": 0.5455,
+   "mastery": "未掌握",
+   "class_rates": {
+    "DC01": {
+     "attempts": 21,
+     "score": 21.0,
+     "full": 43.0,
+     "score_rate": 0.4884,
+     "error_rate": 0.5116
+    },
+    "DC02": {
+     "attempts": 8,
+     "score": 4.0,
+     "full": 12.0,
+     "score_rate": 0.3333,
+     "error_rate": 0.6667
+    }
+   },
+   "rank": 1,
+   "tier": "重点"
+  },
+  {
+   "id": "T01I1",
+   "name": "表示数量关系并代入求值",
+   "theme": "代数式与整式运算",
+   "theme_id": "T01",
+   "theme_goal": "能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。",
+   "tags": [
+    "计算类",
+    "逻辑型"
+   ],
+   "primary_type": "逻辑型",
+   "importance": "核心重点",
+   "error_tendency": [
+    "思路不清",
+    "计算失误"
+   ],
+   "pages": "上册68—109",
+   "course_standard": "62 / 55",
+   "parent_id": "F01",
+   "parent_name": "字母表示数、代数式的概念",
+   "parent_external": true,
+   "parent_reason": "列代数式的前提是用字母表示数，并识别代数式的书写规范。",
+   "xlsx_parent": "字母表示数、代数式的概念",
+   "advice": "「表示数量关系并代入求值」是这一册的主干，先吃透它再往下走。平时分两步练：先读懂题意把关系写成式子，检查列对了再代数值进去算，算完回头看一遍符号和运算顺序。如果常常卡在写不出式子，先回头复习「字母表示数、代数式的概念」，那一步通了这里会顺很多。",
+   "attempts": 131,
+   "score": 112.0,
+   "full": 225.0,
+   "score_rate": 0.4978,
+   "error_rate": 0.5022,
+   "mastery": "未掌握",
+   "class_rates": {
+    "DC01": {
+     "attempts": 72,
+     "score": 61.0,
+     "full": 130.0,
+     "score_rate": 0.4692,
+     "error_rate": 0.5308
+    },
+    "DC02": {
+     "attempts": 59,
+     "score": 51.0,
+     "full": 95.0,
+     "score_rate": 0.5368,
+     "error_rate": 0.4632
+    }
+   },
+   "rank": 2,
+   "tier": "重点"
+  },
+  {
+   "id": "T01I3",
+   "name": "用整式解释具体问题",
+   "theme": "代数式与整式运算",
+   "theme_id": "T01",
+   "theme_goal": "能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。",
+   "tags": [
+    "逻辑型",
+    "记忆型"
+   ],
+   "primary_type": "逻辑型",
+   "importance": "基础掌握",
+   "error_tendency": [
+    "思路不清"
+   ],
+   "pages": "上册68—109",
+   "course_standard": "62 / 55",
+   "parent_id": "T01I1",
+   "parent_name": "表示数量关系并代入求值",
+   "parent_external": false,
+   "parent_reason": "先用代数式准确表示数量关系，才谈得上用整式解释问题。",
+   "xlsx_parent": "代数式的意义、T01I1 表示数量关系",
+   "advice": "「用整式解释具体问题」要求你把算式和题意对上号：每个式子在题目里代表什么，要能说清楚。理解到位以后，练几道同类型的题就够了。说不清的地方，回到「代数式的意义」和「表示数量关系并代入求值」再过一遍。",
+   "attempts": 42,
+   "score": 66.0,
+   "full": 126.0,
+   "score_rate": 0.5238,
+   "error_rate": 0.4762,
+   "mastery": "未掌握",
+   "class_rates": {
+    "DC01": {
+     "attempts": 24,
+     "score": 36.0,
+     "full": 72.0,
+     "score_rate": 0.5,
+     "error_rate": 0.5
+    },
+    "DC02": {
+     "attempts": 18,
+     "score": 30.0,
+     "full": 54.0,
+     "score_rate": 0.5556,
+     "error_rate": 0.4444
+    }
+   },
+   "rank": 3,
+   "tier": "重点"
+  }
+ ]
+}

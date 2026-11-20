@@ -1,0 +1,389 @@
+{
+ "canvas": {
+  "width": 1260,
+  "height": 800
+ },
+ "legend": [
+  {
+   "color": "memory",
+   "label": "记忆型",
+   "desc": "概念、法则、性质为主"
+  },
+  {
+   "color": "logic",
+   "label": "逻辑型（知识型）",
+   "desc": "运算、推理、建模为主"
+  },
+  {
+   "color": "foundation",
+   "label": "前置基础",
+   "desc": "思维导图外的先备知识"
+  }
+ ],
+ "themes": [
+  {
+   "id": "T01",
+   "name": "代数式与整式运算",
+   "goal": "能用代数式表示数量关系、代入求值，并进行整式加减与解释。",
+   "points": [
+    "T01I1",
+    "T01I3",
+    "T01I2"
+   ],
+   "error_rate": 0.5781,
+   "color": "logic"
+  },
+  {
+   "id": "T02",
+   "name": "方程与方程组",
+   "goal": "能解一元一次方程和二元一次方程组，依据等量关系建模并检验。",
+   "points": [
+    "T02I3",
+    "T02I1",
+    "T02I2"
+   ],
+   "error_rate": 0.5546,
+   "color": "logic"
+  },
+  {
+   "id": "T03",
+   "name": "不等式与不等式组",
+   "goal": "能解一元一次不等式（组），表示解集，并解决范围约束问题。",
+   "points": [
+    "T03I3",
+    "T03I1",
+    "T03I2"
+   ],
+   "error_rate": 0.5934,
+   "color": "logic"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "T03I3",
+   "name": "根据实际限制列不等式并解释取值范围",
+   "label": "根据实际限制列不等式并解释取值范围",
+   "theme": "不等式与不等式组",
+   "theme_id": "T03",
+   "kind": "point",
+   "type": "逻辑型",
+   "tags": [
+    "逻辑型"
+   ],
+   "importance": "基础掌握",
+   "tier": "重点",
+   "error_rate": 0.5455,
+   "error_rate_text": "54.5%",
+   "parent_id": "T03I2",
+   "parent_name": "求两个一元一次不等式解集的交集",
+   "pages": "下册120—145",
+   "x": 1050,
+   "y": 606
+  },
+  {
+   "id": "T01I1",
+   "name": "表示数量关系并代入求值",
+   "label": "表示数量关系并代入求值",
+   "theme": "代数式与整式运算",
+   "theme_id": "T01",
+   "kind": "point",
+   "type": "逻辑型",
+   "tags": [
+    "计算类",
+    "逻辑型"
+   ],
+   "importance": "核心重点",
+   "tier": "重点",
+   "error_rate": 0.5022,
+   "error_rate_text": "50.2%",
+   "parent_id": "F01",
+   "parent_name": "字母表示数、代数式的概念",
+   "pages": "上册68—109",
+   "x": 250,
+   "y": 214
+  },
+  {
+   "id": "T01I3",
+   "name": "用整式解释具体问题",
+   "label": "用整式解释具体问题",
+   "theme": "代数式与整式运算",
+   "theme_id": "T01",
+   "kind": "point",
+   "type": "逻辑型",
+   "tags": [
+    "逻辑型",
+    "记忆型"
+   ],
+   "importance": "基础掌握",
+   "tier": "重点",
+   "error_rate": 0.4762,
+   "error_rate_text": "47.6%",
+   "parent_id": "T01I1",
+   "parent_name": "表示数量关系并代入求值",
+   "pages": "上册68—109",
+   "x": 250,
+   "y": 606
+  },
+  {
+   "id": "T02I3",
+   "name": "列方程或方程组解决简单实际问题并检验",
+   "label": "列方程或方程组解决简单实际问题并检验",
+   "theme": "方程与方程组",
+   "theme_id": "T02",
+   "kind": "point",
+   "type": "逻辑型",
+   "tags": [
+    "逻辑型"
+   ],
+   "importance": "核心重点",
+   "tier": "次重点",
+   "error_rate": 0.4609,
+   "error_rate_text": "46.1%",
+   "parent_id": "T02I2",
+   "parent_name": "用消元法解二元一次方程组",
+   "pages": "上册110—148；下册87—119",
+   "x": 650,
+   "y": 606
+  },
+  {
+   "id": "T02I1",
+   "name": "运用等式性质解一元一次方程",
+   "label": "运用等式性质解一元一次方程",
+   "theme": "方程与方程组",
+   "theme_id": "T02",
+   "kind": "point",
+   "type": "记忆型",
+   "tags": [
+    "计算类",
+    "记忆型"
+   ],
+   "importance": "核心重点",
+   "tier": "次重点",
+   "error_rate": 0.4494,
+   "error_rate_text": "44.9%",
+   "parent_id": "F03",
+   "parent_name": "等式的性质",
+   "pages": "上册110—148；下册87—119",
+   "x": 650,
+   "y": 214
+  },
+  {
+   "id": "T03I1",
+   "name": "运用不等式性质求解，负数乘除时正确改变方向",
+   "label": "运用不等式性质求解，负数乘除时正确改变方向",
+   "theme": "不等式与不等式组",
+   "theme_id": "T03",
+   "kind": "point",
+   "type": "记忆型",
+   "tags": [
+    "计算类",
+    "记忆型"
+   ],
+   "importance": "核心重点",
+   "tier": "次重点",
+   "error_rate": 0.434,
+   "error_rate_text": "43.4%",
+   "parent_id": "T02I1",
+   "parent_name": "运用等式性质解一元一次方程",
+   "pages": "下册120—145",
+   "x": 1050,
+   "y": 214
+  },
+  {
+   "id": "T02I2",
+   "name": "用消元法解二元一次方程组",
+   "label": "用消元法解二元一次方程组",
+   "theme": "方程与方程组",
+   "theme_id": "T02",
+   "kind": "point",
+   "type": "逻辑型",
+   "tags": [
+    "计算类",
+    "逻辑型"
+   ],
+   "importance": "核心重点",
+   "tier": "次重点",
+   "error_rate": 0.4295,
+   "error_rate_text": "43.0%",
+   "parent_id": "T02I1",
+   "parent_name": "运用等式性质解一元一次方程",
+   "pages": "上册110—148；下册87—119",
+   "x": 650,
+   "y": 410
+  },
+  {
+   "id": "T01I2",
+   "name": "识别同类项、去括号并化简",
+   "label": "识别同类项、去括号并化简",
+   "theme": "代数式与整式运算",
+   "theme_id": "T01",
+   "kind": "point",
+   "type": "记忆型",
+   "tags": [
+    "计算类",
+    "记忆型"
+   ],
+   "importance": "核心重点",
+   "tier": "注意点",
+   "error_rate": 0.3296,
+   "error_rate_text": "33.0%",
+   "parent_id": "F02",
+   "parent_name": "整式概念与去括号法则",
+   "pages": "上册68—109",
+   "x": 250,
+   "y": 410
+  },
+  {
+   "id": "T03I2",
+   "name": "求两个一元一次不等式解集的交集",
+   "label": "求两个一元一次不等式解集的交集",
+   "theme": "不等式与不等式组",
+   "theme_id": "T03",
+   "kind": "point",
+   "type": "逻辑型",
+   "tags": [
+    "计算类",
+    "逻辑型"
+   ],
+   "importance": "核心重点",
+   "tier": "注意点",
+   "error_rate": 0.3125,
+   "error_rate_text": "31.2%",
+   "parent_id": "T03I1",
+   "parent_name": "运用不等式性质求解",
+   "pages": "下册120—145",
+   "x": 1050,
+   "y": 410
+  },
+  {
+   "id": "F01",
+   "name": "字母表示数",
+   "label": "字母表示数",
+   "detail": "字母表示数、代数式的概念",
+   "kind": "foundation",
+   "type": "基础",
+   "x": 250,
+   "y": 82
+  },
+  {
+   "id": "F02",
+   "name": "整式与去括号",
+   "label": "整式与去括号",
+   "detail": "整式概念、有理数运算、去括号法则",
+   "kind": "foundation",
+   "type": "基础",
+   "x": 78,
+   "y": 410
+  },
+  {
+   "id": "F03",
+   "name": "等式的性质",
+   "label": "等式的性质",
+   "detail": "等式两边同加同减、同乘同除",
+   "kind": "foundation",
+   "type": "基础",
+   "x": 650,
+   "y": 82
+  },
+  {
+   "id": "F04",
+   "name": "数轴与解集",
+   "label": "数轴与解集",
+   "detail": "用数轴表示解集、端点开闭",
+   "kind": "foundation",
+   "type": "基础",
+   "x": 1050,
+   "y": 82
+  },
+  {
+   "id": "F05",
+   "name": "实际问题审题",
+   "label": "实际问题审题",
+   "detail": "找等量关系与不等关系",
+   "kind": "foundation",
+   "type": "基础",
+   "x": 850,
+   "y": 722
+  }
+ ],
+ "edges": [
+  {
+   "from": "T01I1",
+   "to": "T01I2",
+   "kind": "main"
+  },
+  {
+   "from": "T01I2",
+   "to": "T01I3",
+   "kind": "main"
+  },
+  {
+   "from": "T02I1",
+   "to": "T02I2",
+   "kind": "main"
+  },
+  {
+   "from": "T02I2",
+   "to": "T02I3",
+   "kind": "main"
+  },
+  {
+   "from": "T03I1",
+   "to": "T03I2",
+   "kind": "main"
+  },
+  {
+   "from": "T03I2",
+   "to": "T03I3",
+   "kind": "main"
+  },
+  {
+   "from": "T01I2",
+   "to": "T02I1",
+   "kind": "cross",
+   "label": "迁移"
+  },
+  {
+   "from": "T02I1",
+   "to": "T03I1",
+   "kind": "cross",
+   "label": "迁移"
+  },
+  {
+   "from": "F01",
+   "to": "T01I1",
+   "kind": "foundation",
+   "label": "前置"
+  },
+  {
+   "from": "F02",
+   "to": "T01I2",
+   "kind": "foundation",
+   "label": "前置"
+  },
+  {
+   "from": "F03",
+   "to": "T02I1",
+   "kind": "foundation",
+   "label": "前置"
+  },
+  {
+   "from": "F04",
+   "to": "T03I2",
+   "kind": "foundation",
+   "label": "前置"
+  },
+  {
+   "from": "F05",
+   "to": "T02I3",
+   "kind": "foundation",
+   "label": "前置"
+  },
+  {
+   "from": "F05",
+   "to": "T03I3",
+   "kind": "foundation",
+   "label": "前置"
+  }
+ ]
+}

@@ -1,0 +1,1318 @@
+{
+  "questions": [
+    {
+      "id": "Q001",
+      "theme": "T01",
+      "indicator": "T01I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "每支笔x元，买3支笔另付2元包装费，共需多少元？用代数式表示。",
+      "options": "",
+      "answer": "3x+2",
+      "explanation": "三支笔共3x元，再加2元。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q001P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q002",
+      "theme": "T01",
+      "indicator": "T01I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "x=4时，代数式2x+3的值是多少？",
+      "options": "",
+      "answer": "11",
+      "explanation": "代入x=4，2×4+3=11。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q002P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q003",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "选择题",
+      "type_tag": "memory",
+      "stem": "下列哪一组是同类项？",
+      "options": "A. 3x与3x²\nB. 3x与-2x\nC. x与xy\nD. 2与2x",
+      "answer": "B",
+      "explanation": "3x与-2x的字母及其指数相同。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q003P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q004",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "化简5x-2x+2x-4。",
+      "options": "",
+      "answer": "5x-4",
+      "explanation": "同类项系数5-2+2=5。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q004P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q005",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "去括号：3(a+2)=？",
+      "options": "",
+      "answer": "3a+6",
+      "explanation": "3分别乘括号内两项。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q005P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q006",
+      "theme": "T01",
+      "indicator": "T01I1",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "长方形的长为(x+3)厘米，宽为x厘米，用含x的整式表示它的周长。",
+      "options": "",
+      "answer": "4x+6厘米",
+      "explanation": "周长是长与宽之和的2倍；C=2[(x+3)+x]=2(2x+3)；C=4x+6厘米。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q006P1",
+          "content": "写出周长关系",
+          "score": 1
+        },
+        {
+          "id": "Q006P2",
+          "content": "正确列出周长算式",
+          "score": 1
+        },
+        {
+          "id": "Q006P3",
+          "content": "合并同类项并写单位",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q007",
+      "theme": "T01",
+      "indicator": "T01I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "x=-2时，x²+3x的值是多少？",
+      "options": "",
+      "answer": "-2",
+      "explanation": "(-2)²+3×(-2)=4-6=-2。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q007P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q008",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "4m与-3m是否为同类项？回答“是”或“否”。",
+      "options": "",
+      "answer": "是",
+      "explanation": "字母及指数相同。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q008P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q009",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "化简：2(3x-1)-(x+4)。",
+      "options": "",
+      "answer": "5x-6",
+      "explanation": "去括号得6x-2-x-4；6x-x=5x，-2-4=-6；结果为5x-6。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q009P1",
+          "content": "按法则去括号",
+          "score": 1
+        },
+        {
+          "id": "Q009P2",
+          "content": "合并同类项",
+          "score": 1
+        },
+        {
+          "id": "Q009P3",
+          "content": "写出正确化简结果",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q010",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "去括号：-2(2a-3)=？",
+      "options": "",
+      "answer": "-4a+6",
+      "explanation": "-2乘-3应得+6。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q010P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q011",
+      "theme": "T01",
+      "indicator": "T01I3",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "设n为整数，求三个连续整数n-1、n、n+1的和，并说明这个和与3有什么关系。",
+      "options": "",
+      "answer": "3n，是3的倍数",
+      "explanation": "和为(n-1)+n+(n+1)；合并得3n；n为整数，所以和是3的倍数。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q011P1",
+          "content": "列出三个数的和",
+          "score": 1
+        },
+        {
+          "id": "Q011P2",
+          "content": "正确化简",
+          "score": 1
+        },
+        {
+          "id": "Q011P3",
+          "content": "由n为整数解释倍数关系",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q012",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "化简3x+2-5x+7。",
+      "options": "",
+      "answer": "-2x+9",
+      "explanation": "x项得-2x，常数项得9。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q012P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q013",
+      "theme": "T01",
+      "indicator": "T01I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "a=2，b=-1时，2a-b的值是多少？",
+      "options": "",
+      "answer": "5",
+      "explanation": "2×2-(-1)=5。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q013P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q014",
+      "theme": "T01",
+      "indicator": "T01I1",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "某班男生有x人，女生人数比男生人数的2倍少3人。用含x的整式表示全班人数。",
+      "options": "",
+      "answer": "3x-3人",
+      "explanation": "女生人数是2x-3人；全班人数=x+(2x-3)；合并得3x-3人。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q014P1",
+          "content": "表示女生人数",
+          "score": 1
+        },
+        {
+          "id": "Q014P2",
+          "content": "列出全班人数之和",
+          "score": 1
+        },
+        {
+          "id": "Q014P3",
+          "content": "合并同类项并写单位",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q015",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "化简：3(2a-b)-2(a+2b)。",
+      "options": "",
+      "answer": "4a-7b",
+      "explanation": "去括号得6a-3b-2a-4b；a项6a-2a=4a；b项-3b-4b=-7b；结果为4a-7b。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q015P1",
+          "content": "正确去两个括号",
+          "score": 1
+        },
+        {
+          "id": "Q015P2",
+          "content": "分别合并a项和b项",
+          "score": 1
+        },
+        {
+          "id": "Q015P3",
+          "content": "写出正确结果",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q016",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "化简(a+b)-(a-b)。",
+      "options": "",
+      "answer": "2b",
+      "explanation": "去括号后a+b-a+b=2b。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q016P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q017",
+      "theme": "T01",
+      "indicator": "T01I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "化简2x²y-5x²y。",
+      "options": "",
+      "answer": "-3x²y",
+      "explanation": "相同字母部分保留，系数2-5=-3。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q017P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q018",
+      "theme": "T01",
+      "indicator": "T01I3",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "小明说：“无论x取什么值，代数式2(x-3)-3(x+1)+x的值都等于-9。”他的说法对吗？请说明理由。",
+      "options": "",
+      "answer": "对；化简结果为-9，与x的取值无关",
+      "explanation": "去括号得2x-6-3x-3+x；合并同类项得-9；结果不含x，所以无论x取何值，代数式的值都是-9，说法正确。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q018P1",
+          "content": "正确去括号",
+          "score": 1
+        },
+        {
+          "id": "Q018P2",
+          "content": "合并同类项得到-9",
+          "score": 1
+        },
+        {
+          "id": "Q018P3",
+          "content": "说明结果与x无关并作出判断",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q019",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解方程x+7=12，x=？",
+      "options": "",
+      "answer": "5",
+      "explanation": "等式两边减7，x=5。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q019P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q020",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解方程3x=18，x=？",
+      "options": "",
+      "answer": "6",
+      "explanation": "等式两边除以3。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q020P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q021",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "选择题",
+      "type_tag": "memory",
+      "stem": "方程2(x-1)=8去括号后正确的是哪项？",
+      "options": "A. 2x-1=8\nB. 2x-2=8\nC. 2x+2=8\nD. x-2=8",
+      "answer": "B",
+      "explanation": "2乘括号内的x和-1。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q021P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q022",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解方程：3(x-2)=2x+5。",
+      "options": "",
+      "answer": "x=11",
+      "explanation": "去括号得3x-6=2x+5；移项得3x-2x=5+6；x=11，代回两边均为27。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q022P1",
+          "content": "正确去括号",
+          "score": 1
+        },
+        {
+          "id": "Q022P2",
+          "content": "移项并合并同类项",
+          "score": 1
+        },
+        {
+          "id": "Q022P3",
+          "content": "求解并核对",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q023",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解方程2x-5=9，x=？",
+      "options": "",
+      "answer": "7",
+      "explanation": "2x=14，所以x=7。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q023P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q024",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解方程x/3+2=5，x=？",
+      "options": "",
+      "answer": "9",
+      "explanation": "x/3=3，所以x=9。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q024P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q025",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解方程：(x-1)/2+(x+1)/3=4。",
+      "options": "",
+      "answer": "x=5",
+      "explanation": "同乘6得3(x-1)+2(x+1)=24；展开得5x-1=24；5x=25，x=5。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q025P1",
+          "content": "正确去分母",
+          "score": 1
+        },
+        {
+          "id": "Q025P2",
+          "content": "去括号并合并",
+          "score": 1
+        },
+        {
+          "id": "Q025P3",
+          "content": "求解并检验",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q026",
+      "theme": "T02",
+      "indicator": "T02I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "x=3是否为方程2x+1=7的解？回答“是”或“否”。",
+      "options": "",
+      "answer": "是",
+      "explanation": "代入左边得7，与右边相等。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q026P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q027",
+      "theme": "T02",
+      "indicator": "T02I3",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "某数的2倍再加5等于17，这个数是多少？",
+      "options": "",
+      "answer": "6",
+      "explanation": "设x，2x+5=17，x=6。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q027P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q028",
+      "theme": "T02",
+      "indicator": "T02I2",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解方程组：x+y=9，x-y=3。",
+      "options": "",
+      "answer": "x=6，y=3",
+      "explanation": "两式相加得2x=12；x=6，代入x+y=9得y=3；解为x=6，y=3，两式均成立。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q028P1",
+          "content": "正确选择消元关系",
+          "score": 1
+        },
+        {
+          "id": "Q028P2",
+          "content": "求出一个未知数并回代",
+          "score": 1
+        },
+        {
+          "id": "Q028P3",
+          "content": "给出并核验两个解",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q029",
+      "theme": "T02",
+      "indicator": "T02I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "方程组x+y=7，x-y=1中的x是多少？",
+      "options": "",
+      "answer": "4",
+      "explanation": "两式相加得2x=8。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q029P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q030",
+      "theme": "T02",
+      "indicator": "T02I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "方程组x+2y=8、x=2中的y是多少？",
+      "options": "",
+      "answer": "3",
+      "explanation": "代入2+2y=8，y=3。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q030P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q031",
+      "theme": "T02",
+      "indicator": "T02I2",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解方程组：2x+y=11，x-y=1。",
+      "options": "",
+      "answer": "x=4，y=3",
+      "explanation": "由x-y=1得y=x-1；代入2x+y=11得3x-1=11，x=4；y=3，原方程组成立。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q031P1",
+          "content": "正确建立消元步骤",
+          "score": 1
+        },
+        {
+          "id": "Q031P2",
+          "content": "求出x",
+          "score": 1
+        },
+        {
+          "id": "Q031P3",
+          "content": "回代求y并核验",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q032",
+      "theme": "T02",
+      "indicator": "T02I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "方程组x+y=12、x=2y中的y是多少？",
+      "options": "",
+      "answer": "4",
+      "explanation": "3y=12，所以y=4。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q032P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q033",
+      "theme": "T02",
+      "indicator": "T02I3",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "钢笔每支x元，练习本每本y元。买两支钢笔和三本练习本共用17元，列出x、y满足的等量关系式。",
+      "options": "",
+      "answer": "2x+3y=17",
+      "explanation": "总价为数量乘单价后相加。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q033P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q034",
+      "theme": "T02",
+      "indicator": "T02I3",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "两张成人票和一张学生票共80元，一张成人票和两张学生票共70元。成人票、学生票的单价各是多少元？",
+      "options": "",
+      "answer": "成人票30元，学生票20元",
+      "explanation": "设成人票x元、学生票y元，2x+y=80，x+2y=70；消元得x=30，y=20；成人票30元，学生票20元，代回均符合。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q034P1",
+          "content": "设未知数并列出两式",
+          "score": 1
+        },
+        {
+          "id": "Q034P2",
+          "content": "正确消元求值",
+          "score": 1
+        },
+        {
+          "id": "Q034P3",
+          "content": "解释并核验票价",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q035",
+      "theme": "T02",
+      "indicator": "T02I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "方程组x+y=5，2x+y=8中的y是多少？",
+      "options": "",
+      "answer": "2",
+      "explanation": "两式相减得x=3，代入x+y=5得y=2。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q035P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q036",
+      "theme": "T02",
+      "indicator": "T02I3",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "笼中鸡和兔共10只，共有26只脚。鸡和兔各有多少只？",
+      "options": "",
+      "answer": "鸡7只，兔3只",
+      "explanation": "设鸡x只、兔y只，x+y=10，2x+4y=26；由方程组得y=3，x=7；鸡7只兔3只，脚数14+12=26。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q036P1",
+          "content": "设未知数并列数量关系",
+          "score": 1
+        },
+        {
+          "id": "Q036P2",
+          "content": "消元求两种数量",
+          "score": 1
+        },
+        {
+          "id": "Q036P3",
+          "content": "检验实际意义",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q037",
+      "theme": "T03",
+      "indicator": "T03I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解不等式x+4>9，写出解集。",
+      "options": "",
+      "answer": "x>5",
+      "explanation": "两边减4。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q037P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q038",
+      "theme": "T03",
+      "indicator": "T03I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解不等式2x≤10，写出解集。",
+      "options": "",
+      "answer": "x≤5",
+      "explanation": "两边除以正数2，方向不变。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q038P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q039",
+      "theme": "T03",
+      "indicator": "T03I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解不等式x-3<2，写出解集。",
+      "options": "",
+      "answer": "x<5",
+      "explanation": "两边加3。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q039P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q040",
+      "theme": "T03",
+      "indicator": "T03I1",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解不等式3x-2≤10，并说明解集在数轴上如何表示。",
+      "options": "",
+      "answer": "x≤4，4处实心点向左",
+      "explanation": "两边加2得3x≤12；两边除以3得x≤4；数轴上4处实心点，向左表示。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q040P1",
+          "content": "正确移项",
+          "score": 1
+        },
+        {
+          "id": "Q040P2",
+          "content": "求出解集",
+          "score": 1
+        },
+        {
+          "id": "Q040P3",
+          "content": "正确说明端点与方向",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q041",
+      "theme": "T03",
+      "indicator": "T03I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解不等式-2x>6，写出解集。",
+      "options": "",
+      "answer": "x<-3",
+      "explanation": "除以负数-2，不等号方向改变。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q041P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q042",
+      "theme": "T03",
+      "indicator": "T03I1",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "已知a<b，则-a与-b之间应填“>”“<”还是“=”？",
+      "options": "",
+      "answer": ">",
+      "explanation": "两边乘-1，不等号方向改变。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q042P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q043",
+      "theme": "T03",
+      "indicator": "T03I1",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解不等式：-2x+3<11。",
+      "options": "",
+      "answer": "x>-4",
+      "explanation": "两边减3得-2x<8；两边除以-2，不等号反向；解集为x>-4；取x=0可检验。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q043P1",
+          "content": "正确移项",
+          "score": 1
+        },
+        {
+          "id": "Q043P2",
+          "content": "除以负数时反向",
+          "score": 1
+        },
+        {
+          "id": "Q043P3",
+          "content": "写出并核对解集",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q044",
+      "theme": "T03",
+      "indicator": "T03I2",
+      "type": "选择题",
+      "type_tag": "memory",
+      "stem": "不等式组x≥-2，x<1的解集在数轴上应如何表示？",
+      "options": "A. -2处空心点、1处实心点，取两点之间\nB. -2处实心点、1处空心点，取两点之间\nC. -2处实心点向左、1处空心点向右\nD. -2处空心点、1处空心点，取两点之间",
+      "answer": "B",
+      "explanation": "x≥-2含端点-2，x<1不含端点1，公共部分在两点之间。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q044P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q045",
+      "theme": "T03",
+      "indicator": "T03I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "同时满足x>1、x<5，写出公共解集。",
+      "options": "",
+      "answer": "1<x<5",
+      "explanation": "取两个解集交集。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q045P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q046",
+      "theme": "T03",
+      "indicator": "T03I2",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解不等式组：x+1>3，2x≤10。",
+      "options": "",
+      "answer": "2<x≤5",
+      "explanation": "由x+1>3得x>2；由2x≤10得x≤5；交集为2<x≤5。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q046P1",
+          "content": "分别解出两个不等式",
+          "score": 1
+        },
+        {
+          "id": "Q046P2",
+          "content": "取两个解集交集",
+          "score": 1
+        },
+        {
+          "id": "Q046P3",
+          "content": "正确写出开闭端点",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q047",
+      "theme": "T03",
+      "indicator": "T03I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "同时满足x≥-1、x<4，写出公共解集。",
+      "options": "",
+      "answer": "-1≤x<4",
+      "explanation": "左端点含-1，右端点不含4。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q047P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q048",
+      "theme": "T03",
+      "indicator": "T03I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "不等式组x>3、x<2的解集是什么？",
+      "options": "",
+      "answer": "无解",
+      "explanation": "两个范围没有交集。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q048P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q049",
+      "theme": "T03",
+      "indicator": "T03I2",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "解不等式组：2x-1≥3，3-x>0。",
+      "options": "",
+      "answer": "2≤x<3",
+      "explanation": "2x-1≥3得x≥2；3-x>0得x<3；交集为2≤x<3。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q049P1",
+          "content": "正确求第一个解集",
+          "score": 1
+        },
+        {
+          "id": "Q049P2",
+          "content": "正确求第二个解集",
+          "score": 1
+        },
+        {
+          "id": "Q049P3",
+          "content": "取交集并说明端点",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q050",
+      "theme": "T03",
+      "indicator": "T03I3",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "每张票5元，买x张的费用不超过30元，应列什么不等式？",
+      "options": "",
+      "answer": "5x≤30",
+      "explanation": "费用为5x，“不超过”对应≤。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q050P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q051",
+      "theme": "T03",
+      "indicator": "T03I3",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "一件商品原价x元，优惠5元后价格不超过30元，应列什么不等式？",
+      "options": "",
+      "answer": "x-5≤30",
+      "explanation": "优惠后为x-5。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q051P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q052",
+      "theme": "T03",
+      "indicator": "T03I3",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "班级计划至少收集60本书，现已有18本，其余由x名同学每人捐3本。至少还需要多少名同学捐书？",
+      "options": "",
+      "answer": "14人",
+      "explanation": "列出18+3x≥60；得3x≥42，x≥14；人数为整数，至少还需14人。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q052P1",
+          "content": "正确列出至少关系",
+          "score": 1
+        },
+        {
+          "id": "Q052P2",
+          "content": "解不等式",
+          "score": 1
+        },
+        {
+          "id": "Q052P3",
+          "content": "结合人数取整数并解释",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q053",
+      "theme": "T03",
+      "indicator": "T03I2",
+      "type": "填空题",
+      "type_tag": "memory",
+      "stem": "解复合不等式-3≤2x+1<7，写出解集。",
+      "options": "",
+      "answer": "-2≤x<3",
+      "explanation": "各部分同时减1再除以2。",
+      "full": 1,
+      "steps": [
+        {
+          "id": "Q053P1",
+          "content": "答案正确",
+          "score": 1
+        }
+      ],
+      "step_sum": 1,
+      "source": "赛事新编"
+    },
+    {
+      "id": "Q054",
+      "theme": "T03",
+      "indicator": "T03I3",
+      "type": "解答题",
+      "type_tag": "logic",
+      "stem": "某商品成本为20元，售价为x元。要求每件至少获利5元，且售价不超过30元，求售价x的取值范围。",
+      "options": "",
+      "answer": "25≤x≤30元",
+      "explanation": "至少获利5元，x-20≥5，即x≥25；售价不超过30元，所以x≤30；两条件同时满足：25≤x≤30元。",
+      "full": 3,
+      "steps": [
+        {
+          "id": "Q054P1",
+          "content": "根据利润列下界",
+          "score": 1
+        },
+        {
+          "id": "Q054P2",
+          "content": "根据售价列上界",
+          "score": 1
+        },
+        {
+          "id": "Q054P3",
+          "content": "合并范围并解释",
+          "score": 1
+        }
+      ],
+      "step_sum": 3,
+      "source": "赛事新编"
+    }
+  ]
+}

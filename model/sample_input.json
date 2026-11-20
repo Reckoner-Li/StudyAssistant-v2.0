@@ -1,0 +1,530 @@
+{
+  "students": [
+    {
+      "id": "S01",
+      "class": "测试班A",
+      "grade": 7
+    },
+    {
+      "id": "S02",
+      "class": "测试班A",
+      "grade": 7
+    },
+    {
+      "id": "S03",
+      "class": "测试班B",
+      "grade": 7
+    },
+    {
+      "id": "S04",
+      "class": "测试班B",
+      "grade": 7
+    }
+  ],
+  "responses": [
+    {
+      "student": "S01",
+      "indicator": "T01I1",
+      "item": "Q001",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T01I1",
+      "item": "Q002",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T01I2",
+      "item": "Q004",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T01I2",
+      "item": "Q005",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T01I3",
+      "item": "Q011",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T01I3",
+      "item": "Q012",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T02I1",
+      "item": "Q019",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T02I1",
+      "item": "Q020",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T02I2",
+      "item": "Q028",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T02I2",
+      "item": "Q029",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T02I3",
+      "item": "Q036",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T02I3",
+      "item": "Q037",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T03I1",
+      "item": "Q041",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T03I1",
+      "item": "Q042",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T03I2",
+      "item": "Q046",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T03I2",
+      "item": "Q047",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T03I3",
+      "item": "Q052",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S01",
+      "indicator": "T03I3",
+      "item": "Q053",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T01I1",
+      "item": "Q001",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T01I1",
+      "item": "Q002",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T01I2",
+      "item": "Q004",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T01I2",
+      "item": "Q005",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T01I3",
+      "item": "Q011",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T01I3",
+      "item": "Q012",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T02I1",
+      "item": "Q019",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T02I1",
+      "item": "Q020",
+      "score": 4,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T02I2",
+      "item": "Q028",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T02I2",
+      "item": "Q029",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T02I3",
+      "item": "Q036",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T02I3",
+      "item": "Q037",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T03I1",
+      "item": "Q041",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T03I1",
+      "item": "Q042",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T03I2",
+      "item": "Q046",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T03I2",
+      "item": "Q047",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T03I3",
+      "item": "Q052",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S02",
+      "indicator": "T03I3",
+      "item": "Q053",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T01I1",
+      "item": "Q001",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T01I1",
+      "item": "Q002",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T01I2",
+      "item": "Q004",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T01I2",
+      "item": "Q005",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T01I3",
+      "item": "Q011",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T01I3",
+      "item": "Q012",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T02I1",
+      "item": "Q019",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T02I1",
+      "item": "Q020",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T02I2",
+      "item": "Q028",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T02I2",
+      "item": "Q029",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T02I3",
+      "item": "Q036",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T02I3",
+      "item": "Q037",
+      "score": 3,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T03I1",
+      "item": "Q041",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T03I1",
+      "item": "Q042",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T03I2",
+      "item": "Q046",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T03I2",
+      "item": "Q047",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T03I3",
+      "item": "Q052",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S03",
+      "indicator": "T03I3",
+      "item": "Q053",
+      "score": 0,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T01I1",
+      "item": "Q001",
+      "score": 0,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T01I1",
+      "item": "Q002",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T01I2",
+      "item": "Q004",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T01I2",
+      "item": "Q005",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T01I3",
+      "item": "Q011",
+      "score": 0,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T01I3",
+      "item": "Q012",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T02I1",
+      "item": "Q019",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T02I1",
+      "item": "Q020",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T02I2",
+      "item": "Q028",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T02I2",
+      "item": "Q029",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T02I3",
+      "item": "Q036",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T02I3",
+      "item": "Q037",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T03I1",
+      "item": "Q041",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T03I1",
+      "item": "Q042",
+      "score": 2,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T03I2",
+      "item": "Q046",
+      "score": 0,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T03I2",
+      "item": "Q047",
+      "score": 1,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T03I3",
+      "item": "Q052",
+      "score": 0,
+      "full": 4
+    },
+    {
+      "student": "S04",
+      "indicator": "T03I3",
+      "item": "Q053",
+      "score": 0,
+      "full": 4
+    }
+  ]
+}

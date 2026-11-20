@@ -1,0 +1,208 @@
+{
+ "students": [
+  {
+   "id": "D01",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D02",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D03",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D04",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D05",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D06",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D07",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D08",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D09",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D10",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D11",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D12",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D13",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D14",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D15",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D16",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D17",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D18",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D19",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D20",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D21",
+   "class": "DC01",
+   "grade": 7
+  },
+  {
+   "id": "D22",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D23",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D24",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D25",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D26",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D27",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D28",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D29",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D30",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D31",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D32",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D33",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D34",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D35",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D36",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D37",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D38",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D39",
+   "class": "DC02",
+   "grade": 7
+  },
+  {
+   "id": "D40",
+   "class": "DC02",
+   "grade": 7
+  }
+ ],
+ "classes": {
+  "DC01": 21,
+  "DC02": 19
+ }
+}

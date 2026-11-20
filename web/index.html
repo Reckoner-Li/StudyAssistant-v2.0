@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  智慧学伴 · 单文件网页模板
+  ----------------------------------------------------------------------------
+  这个文件是“页面骨架 + 交互逻辑”，本身没有数据。
+  build_site.py 会把数据 JSON 替换到页面底部的数据占位符，输出 web/index.html。
+  注意：占位符只在脚本里出现一次，注释里不要写出它的完整名字，否则会被一并替换。
+
+  修改配色：只改 :root 里的 CSS 变量（见下）。
+  修改分析口径：改 JS 里的 CONFIG（来自 model.json）或 computeModel 函数。
+  修改文案/结构：按下面 JS 的分段注释定位（utils / analysis / mind map /
+                home / student / teacher / drawer / import / route）。
+  ============================================================================
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>智慧学伴 · 七年级数学学习地图</title>
+<style>
+  /* ------------------------------------------------------------------------
+     主题色板（可调节）
+     红 = 记忆型 / 蓝色 = 逻辑型；其余为纸感底色与强调色
+     ------------------------------------------------------------------------ */
+  :root{
+    /* 文字与底色：--ink 主文字，--paper 页面底色，--card 卡片底色 */
+    --ink:#16242C; --ink2:#43565F; --muted:#74858C;
+    --paper:#F4EFE4; --paper2:#FBF7EC; --card:#FFFCF6;
+    --line:#E3DAC8; --line2:#EFE8DA;
+    /* 强调色：--gold 金色点缀 */
+    --gold:#B8892E; --gold2:#D9B96B;
+    /* 类型色：--red 记忆型，--blue 逻辑型（改这里即可整站换色） */
+    --red:#C24B36; --red-bg:#FBEAE5; --red-soft:#F6DDD5;
+    --blue:#2D6AA0; --blue-bg:#E9F1FA;
+    /* 辅助色：--teal 用于教师端/提示 */
+    --teal:#0D7A6F; --teal-bg:#E3F1EE;
+    --shadow:0 12px 34px rgba(30,42,48,.07);
+    /* 字体：改这两行可整站替换字体 */
+    --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",Georgia,serif;
+    --sans:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:
+    radial-gradient(900px 480px at 8% -6%, #FFF8E7 0%, rgba(255,248,231,0) 62%),
+    radial-gradient(760px 420px at 96% 4%, #EAF2F3 0%, rgba(234,242,243,0) 58%),
+    var(--paper);
+    color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.65;
+    -webkit-font-smoothing:antialiased}
+  button{font-family:inherit;border:0;background:none;cursor:pointer;color:inherit}
+  select{font-family:inherit}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:#F0DFB8}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 26px}
+  .topbar{position:sticky;top:0;z-index:60;background:rgba(20,32,39,.95);backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid rgba(255,255,255,.06)}
+  .topbar .wrap{display:flex;align-items:center;gap:26px;height:66px}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .brand-text{display:flex;flex-direction:column;line-height:1.1}
+  .brand-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(140deg,#E4C77C,#A97C25);display:grid;place-items:center;color:#17242C;font-family:var(--serif);font-weight:700;font-size:19px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+  .brand-name{display:block;font-size:14.5px;letter-spacing:.08em;font-weight:600;white-space:nowrap}
+  .brand-sub{display:block;font-size:9.5px;letter-spacing:.2em;color:#93A6AE;margin-top:1px;white-space:nowrap}
+  .nav{display:flex;gap:4px;margin-left:auto;background:rgba(255,255,255,.055);padding:4px;border-radius:999px}
+  .nav button{padding:7px 17px;border-radius:999px;font-size:12.5px;color:#BFCDD2;transition:.18s}
+  .nav button:hover{color:#fff}
+  .nav button.active{background:#F2E6C8;color:#1A2A32;font-weight:600}
+  .top-meta{font-size:10px;letter-spacing:.14em;color:#82979F;white-space:nowrap}
+  main{min-height:70vh}
+  .eyebrow{font-size:10.5px;letter-spacing:.26em;color:#92732F;font-weight:700;text-transform:uppercase;margin:0 0 13px}
+  .hero{padding:58px 0 38px;display:grid;grid-template-columns:1.12fr .88fr;gap:52px;align-items:end}
+  .hero h1{font-family:var(--serif);font-size:clamp(34px,4.3vw,54px);line-height:1.16;letter-spacing:-.015em;margin:0;font-weight:700}
+  .hero h1 em{font-style:normal;color:var(--red);position:relative;white-space:nowrap}
+  .hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:8px;background:#EFD9A9;z-index:-1}
+  .hero .lead{margin:20px 0 0;color:#50636B;font-size:15px;max-width:560px;line-height:1.8}
+  .hero-actions{display:flex;gap:11px;margin-top:27px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:600;transition:.18s;border:1px solid transparent}
+  .btn-primary{background:var(--ink);color:#fff}
+  .btn-primary:hover{background:#243942;transform:translateY(-1px)}
+  .btn-ghost{background:transparent;border-color:#CFC3AC;color:#33464E}
+  .btn-ghost:hover{background:#FFFCF4}
+  .snapshot{background:var(--ink);color:#fff;border-radius:22px;padding:24px 26px 18px;position:relative;overflow:hidden;box-shadow:0 24px 50px rgba(22,36,44,.16)}
+  .snapshot::after{content:"";position:absolute;width:220px;height:220px;right:-90px;top:-100px;border-radius:50%;background:radial-gradient(circle,rgba(216,185,107,.34),transparent 68%)}
+  .snapshot h3{font-size:11px;letter-spacing:.18em;color:#9FB2BA;font-weight:600;margin:0 0 10px}
+  .snap-row{display:flex;align-items:baseline;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.09);position:relative;z-index:1}
+  .snap-row:last-child{border-bottom:0}
+  .snap-row span{font-size:12px;color:#A9BAC1}
+  .snap-row b{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:.01em}
+  .snap-row b small{font-size:11px;font-family:var(--sans);color:#A9BAC1;font-weight:400;margin-left:3px}
+  .section{padding:42px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;margin-bottom:20px}
+  .sec-head h2{font-family:var(--serif);font-size:30px;line-height:1.2;margin:0;letter-spacing:-.01em}
+  .sec-head p{margin:6px 0 0;color:#60737B;font-size:13px;max-width:600px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+  .map-card{padding:20px 20px 12px;overflow:hidden}
+  .map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:4px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:#5B6F77}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .dot.memory{background:var(--red)} .dot.logic{background:var(--blue)} .dot.foundation{background:#B9B0A0}
+  .map-note{font-size:11.5px;color:#7A8B92}
+  .map-scroll{overflow-x:auto;padding:2px 0 0}
+  svg.map{width:100%;min-width:960px;height:auto;display:block;font-family:var(--sans)}
+  .map text{user-select:none}
+  .node{cursor:pointer}
+  .node .node-bg{transition:.16s}
+  .node:hover .node-bg{filter:brightness(.975)}
+  .node:focus{outline:none}
+  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+  .theme-card{padding:20px 22px;border-top:4px solid var(--blue);position:relative;overflow:hidden}
+  .theme-card[data-t="T02"]{border-top-color:var(--gold)}
+  .theme-card[data-t="T03"]{border-top-color:var(--teal)}
+  .theme-card .tid{font-size:10px;letter-spacing:.2em;color:#8A9AA0;font-weight:700}
+  .theme-card h3{font-size:18px;margin:7px 0 4px;font-family:var(--serif)}
+  .theme-card .goal{font-size:12px;color:#64777F;line-height:1.65;min-height:40px}
+  .theme-foot{display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px;border-top:1px solid var(--line2);padding-top:12px}
+  .theme-foot b{font-family:var(--serif);font-size:27px;line-height:1}
+  .theme-foot span{font-size:10.5px;color:#84949B;display:block;margin-top:4px}
+  .tier-pill{font-size:10px;padding:3px 8px;border-radius:99px;background:#F1E9D7;color:#7C6223;font-weight:600}
+  .warn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+  .warn-card{padding:19px 20px;background:#FFF9F4;border:1px solid #EED9CF;border-left:4px solid var(--red);border-radius:14px}
+  .warn-kicker{font-size:9.5px;letter-spacing:.18em;color:#A0523D;font-weight:700}
+  .warn-trigger{font-size:12px;color:#6E7E84;margin:8px 0 2px}
+  .warn-trigger b{color:#33474F;font-weight:600}
+  .warn-arrow{color:#B0806F;font-size:16px;line-height:1;margin:7px 0 5px}
+  .warn-parent{font-family:var(--serif);font-size:18.5px;line-height:1.4;font-weight:700;margin:0}
+  .warn-reason{font-size:11.5px;color:#6B7B81;margin:8px 0 0;line-height:1.6}
+  .warn-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+  .chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;font-size:10px;background:#F2EBDD;color:#6B5A32;white-space:nowrap}
+  .chip.student{background:#F7E4DE;color:#9A412C}
+  .chip.teacher{background:#E4EEF6;color:#2B5E8C}
+  .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .how-card{padding:22px 22px 20px;position:relative}
+  .how-num{font-family:var(--serif);font-size:36px;color:#D8C9A8;line-height:1;position:absolute;right:20px;top:14px}
+  .how-card h4{font-size:15px;margin:0 0 7px}
+  .how-card p{font-size:12.5px;color:#63767E;margin:0;line-height:1.7}
+  footer{border-top:1px solid #DED4C1;margin-top:40px;padding:26px 0 34px;color:#7A8B92;font-size:11px}
+  footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:44px 0 20px;border-bottom:1px solid #DED4C1;flex-wrap:wrap}
+  .page-head h1{font-family:var(--serif);font-size:40px;line-height:1.1;margin:0}
+  .page-head .sub{font-size:12.5px;color:#677A82;margin-top:9px}
+  .selectors{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .select{appearance:none;background:#FFFCF6;border:1px solid #D9CDB8;border-radius:11px;padding:10px 36px 10px 14px;font-size:13px;font-weight:600;color:#253940;min-width:220px;background-image:linear-gradient(45deg,transparent 50%,#7B8B91 50%),linear-gradient(135deg,#7B8B91 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:22px 0}
+  .kpi{padding:16px 18px;background:#FFFCF6;border:1px solid var(--line);border-radius:15px}
+  .kpi span{font-size:10.5px;letter-spacing:.07em;color:#7A8B92;display:block}
+  .kpi b{font-family:var(--serif);font-size:29px;line-height:1.15;display:block;margin-top:4px}
+  .kpi small{font-size:10.5px;color:#87979D;display:block;margin-top:2px}
+  .profile{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-bottom:18px}
+  .profile-main{display:flex;gap:20px;align-items:center;padding:20px 22px}
+  .avatar{width:62px;height:62px;border-radius:18px;background:var(--ink);color:#F2E6C8;display:grid;place-items:center;font-family:var(--serif);font-size:20px;font-weight:700;flex:none}
+  .profile-main h2{font-family:var(--serif);font-size:23px;margin:0}
+  .profile-main .meta{font-size:11.5px;color:#70828A;margin-top:4px}
+  .ring{width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--teal) calc(var(--p)*1%), #EDE6D7 0);display:grid;place-items:center;flex:none;margin-left:auto}
+  .ring i{width:70px;height:70px;border-radius:50%;background:#FFFCF6;display:grid;place-items:center;font-style:normal;font-family:var(--serif);font-size:19px;font-weight:700}
+  .mastery-box{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 18px;align-items:center}
+  .mastery-box div{text-align:center}
+  .mastery-box b{display:block;font-family:var(--serif);font-size:24px}
+  .mastery-box span{font-size:10px;color:#7B8C93}
+  .grid-2{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;align-items:start}
+  .panel{padding:20px 22px}
+  .panel h3{font-family:var(--serif);font-size:19px;margin:0 0 4px}
+  .panel .ph-sub{font-size:11.5px;color:#7A8B92;margin:0 0 14px}
+  .weak-card{border:1px solid var(--line2);border-radius:14px;padding:16px 17px;margin-bottom:11px;background:#FFFDF8;position:relative}
+  .weak-card:last-child{margin-bottom:0}
+  .wc-head{display:flex;gap:12px;align-items:flex-start}
+  .rankbox{font-family:var(--serif);font-size:19px;color:#B7A785;width:28px;flex:none;line-height:1.2}
+  .wc-title{font-size:14.5px;font-weight:700;line-height:1.45;margin:0}
+  .wc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+  .badge{font-size:9.5px;padding:2px 7px;border-radius:99px;font-weight:600;white-space:nowrap}
+  .badge.memory{background:var(--red-bg);color:var(--red)}
+  .badge.logic{background:var(--blue-bg);color:var(--blue)}
+  .badge.plain{background:#F2EBDD;color:#77633A}
+  .rate{margin-left:auto;text-align:right;flex:none}
+  .rate b{font-family:var(--serif);font-size:22px;line-height:1}
+  .rate span{display:block;font-size:9.5px;color:#8A9AA0;margin-top:2px}
+  .bar{height:7px;background:#EFE8D9;border-radius:99px;overflow:hidden;margin:11px 0 7px}
+  .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#DDBB72,var(--red))}
+  .wc-meta{display:flex;justify-content:space-between;gap:10px;font-size:10.5px;color:#82939A;flex-wrap:wrap}
+  details.advice{margin-top:9px;border-top:1px dashed #E5DCC9;padding-top:8px}
+  details.advice summary{font-size:11.5px;color:#2D6AA0;cursor:pointer;list-style:none;font-weight:600}
+  details.advice summary::-webkit-details-marker{display:none}
+  details.advice summary::after{content:" +";font-weight:400}
+  details.advice[open] summary::after{content:" −"}
+  details.advice p{font-size:11.5px;color:#5E727A;line-height:1.8;margin:9px 0 0}
+  .warn-side .warn-card{margin-bottom:10px}
+  .warn-side .warn-parent{font-size:16.5px}
+  .advice-dark{background:var(--ink);color:#fff;border-radius:16px;padding:18px 20px;margin-top:12px}
+  .advice-dark h4{font-size:11px;letter-spacing:.14em;color:#E2C987;margin:0 0 8px;font-weight:600}
+  .advice-dark p{font-size:12.5px;color:#D6E0E4;line-height:1.75;margin:0}
+  .heat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+  .heat button{text-align:left;border:1px solid var(--line2);border-radius:11px;padding:10px 11px;background:#FFFDF8;transition:.16s;min-height:78px}
+  .heat button:hover{border-color:#C9B88F;transform:translateY(-1px)}
+  .heat .hid{font-size:9px;letter-spacing:.1em;color:#94A4AA}
+  .heat .hname{font-size:11px;font-weight:600;line-height:1.45;margin:4px 0 6px;min-height:30px}
+  .heat .hval{font-family:var(--serif);font-size:16px;font-weight:700}
+  .heat .hbar{height:4px;background:#EFE8D9;border-radius:99px;margin-top:5px;overflow:hidden}
+  .heat .hbar i{display:block;height:100%;border-radius:99px}
+  .m-mastered{border-top:3px solid var(--teal)!important}
+  .m-partial{border-top:3px solid var(--gold)!important}
+  .m-weak{border-top:3px solid var(--red)!important}
+  .no-data{border-top:3px solid #CFC6B2!important;opacity:.65}
+  .seg{display:inline-flex;background:#E9E2D3;border-radius:999px;padding:4px;gap:2px}
+  .seg button{padding:7px 15px;border-radius:999px;font-size:12px;color:#5E7078;transition:.15s}
+  .seg button.active{background:var(--ink);color:#fff;font-weight:600}
+  .data-table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .data-table th{text-align:left;font-size:10px;letter-spacing:.08em;color:#7B8B91;font-weight:600;padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .data-table td{padding:11px 10px;border-bottom:1px solid var(--line2);vertical-align:middle}
+  .data-table tr:last-child td{border-bottom:0}
+  .data-table tbody tr:hover{background:#FCF7EA}
+  .pt-name{font-weight:600;line-height:1.45}
+  .pt-id{font-size:9.5px;color:#93A3A9;letter-spacing:.08em}
+  .mini-bar{height:6px;background:#EFE8D9;border-radius:99px;overflow:hidden;min-width:74px}
+  .mini-bar i{display:block;height:100%;border-radius:99px}
+  .tier{font-size:9.5px;padding:3px 7px;border-radius:99px;font-weight:700;white-space:nowrap}
+  .tier-focus{background:var(--red-soft);color:#9A3B26}
+  .tier-mid{background:#F3EAD3;color:#836421}
+  .tier-note{background:#E8EEF1;color:#4E6671}
+  .chart-row{display:grid;grid-template-columns:104px 1fr 48px;gap:9px;align-items:center;margin:9px 0;font-size:11.5px}
+  .chart-row .lab{color:#5D7078}
+  .chart-row .val{text-align:right;font-family:var(--serif);font-weight:700;font-size:12.5px}
+  .track{height:9px;background:#EFE8D9;border-radius:99px;overflow:hidden}
+  .track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#C9A24A,#B8892E)}
+  .track.red i{background:linear-gradient(90deg,#E0A08E,#C24B36)}
+  .track.blue i{background:linear-gradient(90deg,#7FA9CC,#2D6AA0)}
+  .compare-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 54px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line2);font-size:11.5px}
+  .compare-row:last-child{border-bottom:0}
+  .dual{display:flex;flex-direction:column;gap:3px}
+  .dual .track{height:5px}
+  .dual .track i{background:var(--blue)}
+  .dual.c2 .track i{background:var(--teal)}
+  .gap{font-family:var(--serif);font-weight:700;font-size:12px;text-align:right}
+  .gap.warn{color:var(--red)}
+  .att-level{font-size:9.5px;padding:2px 7px;border-radius:99px;font-weight:700}
+  .lv-high{background:var(--red-soft);color:#8E2F1B}
+  .lv-mid{background:#F3EAD3;color:#836421}
+  .lv-low{background:#E8EEF1;color:#4E6671}
+  .weakchips{display:flex;gap:4px;flex-wrap:wrap}
+  .weakchips span{font-size:9.5px;padding:2px 6px;border-radius:6px;background:#F8EAE4;color:#8F4631;white-space:nowrap}
+  .teaching-para{font-size:12.5px;line-height:1.85;color:#3D5159;background:#FBF6E9;border:1px solid #EADFC8;border-radius:14px;padding:15px 17px;white-space:pre-line}
+  .teaching-para b{color:#8A6620}
+  .action-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+  .action-list li{font-size:12px;color:#50646C;display:flex;gap:8px;line-height:1.65}
+  .action-list li::before{content:"→";color:var(--gold);flex:none;font-weight:700}
+  .module-cloud{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .module-cloud span{font-size:10.5px;background:#EFE8D8;color:#6C5B35;padding:4px 9px;border-radius:99px}
+  .module-cloud span b{color:#3D3220;margin-left:3px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .mt16{margin-top:16px}
+  .import-card{padding:20px 22px}
+  .import-card summary{cursor:pointer;font-weight:600;font-size:13px;list-style:none}
+  .import-card summary::-webkit-details-marker{display:none}
+  .import-card summary::before{content:"＋ ";color:var(--gold);font-weight:700}
+  .import-card[open] summary::before{content:"− "}
+  .import-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .file-input{font-size:11.5px;color:#5E727A}
+  .hint{font-size:11px;color:#82939A;line-height:1.75;margin-top:10px}
+  .code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;background:#F2EBDD;padding:2px 5px;border-radius:5px;color:#5C4B2A}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#17242C;color:#fff;padding:11px 20px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.22s;z-index:200;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  #drawer-overlay{position:fixed;inset:0;background:rgba(14,24,30,.44);opacity:0;pointer-events:none;transition:.2s;z-index:80}
+  #drawer-overlay.on{opacity:1;pointer-events:auto}
+  #drawer{position:fixed;top:0;right:0;height:100%;width:min(566px,94vw);background:#FFFDF8;z-index:90;transform:translateX(102%);transition:transform .26s cubic-bezier(.2,.72,.2,1);overflow-y:auto;box-shadow:-24px 0 64px rgba(0,0,0,.2)}
+  #drawer.on{transform:none}
+  .drawer-head{padding:24px 26px 20px;background:var(--ink);color:#fff;position:sticky;top:0;z-index:3}
+  .drawer-close{position:absolute;right:16px;top:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:16px;line-height:1;display:grid;place-items:center}
+  .drawer-close:hover{background:rgba(255,255,255,.22)}
+  .drawer-head .did{font-size:9.5px;letter-spacing:.2em;color:#9FB2BA;margin-bottom:6px}
+  .drawer-head h2{font-family:var(--serif);font-size:23px;line-height:1.35;margin:0;max-width:420px}
+  .drawer-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:10.5px;color:#B9C8CE}
+  .drawer-meta span{background:rgba(255,255,255,.08);padding:3px 8px;border-radius:99px}
+  .tabs{display:flex;gap:2px;position:sticky;top:0;background:#FFFDF8;padding:10px 26px 0;z-index:2;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tabs button{padding:9px 11px;font-size:12px;color:#71838A;border-bottom:2px solid transparent;transition:.15s}
+  .tabs button.active{color:var(--ink);border-color:var(--gold);font-weight:600}
+  .drawer-body{padding:20px 26px 54px}
+  .tabpane{display:none}
+  .tabpane.active{display:block;animation:fade .22s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .prompt{font-size:13px;line-height:1.9;background:#FBF6E9;border:1px solid #EADFC8;border-radius:12px;padding:14px 16px;white-space:pre-line}
+  .stepline{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:10px 0;border-bottom:1px dashed #E8DFCC;font-size:12.5px;line-height:1.75}
+  .stepline:last-child{border-bottom:0}
+  .stepline b{font-size:10.5px;color:#96742B;letter-spacing:.04em;font-weight:700;padding-top:2px}
+  .answerbox{background:var(--teal-bg);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:12px 15px;font-size:13px;font-weight:600;margin-top:12px;line-height:1.7}
+  .note{font-size:11px;color:#788A91;margin-top:9px;line-height:1.7}
+  .conclusion{border-top:1px solid var(--line);margin-top:12px;padding-top:12px;font-size:12px;color:#4E636B;line-height:1.8}
+  .ex-card{border:1px solid var(--line2);border-radius:12px;padding:12px 14px;margin-bottom:9px;background:#FFFDF8}
+  .ex-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+  .ex-top .eid{font-size:9.5px;color:#94A4AA;letter-spacing:.08em}
+  .ex-stem{font-size:12.5px;line-height:1.75;margin:0}
+  .ex-card details{margin-top:7px}
+  .ex-card summary{font-size:11px;color:var(--blue);cursor:pointer;list-style:none}
+  .ex-card summary::-webkit-details-marker{display:none}
+  .ex-answer{font-size:12px;line-height:1.8;background:#F7F2E5;border-radius:8px;padding:9px 11px;margin-top:7px}
+  .ex-answer b{color:#2F5F52}
+  .err-card{border-left:3px solid var(--red);background:#FFF8F4;padding:10px 13px;border-radius:0 9px 9px 0;margin-bottom:8px;font-size:12px;line-height:1.7}
+  .err-card b{color:#9B432D}
+  .err-card span{display:block;color:#647880;margin-top:3px}
+  .stat-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+  .stat-mini{background:#FBF6E9;border:1px solid #EADFC8;border-radius:11px;padding:11px 13px}
+  .stat-mini span{font-size:10px;color:#8A9AA0;display:block}
+  .stat-mini b{font-family:var(--serif);font-size:21px;display:block;margin-top:2px}
+  .tip-list{margin:8px 0 0;padding:0;list-style:none}
+  .tip-list li{font-size:12px;color:#566A72;line-height:1.8;padding-left:14px;position:relative}
+  .tip-list li::before{content:"·";position:absolute;left:2px;color:var(--gold);font-weight:700}
+  .empty{padding:30px;text-align:center;color:#87979D;font-size:12.5px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+  @media(max-width:1080px){
+    .hero{grid-template-columns:1fr;gap:30px}
+    .snapshot{max-width:560px}
+    .theme-grid,.warn-grid,.how-grid{grid-template-columns:1fr}
+    .kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.profile,.two-col{grid-template-columns:1fr}
+    .top-meta{display:none}
+  }
+  @media(max-width:680px){
+    .wrap{padding:0 16px}
+    .topbar .wrap{height:60px;gap:12px}
+    .brand-sub{display:none}
+    .nav button{padding:6px 11px;font-size:11.5px}
+    .hero{padding:38px 0 26px}
+    .hero h1{font-size:36px}
+    .page-head h1{font-size:30px}
+    .kpi-grid{grid-template-columns:1fr 1fr}
+    .profile-main{flex-wrap:wrap}
+    .ring{margin-left:0}
+    .heat{grid-template-columns:1fr 1fr}
+    .compare-row{grid-template-columns:1.4fr .8fr .8fr 44px;font-size:10.5px}
+    .chart-row{grid-template-columns:88px 1fr 42px}
+    .map-card{padding:14px 12px 8px}
+    .drawer-body,.tabs{padding-left:18px;padding-right:18px}
+    .drawer-head{padding-left:18px;padding-right:18px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="智慧学伴首页">
+      <span class="brand-mark">学</span>
+      <span class="brand-text"><span class="brand-name">智慧学伴</span><span class="brand-sub">SMART LEARNING COMPANION</span></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="主导航">
+      <button data-view="home">首页</button>
+      <button data-view="student">学生端</button>
+      <button data-view="teacher">教师端</button>
+    </nav>
+    <div class="top-meta">七年级数学 · 校赛演示</div>
+  </div>
+</header>
+
+<main id="view"></main>
+
+<footer>
+  <div class="wrap">
+    <span>智慧学伴 </span>
+    <span>模型 v2.0 </span>
+  </div>
+</footer>
+
+<div id="drawer-overlay"></div>
+<aside id="drawer" aria-hidden="true" aria-label="知识点详情"></aside>
+<div class="toast" id="toast" role="status"></div>
+
+<!-- 数据注入点：build_site.py 会把 JSON 替换到下一行的占位符（不要手改下一行） -->
+<script>window.APP_DATA = {"project":"智慧学伴 · 七年级数学学情分析","generated_at":"2026-11-20T14:47:52+08:00","config":{"baseline_error_rate":0.3,"warning_top_n":3,"tiers":[{"name":"重点","ratio":0.3},{"name":"次重点","ratio":0.4},{"name":"注意点","ratio":0.3}],"mastery":{"mastered_max_error":0.2,"partial_max_error":0.4},"attention":{"min_attempts":2,"weak_error_rate":0.4}},"definitions":{"error_rate":"1 - score/full，按知识点汇总；个人、班级、年级用的是同一套算法。","mastery":"错误率≤20% 掌握；20%—40% 部分掌握；>40% 未掌握。","tier":"错误率降序，前30%为重点、中间40%为次重点、后30%为注意点。","warning":"取错误率最高的3个知识点，沿思维导图前置关系向上找直接前置节点，作为“可能未听懂的地方”。"},"points":[{"id":"T01I1","name":"表示数量关系并代入求值","theme":"代数式与整式运算","theme_id":"T01","theme_goal":"能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。","tags":["计算类","逻辑型"],"primary_type":"逻辑型","importance":"核心重点","error_tendency":["思路不清","计算失误"],"pages":"上册68—109","parent_id":"F01","parent_name":"字母表示数、代数式的概念","parent_external":true,"parent_reason":"列代数式的前提是用字母表示数，并识别代数式的书写规范。","xlsx_parent":"字母表示数、代数式的概念","advice":"「表示数量关系并代入求值」是这一册的主干，先吃透它再往下走。平时分两步练：先读懂题意把关系写成式子，检查列对了再代数值进去算，算完回头看一遍符号和运算顺序。如果常常卡在写不出式子，先回头复习「字母表示数、代数式的概念」，那一步通了这里会顺很多。"},{"id":"T01I2","name":"识别同类项、去括号并化简","theme":"代数式与整式运算","theme_id":"T01","theme_goal":"能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。","tags":["计算类","记忆型"],"primary_type":"记忆型","importance":"核心重点","error_tendency":["计算失误"],"pages":"上册68—109","parent_id":"F02","parent_name":"整式概念与去括号法则","parent_external":true,"parent_reason":"合并同类项、去括号是整式加减的两块基石。","xlsx_parent":"整式概念、有理数加减运算、去括号法则","advice":"「识别同类项、去括号并化简」是后面解方程、解不等式的基本功，值得多花点时间。错误大多出在细节上：去括号时符号漏变、同类项漏合并、系数算错。每写一行停一下，把符号和系数重新看一遍，比做完再检查更有效。"},{"id":"T01I3","name":"用整式解释具体问题","theme":"代数式与整式运算","theme_id":"T01","theme_goal":"能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。","tags":["逻辑型","记忆型"],"primary_type":"逻辑型","importance":"基础掌握","error_tendency":["思路不清"],"pages":"上册68—109","parent_id":"T01I1","parent_name":"表示数量关系并代入求值","parent_external":false,"parent_reason":"先用代数式准确表示数量关系，才谈得上用整式解释问题。","xlsx_parent":"代数式的意义、T01I1 表示数量关系","advice":"「用整式解释具体问题」要求你把算式和题意对上号：每个式子在题目里代表什么，要能说清楚。理解到位以后，练几道同类型的题就够了。说不清的地方，回到「代数式的意义」和「表示数量关系并代入求值」再过一遍。"},{"id":"T02I1","name":"运用等式性质解一元一次方程","theme":"方程与方程组","theme_id":"T02","theme_goal":"能解一元一次方程和二元一次方程组，依据等量关系建立模型并检验答案。","tags":["计算类","记忆型"],"primary_type":"记忆型","importance":"核心重点","error_tendency":["计算失误"],"pages":"上册110—148；下册87—119","parent_id":"F03","parent_name":"等式的性质","parent_external":true,"parent_reason":"解一元一次方程的每一步变形，依据都是等式的性质。","xlsx_parent":"等式的性质、有理数运算","advice":"解一元一次方程是整章的起点，等式两边同加同减、同乘同除这几条性质要能随时说出口。每一步都写下两边同时做了什么，移项时记得变号。错的题多半是符号或去括号出的问题，把这几个步骤单独拎出来练几遍会稳很多。"},{"id":"T02I2","name":"用消元法解二元一次方程组","theme":"方程与方程组","theme_id":"T02","theme_goal":"能解一元一次方程和二元一次方程组，依据等量关系建立模型并检验答案。","tags":["计算类","逻辑型"],"primary_type":"逻辑型","importance":"核心重点","error_tendency":["计算失误","思路不清"],"pages":"上册110—148；下册87—119","parent_id":"T02I1","parent_name":"运用等式性质解一元一次方程","parent_external":false,"parent_reason":"二元一次方程组通过消元转化为一元一次方程。","xlsx_parent":"一元一次方程解法（T02I1）、消元转化思想","advice":"二元一次方程组的关键是消元：什么时候代入、什么时候加减，要看两个方程的系数长什么样。先判断用哪种消法再动手，算完把解代回原方程验一遍。消元能想到但总算错，多半是一元一次方程那一关还没过，回去补「运用等式性质解一元一次方程」。"},{"id":"T02I3","name":"列方程或方程组解决简单实际问题并检验","theme":"方程与方程组","theme_id":"T02","theme_goal":"能解一元一次方程和二元一次方程组，依据等量关系建立模型并检验答案。","tags":["逻辑型"],"primary_type":"逻辑型","importance":"核心重点","error_tendency":["思路不清"],"pages":"上册110—148；下册87—119","parent_id":"T02I2","parent_name":"用消元法解二元一次方程组","parent_external":false,"parent_reason":"列方程组解决实际问题，最后仍要落到解方程组。","xlsx_parent":"T02I1/T02I2 方程解法、应用题审题与等量关系分析","advice":"应用题难在读题——条件都藏在文字里，得自己找出等量关系才能列方程。读题时留意“共、比、是、等于、多、少”这些词，它们往往就是等量关系的落点；解完把答案代回题里，看看是否合实际。方程会解、题却列不出来，先补上一层的方程解法，再专门练几道审题。"},{"id":"T03I1","name":"运用不等式性质求解，负数乘除时正确改变方向","theme":"不等式与不等式组","theme_id":"T03","theme_goal":"能解一元一次不等式及简单不等式组，表示解集，并解决范围约束问题。","tags":["计算类","记忆型"],"primary_type":"记忆型","importance":"核心重点","error_tendency":["概念遗忘","计算失误"],"pages":"下册120—145","parent_id":"T02I1","parent_name":"运用等式性质解一元一次方程","parent_external":false,"parent_reason":"不等式性质与等式性质对照学习，负数变号是新增难点。","xlsx_parent":"不等式的性质、与等式性质对照（T02I1）","advice":"不等式和等式大部分规则一样，只有一条不同：两边同乘或同除一个负数，不等号方向要反过来。这条性质建议对照等式性质一起记，每次乘除负数都停一下确认方向。错得多的同学，先把课本上的性质逐条抄一遍、配上例子，再练同类型题。"},{"id":"T03I2","name":"求两个一元一次不等式解集的交集","theme":"不等式与不等式组","theme_id":"T03","theme_goal":"能解一元一次不等式及简单不等式组，表示解集，并解决范围约束问题。","tags":["计算类","逻辑型"],"primary_type":"逻辑型","importance":"核心重点","error_tendency":["思路不清","计算失误"],"pages":"下册120—145","parent_id":"T03I1","parent_name":"运用不等式性质求解","parent_external":false,"parent_reason":"先会解单个不等式，才能在数轴上求公共部分。","xlsx_parent":"T03I1 不等式求解、解集的数轴表示","advice":"求不等式组的解集，就是找两个解集重合的那一段。画数轴最稳：两条都画出来，看哪一段同时被覆盖，端点能不能取到也要标清楚。算错的同学先检查单个不等式解得对不对，再去求公共部分。"},{"id":"T03I3","name":"根据实际限制列不等式并解释取值范围","theme":"不等式与不等式组","theme_id":"T03","theme_goal":"能解一元一次不等式及简单不等式组，表示解集，并解决范围约束问题。","tags":["逻辑型"],"primary_type":"逻辑型","importance":"基础掌握","error_tendency":["思路不清"],"pages":"下册120—145","parent_id":"T03I2","parent_name":"求两个一元一次不等式解集的交集","parent_external":false,"parent_reason":"根据实际限制列不等式后，解集与取值范围的表达依赖不等式组。","xlsx_parent":"T03I1/T03I2、实际问题审题","advice":"这类题先认出“至少、不超过、最多”这些说法，它们对应不同的不等号；列完式再结合实际想一想端点能不能取。练的时候先写清设的是什么，再列式、求解，最后用一句话说明答案在现实里是什么意思。卡住的话，回到「求两个一元一次不等式解集的交集」把公共部分那一步练熟。"}],"modules":[{"模块类别":"重要性","模块标签":"核心重点","判定／触发条件":"主题主干内容，直接支撑后续章节学习，错题需优先攻克","可拼接建议话术":"核心重点的部分要先弄懂——后面的内容都建立在它上面。","拼接顺序位":"②"},{"模块类别":"重要性","模块标签":"基础掌握","判定／触发条件":"理解到位、适量练习即可，不构成后续学习的主要卡点","可拼接建议话术":"基础掌握的部分理解到位、练几道题就能过，不用花太多时间。","拼接顺序位":"②"},{"模块类别":"知识点类型","模块标签":"计算类","判定／触发条件":"观察指标以运算、求解、化简、求值等操作为主","可拼接建议话术":"这类题主要靠算得准：法则记牢、步骤写全，比刷题数量更要紧。","拼接顺序位":"③"},{"模块类别":"知识点类型","模块标签":"逻辑型","判定／触发条件":"涉及列式建模、推理转化、解释说明、交集与范围分析","可拼接建议话术":"这类题考的是思路：先想清楚条件和结论怎么连起来，再动笔。","拼接顺序位":"③"},{"模块类别":"知识点类型","模块标签":"记忆型","判定／触发条件":"以概念、法则、性质、规则的识记与再现为主","可拼接建议话术":"这类题靠记：定义、法则、性质要能背出来，再配几道例题巩固。","拼接顺序位":"③"},{"模块类别":"错因倾向","模块标签":"计算失误","判定／触发条件":"错题主要因算错、符号错、跳步导致","可拼接建议话术":"错题多半是算错的——符号、去括号、跳步，练的时候放慢一点，每步验一遍。","拼接顺序位":"④"},{"模块类别":"错因倾向","模块标签":"思路不清","判定／触发条件":"错题主要因不会列式、不会转化、找不到思路导致","可拼接建议话术":"错题多半是没思路——先把这类题的固定步骤理出来，再照着步骤独立做几道。","拼接顺序位":"④"},{"模块类别":"错因倾向","模块标签":"概念遗忘","判定／触发条件":"错题主要因定义／法则／性质记不牢导致","可拼接建议话术":"错题多半是概念记混了——回课本把定义和法则重看一遍，整理成小卡片定期翻。","拼接顺序位":"④"},{"模块类别":"上级知识点追溯","模块标签":"有上级","判定／触发条件":"该知识点存在前置（上一级）知识点，先补前置漏洞再回来练习","可拼接建议话术":"如果这里还是卡，先回看「上级知识点名称」，把前面补上再回来。","拼接顺序位":"⑤"},{"模块类别":"上级知识点追溯","模块标签":"无上级","判定／触发条件":"本主题起点内容，无前置追溯项","可拼接建议话术":"（不拼接话术）","拼接顺序位":"⑤"}],"students":[{"id":"D01","class":"DC01","grade":7},{"id":"D02","class":"DC01","grade":7},{"id":"D03","class":"DC01","grade":7},{"id":"D04","class":"DC01","grade":7},{"id":"D05","class":"DC01","grade":7},{"id":"D06","class":"DC01","grade":7},{"id":"D07","class":"DC01","grade":7},{"id":"D08","class":"DC01","grade":7},{"id":"D09","class":"DC01","grade":7},{"id":"D10","class":"DC01","grade":7},{"id":"D11","class":"DC01","grade":7},{"id":"D12","class":"DC01","grade":7},{"id":"D13","class":"DC01","grade":7},{"id":"D14","class":"DC01","grade":7},{"id":"D15","class":"DC01","grade":7},{"id":"D16","class":"DC01","grade":7},{"id":"D17","class":"DC01","grade":7},{"id":"D18","class":"DC01","grade":7},{"id":"D19","class":"DC01","grade":7},{"id":"D20","class":"DC01","grade":7},{"id":"D21","class":"DC01","grade":7},{"id":"D22","class":"DC02","grade":7},{"id":"D23","class":"DC02","grade":7},{"id":"D24","class":"DC02","grade":7},{"id":"D25","class":"DC02","grade":7},{"id":"D26","class":"DC02","grade":7},{"id":"D27","class":"DC02","grade":7},{"id":"D28","class":"DC02","grade":7},{"id":"D29","class":"DC02","grade":7},{"id":"D30","class":"DC02","grade":7},{"id":"D31","class":"DC02","grade":7},{"id":"D32","class":"DC02","grade":7},{"id":"D33","class":"DC02","grade":7},{"id":"D34","class":"DC02","grade":7},{"id":"D35","class":"DC02","grade":7},{"id":"D36","class":"DC02","grade":7},{"id":"D37","class":"DC02","grade":7},{"id":"D38","class":"DC02","grade":7},{"id":"D39","class":"DC02","grade":7},{"id":"D40","class":"DC02","grade":7}],"responses":[{"s":"D01","i":"T01I2","sc":2,"f":3},{"s":"D01","i":"T02I3","sc":1,"f":1},{"s":"D01","i":"T02I1","sc":3,"f":3},{"s":"D01","i":"T02I1","sc":0,"f":1},{"s":"D01","i":"T01I1","sc":0,"f":3},{"s":"D01","i":"T01I1","sc":0,"f":1},{"s":"D01","i":"T02I1","sc":1,"f":3},{"s":"D01","i":"T02I1","sc":1,"f":1},{"s":"D01","i":"T01I3","sc":2,"f":3},{"s":"D01","i":"T01I1","sc":1,"f":1},{"s":"D01","i":"T02I1","sc":0,"f":1},{"s":"D01","i":"T01I3","sc":2,"f":3},{"s":"D01","i":"T03I1","sc":0,"f":1},{"s":"D01","i":"T01I3","sc":1,"f":3},{"s":"D01","i":"T03I2","sc":0,"f":1},{"s":"D01","i":"T02I2","sc":0,"f":1},{"s":"D01","i":"T01I1","sc":1,"f":1},{"s":"D01","i":"T03I1","sc":0,"f":1},{"s":"D01","i":"T03I1","sc":1,"f":1},{"s":"D01","i":"T03I2","sc":1,"f":1},{"s":"D01","i":"T03I1","sc":1,"f":3},{"s":"D02","i":"T01I1","sc":0,"f":1},{"s":"D02","i":"T01I2","sc":0,"f":1},{"s":"D02","i":"T01I1","sc":0,"f":1},{"s":"D02","i":"T02I3","sc":0,"f":1},{"s":"D02","i":"T02I1","sc":0,"f":1},{"s":"D02","i":"T01I1","sc":0,"f":3},{"s":"D02","i":"T01I2","sc":1,"f":1},{"s":"D02","i":"T02I1","sc":1,"f":3},{"s":"D02","i":"T01I2","sc":3,"f":3},{"s":"D02","i":"T01I3","sc":0,"f":3},{"s":"D02","i":"T03I1","sc":1,"f":1},{"s":"D02","i":"T01I1","sc":1,"f":3},{"s":"D02","i":"T01I2","sc":1,"f":1},{"s":"D02","i":"T03I1","sc":1,"f":1},{"s":"D02","i":"T02I3","sc":0,"f":1},{"s":"D02","i":"T03I2","sc":1,"f":3},{"s":"D02","i":"T02I2","sc":1,"f":1},{"s":"D02","i":"T02I2","sc":0,"f":3},{"s":"D02","i":"T02I2","sc":0,"f":1},{"s":"D02","i":"T01I1","sc":1,"f":1},{"s":"D02","i":"T02I2","sc":2,"f":3},{"s":"D02","i":"T01I2","sc":1,"f":1},{"s":"D02","i":"T03I2","sc":0,"f":1},{"s":"D02","i":"T03I1","sc":0,"f":1},{"s":"D02","i":"T01I3","sc":0,"f":3},{"s":"D02","i":"T02I2","sc":1,"f":1},{"s":"D03","i":"T01I2","sc":0,"f":1},{"s":"D03","i":"T01I2","sc":3,"f":3},{"s":"D03","i":"T01I3","sc":0,"f":3},{"s":"D03","i":"T01I2","sc":0,"f":1},{"s":"D03","i":"T01I1","sc":0,"f":1},{"s":"D03","i":"T02I1","sc":0,"f":3},{"s":"D03","i":"T01I1","sc":0,"f":3},{"s":"D03","i":"T02I1","sc":1,"f":3},{"s":"D03","i":"T01I2","sc":0,"f":1},{"s":"D03","i":"T01I3","sc":0,"f":3},{"s":"D03","i":"T03I2","sc":0,"f":3},{"s":"D03","i":"T03I2","sc":0,"f":1},{"s":"D03","i":"T03I3","sc":0,"f":1},{"s":"D03","i":"T03I1","sc":0,"f":1},{"s":"D03","i":"T02I2","sc":1,"f":3},{"s":"D03","i":"T02I2","sc":0,"f":1},{"s":"D03","i":"T03I1","sc":0,"f":1},{"s":"D03","i":"T03I1","sc":1,"f":1},{"s":"D03","i":"T01I1","sc":0,"f":1},{"s":"D04","i":"T01I2","sc":1,"f":1},{"s":"D04","i":"T01I2","sc":0,"f":1},{"s":"D04","i":"T02I1","sc":1,"f":1},{"s":"D04","i":"T01I1","sc":3,"f":3},{"s":"D04","i":"T02I1","sc":1,"f":3},{"s":"D04","i":"T01I1","sc":1,"f":1},{"s":"D04","i":"T01I2","sc":1,"f":1},{"s":"D04","i":"T02I1","sc":1,"f":1},{"s":"D04","i":"T01I2","sc":0,"f":1},{"s":"D04","i":"T01I1","sc":0,"f":1},{"s":"D04","i":"T01I2","sc":0,"f":1},{"s":"D04","i":"T01I2","sc":1,"f":3},{"s":"D04","i":"T01I1","sc":2,"f":3},{"s":"D04","i":"T01I2","sc":0,"f":1},{"s":"D04","i":"T02I3","sc":1,"f":3},{"s":"D04","i":"T03I3","sc":3,"f":3},{"s":"D04","i":"T01I2","sc":0,"f":1},{"s":"D04","i":"T03I2","sc":1,"f":1},{"s":"D04","i":"T03I3","sc":1,"f":3},{"s":"D04","i":"T03I1","sc":3,"f":3},{"s":"D04","i":"T03I1","sc":1,"f":1},{"s":"D04","i":"T01I3","sc":2,"f":3},{"s":"D04","i":"T01I1","sc":1,"f":3},{"s":"D04","i":"T03I1","sc":1,"f":1},{"s":"D05","i":"T01I1","sc":1,"f":3},{"s":"D05","i":"T01I1","sc":0,"f":1},{"s":"D05","i":"T01I2","sc":3,"f":3},{"s":"D05","i":"T01I2","sc":0,"f":1},{"s":"D05","i":"T01I2","sc":1,"f":1},{"s":"D05","i":"T01I1","sc":0,"f":1},{"s":"D05","i":"T01I2","sc":0,"f":1},{"s":"D05","i":"T01I1","sc":0,"f":3},{"s":"D05","i":"T02I2","sc":0,"f":1},{"s":"D05","i":"T01I1","sc":0,"f":1},{"s":"D05","i":"T03I1","sc":0,"f":1},{"s":"D05","i":"T03I3","sc":0,"f":3},{"s":"D05","i":"T03I1","sc":0,"f":1},{"s":"D05","i":"T01I1","sc":0,"f":1},{"s":"D05","i":"T03I2","sc":1,"f":1},{"s":"D05","i":"T02I2","sc":0,"f":1},{"s":"D05","i":"T01I1","sc":0,"f":1},{"s":"D05","i":"T02I2","sc":2,"f":3},{"s":"D05","i":"T03I1","sc":1,"f":1},{"s":"D05","i":"T01I2","sc":1,"f":1},{"s":"D06","i":"T01I2","sc":3,"f":3},{"s":"D06","i":"T01I2","sc":0,"f":1},{"s":"D06","i":"T02I1","sc":0,"f":1},{"s":"D06","i":"T01I2","sc":0,"f":3},{"s":"D06","i":"T02I1","sc":0,"f":3},{"s":"D06","i":"T01I2","sc":1,"f":1},{"s":"D06","i":"T01I1","sc":0,"f":3},{"s":"D06","i":"T02I1","sc":1,"f":1},{"s":"D06","i":"T01I1","sc":0,"f":3},{"s":"D06","i":"T01I3","sc":2,"f":3},{"s":"D06","i":"T02I1","sc":0,"f":1},{"s":"D06","i":"T01I2","sc":1,"f":1},{"s":"D06","i":"T01I2","sc":0,"f":1},{"s":"D06","i":"T02I3","sc":2,"f":3},{"s":"D06","i":"T02I3","sc":1,"f":3},{"s":"D06","i":"T03I3","sc":0,"f":3},{"s":"D06","i":"T03I2","sc":2,"f":3},{"s":"D06","i":"T03I3","sc":0,"f":1},{"s":"D06","i":"T01I1","sc":1,"f":1},{"s":"D06","i":"T03I3","sc":1,"f":1},{"s":"D06","i":"T02I3","sc":1,"f":1},{"s":"D06","i":"T01I2","sc":0,"f":1},{"s":"D07","i":"T02I1","sc":1,"f":1},{"s":"D07","i":"T01I2","sc":1,"f":1},{"s":"D07","i":"T02I1","sc":1,"f":1},{"s":"D07","i":"T01I1","sc":1,"f":1},{"s":"D07","i":"T01I2","sc":2,"f":3},{"s":"D07","i":"T01I1","sc":3,"f":3},{"s":"D07","i":"T02I3","sc":1,"f":1},{"s":"D07","i":"T01I2","sc":1,"f":1},{"s":"D07","i":"T01I1","sc":0,"f":3},{"s":"D07","i":"T02I2","sc":1,"f":1},{"s":"D07","i":"T03I2","sc":2,"f":3},{"s":"D07","i":"T03I1","sc":1,"f":3},{"s":"D07","i":"T01I2","sc":1,"f":1},{"s":"D07","i":"T02I2","sc":2,"f":3},{"s":"D07","i":"T03I2","sc":1,"f":3},{"s":"D07","i":"T02I2","sc":1,"f":1},{"s":"D07","i":"T01I1","sc":0,"f":3},{"s":"D07","i":"T03I3","sc":3,"f":3},{"s":"D07","i":"T01I1","sc":1,"f":1},{"s":"D07","i":"T02I2","sc":0,"f":1},{"s":"D07","i":"T01I2","sc":0,"f":1},{"s":"D07","i":"T02I3","sc":1,"f":1},{"s":"D08","i":"T02I1","sc":3,"f":3},{"s":"D08","i":"T02I3","sc":1,"f":1},{"s":"D08","i":"T02I1","sc":1,"f":1},{"s":"D08","i":"T02I1","sc":1,"f":1},{"s":"D08","i":"T01I2","sc":1,"f":1},{"s":"D08","i":"T02I1","sc":1,"f":1},{"s":"D08","i":"T01I1","sc":0,"f":1},{"s":"D08","i":"T01I3","sc":0,"f":3},{"s":"D08","i":"T01I2","sc":1,"f":1},{"s":"D08","i":"T02I1","sc":3,"f":3},{"s":"D08","i":"T01I1","sc":1,"f":1},{"s":"D08","i":"T01I1","sc":1,"f":3},{"s":"D08","i":"T01I2","sc":1,"f":1},{"s":"D08","i":"T01I2","sc":0,"f":1},{"s":"D08","i":"T01I1","sc":0,"f":1},{"s":"D08","i":"T03I3","sc":0,"f":1},{"s":"D08","i":"T02I2","sc":2,"f":3},{"s":"D08","i":"T03I3","sc":1,"f":1},{"s":"D08","i":"T03I1","sc":1,"f":1},{"s":"D08","i":"T01I2","sc":1,"f":1},{"s":"D08","i":"T03I2","sc":3,"f":3},{"s":"D08","i":"T02I2","sc":1,"f":1},{"s":"D08","i":"T02I3","sc":0,"f":1},{"s":"D08","i":"T02I2","sc":0,"f":1},{"s":"D08","i":"T03I1","sc":3,"f":3},{"s":"D08","i":"T03I2","sc":1,"f":1},{"s":"D09","i":"T02I3","sc":0,"f":1},{"s":"D09","i":"T01I2","sc":0,"f":1},{"s":"D09","i":"T02I1","sc":0,"f":1},{"s":"D09","i":"T02I1","sc":0,"f":1},{"s":"D09","i":"T01I2","sc":1,"f":1},{"s":"D09","i":"T01I2","sc":0,"f":1},{"s":"D09","i":"T01I2","sc":0,"f":1},{"s":"D09","i":"T01I2","sc":1,"f":1},{"s":"D09","i":"T02I1","sc":1,"f":3},{"s":"D09","i":"T02I1","sc":0,"f":1},{"s":"D09","i":"T03I1","sc":0,"f":1},{"s":"D09","i":"T02I2","sc":1,"f":1},{"s":"D09","i":"T03I3","sc":1,"f":3},{"s":"D09","i":"T03I2","sc":1,"f":1},{"s":"D09","i":"T02I2","sc":1,"f":3},{"s":"D09","i":"T01I2","sc":0,"f":1},{"s":"D09","i":"T03I1","sc":0,"f":1},{"s":"D09","i":"T02I3","sc":0,"f":3},{"s":"D09","i":"T03I1","sc":0,"f":3},{"s":"D09","i":"T01I2","sc":1,"f":1},{"s":"D10","i":"T02I1","sc":3,"f":3},{"s":"D10","i":"T02I1","sc":0,"f":1},{"s":"D10","i":"T02I1","sc":1,"f":1},{"s":"D10","i":"T02I3","sc":1,"f":1},{"s":"D10","i":"T01I3","sc":0,"f":3},{"s":"D10","i":"T02I1","sc":3,"f":3},{"s":"D10","i":"T02I1","sc":1,"f":1},{"s":"D10","i":"T01I3","sc":3,"f":3},{"s":"D10","i":"T01I1","sc":1,"f":1},{"s":"D10","i":"T01I2","sc":1,"f":1},{"s":"D10","i":"T02I1","sc":0,"f":1},{"s":"D10","i":"T02I1","sc":1,"f":1},{"s":"D10","i":"T01I2","sc":3,"f":3},{"s":"D10","i":"T03I2","sc":1,"f":1},{"s":"D10","i":"T01I3","sc":3,"f":3},{"s":"D10","i":"T02I3","sc":1,"f":3},{"s":"D10","i":"T02I2","sc":1,"f":1},{"s":"D10","i":"T03I1","sc":1,"f":1},{"s":"D10","i":"T02I2","sc":1,"f":1},{"s":"D10","i":"T02I2","sc":1,"f":1},{"s":"D10","i":"T02I3","sc":3,"f":3},{"s":"D10","i":"T03I2","sc":0,"f":1},{"s":"D10","i":"T03I2","sc":3,"f":3},{"s":"D11","i":"T01I2","sc":0,"f":1},{"s":"D11","i":"T01I2","sc":1,"f":1},{"s":"D11","i":"T02I1","sc":1,"f":1},{"s":"D11","i":"T01I1","sc":2,"f":3},{"s":"D11","i":"T02I1","sc":1,"f":1},{"s":"D11","i":"T01I2","sc":0,"f":1},{"s":"D11","i":"T01I1","sc":0,"f":1},{"s":"D11","i":"T01I2","sc":3,"f":3},{"s":"D11","i":"T02I3","sc":1,"f":1},{"s":"D11","i":"T01I2","sc":3,"f":3},{"s":"D11","i":"T01I2","sc":1,"f":1},{"s":"D11","i":"T01I2","sc":0,"f":1},{"s":"D11","i":"T02I2","sc":3,"f":3},{"s":"D11","i":"T01I1","sc":0,"f":3},{"s":"D11","i":"T01I1","sc":1,"f":1},{"s":"D11","i":"T03I2","sc":1,"f":1},{"s":"D11","i":"T02I2","sc":1,"f":1},{"s":"D11","i":"T03I1","sc":1,"f":1},{"s":"D11","i":"T03I2","sc":1,"f":1},{"s":"D11","i":"T02I2","sc":1,"f":1},{"s":"D11","i":"T01I2","sc":1,"f":3},{"s":"D11","i":"T03I1","sc":1,"f":1},{"s":"D11","i":"T02I2","sc":1,"f":1},{"s":"D12","i":"T02I3","sc":0,"f":1},{"s":"D12","i":"T01I2","sc":3,"f":3},{"s":"D12","i":"T01I1","sc":2,"f":3},{"s":"D12","i":"T01I1","sc":0,"f":3},{"s":"D12","i":"T01I2","sc":1,"f":1},{"s":"D12","i":"T01I1","sc":1,"f":1},{"s":"D12","i":"T02I1","sc":1,"f":1},{"s":"D12","i":"T01I2","sc":0,"f":1},{"s":"D12","i":"T01I2","sc":1,"f":1},{"s":"D12","i":"T01I2","sc":1,"f":1},{"s":"D12","i":"T01I2","sc":1,"f":1},{"s":"D12","i":"T01I3","sc":3,"f":3},{"s":"D12","i":"T02I2","sc":1,"f":1},{"s":"D12","i":"T03I1","sc":1,"f":3},{"s":"D12","i":"T01I1","sc":2,"f":3},{"s":"D12","i":"T01I1","sc":1,"f":1},{"s":"D12","i":"T03I2","sc":3,"f":3},{"s":"D12","i":"T02I2","sc":1,"f":1},{"s":"D12","i":"T01I2","sc":1,"f":1},{"s":"D12","i":"T03I1","sc":1,"f":1},{"s":"D12","i":"T03I1","sc":1,"f":1},{"s":"D12","i":"T03I3","sc":1,"f":3},{"s":"D12","i":"T02I2","sc":2,"f":3},{"s":"D12","i":"T03I2","sc":1,"f":1},{"s":"D12","i":"T03I2","sc":1,"f":1},{"s":"D12","i":"T01I2","sc":1,"f":1},{"s":"D13","i":"T02I1","sc":2,"f":3},{"s":"D13","i":"T01I2","sc":1,"f":1},{"s":"D13","i":"T01I1","sc":0,"f":3},{"s":"D13","i":"T01I2","sc":1,"f":1},{"s":"D13","i":"T03I2","sc":1,"f":1},{"s":"D13","i":"T03I1","sc":1,"f":1},{"s":"D13","i":"T01I2","sc":0,"f":1},{"s":"D13","i":"T01I2","sc":3,"f":3},{"s":"D13","i":"T02I2","sc":0,"f":3},{"s":"D13","i":"T01I1","sc":1,"f":1},{"s":"D13","i":"T02I2","sc":1,"f":1},{"s":"D13","i":"T03I3","sc":0,"f":3},{"s":"D13","i":"T03I3","sc":0,"f":1},{"s":"D13","i":"T03I2","sc":0,"f":1},{"s":"D13","i":"T03I2","sc":0,"f":1},{"s":"D13","i":"T03I1","sc":0,"f":1},{"s":"D13","i":"T02I3","sc":1,"f":1},{"s":"D13","i":"T02I2","sc":1,"f":1},{"s":"D13","i":"T03I2","sc":0,"f":1},{"s":"D14","i":"T02I1","sc":3,"f":3},{"s":"D14","i":"T02I1","sc":0,"f":1},{"s":"D14","i":"T02I1","sc":1,"f":1},{"s":"D14","i":"T01I1","sc":1,"f":1},{"s":"D14","i":"T02I1","sc":3,"f":3},{"s":"D14","i":"T01I3","sc":3,"f":3},{"s":"D14","i":"T02I1","sc":1,"f":1},{"s":"D14","i":"T02I1","sc":1,"f":1},{"s":"D14","i":"T01I2","sc":1,"f":1},{"s":"D14","i":"T02I1","sc":1,"f":1},{"s":"D14","i":"T01I2","sc":1,"f":1},{"s":"D14","i":"T01I2","sc":3,"f":3},{"s":"D14","i":"T01I2","sc":1,"f":1},{"s":"D14","i":"T03I2","sc":3,"f":3},{"s":"D14","i":"T03I2","sc":3,"f":3},{"s":"D14","i":"T02I3","sc":3,"f":3},{"s":"D14","i":"T02I2","sc":1,"f":1},{"s":"D14","i":"T02I3","sc":3,"f":3},{"s":"D14","i":"T03I1","sc":3,"f":3},{"s":"D14","i":"T01I2","sc":1,"f":1},{"s":"D14","i":"T02I2","sc":1,"f":1},{"s":"D14","i":"T03I3","sc":3,"f":3},{"s":"D14","i":"T02I3","sc":1,"f":1},{"s":"D14","i":"T01I2","sc":1,"f":1},{"s":"D14","i":"T01I2","sc":1,"f":1},{"s":"D14","i":"T02I2","sc":1,"f":1},{"s":"D15","i":"T01I2","sc":0,"f":3},{"s":"D15","i":"T02I1","sc":1,"f":1},{"s":"D15","i":"T01I1","sc":1,"f":1},{"s":"D15","i":"T01I2","sc":1,"f":1},{"s":"D15","i":"T01I1","sc":1,"f":1},{"s":"D15","i":"T02I1","sc":1,"f":1},{"s":"D15","i":"T02I1","sc":1,"f":1},{"s":"D15","i":"T01I2","sc":1,"f":1},{"s":"D15","i":"T01I1","sc":1,"f":1},{"s":"D15","i":"T01I1","sc":3,"f":3},{"s":"D15","i":"T01I3","sc":0,"f":3},{"s":"D15","i":"T02I1","sc":1,"f":1},{"s":"D15","i":"T02I1","sc":1,"f":1},{"s":"D15","i":"T03I3","sc":1,"f":1},{"s":"D15","i":"T02I2","sc":1,"f":1},{"s":"D15","i":"T03I3","sc":3,"f":3},{"s":"D15","i":"T03I2","sc":3,"f":3},{"s":"D15","i":"T02I2","sc":1,"f":3},{"s":"D15","i":"T03I1","sc":1,"f":1},{"s":"D15","i":"T02I2","sc":1,"f":1},{"s":"D15","i":"T01I3","sc":3,"f":3},{"s":"D15","i":"T03I2","sc":1,"f":1},{"s":"D15","i":"T03I1","sc":1,"f":1},{"s":"D15","i":"T03I2","sc":1,"f":1},{"s":"D15","i":"T03I2","sc":1,"f":1},{"s":"D15","i":"T02I3","sc":3,"f":3},{"s":"D15","i":"T02I2","sc":1,"f":1},{"s":"D16","i":"T01I2","sc":1,"f":1},{"s":"D16","i":"T01I1","sc":3,"f":3},{"s":"D16","i":"T01I3","sc":2,"f":3},{"s":"D16","i":"T02I1","sc":2,"f":3},{"s":"D16","i":"T01I2","sc":1,"f":1},{"s":"D16","i":"T02I1","sc":1,"f":1},{"s":"D16","i":"T01I2","sc":1,"f":1},{"s":"D16","i":"T02I1","sc":2,"f":3},{"s":"D16","i":"T02I1","sc":1,"f":1},{"s":"D16","i":"T01I1","sc":0,"f":3},{"s":"D16","i":"T01I3","sc":2,"f":3},{"s":"D16","i":"T03I1","sc":1,"f":1},{"s":"D16","i":"T03I3","sc":1,"f":3},{"s":"D16","i":"T02I2","sc":0,"f":1},{"s":"D16","i":"T03I2","sc":1,"f":1},{"s":"D16","i":"T02I2","sc":0,"f":1},{"s":"D16","i":"T01I2","sc":1,"f":1},{"s":"D16","i":"T03I1","sc":3,"f":3},{"s":"D16","i":"T03I3","sc":1,"f":1},{"s":"D16","i":"T01I1","sc":0,"f":1},{"s":"D16","i":"T03I1","sc":1,"f":3},{"s":"D17","i":"T01I2","sc":1,"f":1},{"s":"D17","i":"T01I1","sc":3,"f":3},{"s":"D17","i":"T01I1","sc":1,"f":1},{"s":"D17","i":"T01I2","sc":3,"f":3},{"s":"D17","i":"T01I1","sc":1,"f":1},{"s":"D17","i":"T01I2","sc":1,"f":1},{"s":"D17","i":"T01I3","sc":1,"f":3},{"s":"D17","i":"T02I2","sc":2,"f":3},{"s":"D18","i":"T01I1","sc":3,"f":3},{"s":"D18","i":"T01I2","sc":1,"f":1},{"s":"D18","i":"T02I1","sc":1,"f":1},{"s":"D18","i":"T01I2","sc":1,"f":3},{"s":"D18","i":"T02I3","sc":1,"f":1},{"s":"D18","i":"T01I1","sc":3,"f":3},{"s":"D18","i":"T01I2","sc":1,"f":1},{"s":"D18","i":"T01I2","sc":1,"f":1},{"s":"D18","i":"T02I1","sc":3,"f":3},{"s":"D18","i":"T03I2","sc":1,"f":1},{"s":"D18","i":"T01I2","sc":3,"f":3},{"s":"D18","i":"T03I1","sc":1,"f":1},{"s":"D18","i":"T02I2","sc":1,"f":1},{"s":"D18","i":"T03I1","sc":0,"f":3},{"s":"D18","i":"T03I3","sc":0,"f":1},{"s":"D18","i":"T01I1","sc":1,"f":1},{"s":"D18","i":"T02I3","sc":1,"f":1},{"s":"D18","i":"T02I2","sc":0,"f":1},{"s":"D18","i":"T03I2","sc":1,"f":1},{"s":"D19","i":"T01I1","sc":1,"f":1},{"s":"D19","i":"T01I2","sc":0,"f":3},{"s":"D19","i":"T01I3","sc":3,"f":3},{"s":"D19","i":"T02I1","sc":0,"f":1},{"s":"D19","i":"T01I2","sc":1,"f":1},{"s":"D19","i":"T01I1","sc":1,"f":1},{"s":"D19","i":"T01I1","sc":3,"f":3},{"s":"D19","i":"T02I1","sc":0,"f":1},{"s":"D19","i":"T01I1","sc":0,"f":1},{"s":"D19","i":"T02I1","sc":0,"f":1},{"s":"D19","i":"T02I3","sc":1,"f":3},{"s":"D19","i":"T01I1","sc":2,"f":3},{"s":"D19","i":"T02I2","sc":0,"f":1},{"s":"D19","i":"T02I2","sc":3,"f":3},{"s":"D19","i":"T02I2","sc":1,"f":1},{"s":"D19","i":"T01I1","sc":0,"f":1},{"s":"D19","i":"T02I3","sc":2,"f":3},{"s":"D19","i":"T01I2","sc":1,"f":1},{"s":"D20","i":"T02I1","sc":0,"f":1},{"s":"D20","i":"T01I2","sc":0,"f":1},{"s":"D20","i":"T01I2","sc":0,"f":1},{"s":"D20","i":"T01I1","sc":0,"f":1},{"s":"D20","i":"T02I1","sc":2,"f":3},{"s":"D20","i":"T01I1","sc":1,"f":1},{"s":"D20","i":"T02I1","sc":0,"f":1},{"s":"D20","i":"T02I1","sc":1,"f":1},{"s":"D20","i":"T01I1","sc":0,"f":1},{"s":"D20","i":"T02I2","sc":0,"f":3},{"s":"D20","i":"T02I2","sc":0,"f":1},{"s":"D20","i":"T01I3","sc":2,"f":3},{"s":"D21","i":"T02I1","sc":0,"f":1},{"s":"D21","i":"T01I3","sc":1,"f":3},{"s":"D21","i":"T01I1","sc":0,"f":1},{"s":"D21","i":"T02I3","sc":0,"f":1},{"s":"D21","i":"T01I2","sc":1,"f":1},{"s":"D21","i":"T03I3","sc":1,"f":1},{"s":"D21","i":"T02I2","sc":1,"f":1},{"s":"D21","i":"T02I2","sc":1,"f":1},{"s":"D21","i":"T03I2","sc":0,"f":1},{"s":"D21","i":"T03I2","sc":1,"f":1},{"s":"D21","i":"T01I3","sc":1,"f":3},{"s":"D22","i":"T02I3","sc":0,"f":1},{"s":"D22","i":"T02I1","sc":1,"f":1},{"s":"D22","i":"T01I1","sc":1,"f":1},{"s":"D22","i":"T01I2","sc":0,"f":1},{"s":"D22","i":"T01I2","sc":3,"f":3},{"s":"D22","i":"T01I2","sc":0,"f":1},{"s":"D22","i":"T01I2","sc":0,"f":1},{"s":"D22","i":"T01I1","sc":1,"f":1},{"s":"D22","i":"T02I1","sc":0,"f":1},{"s":"D22","i":"T01I1","sc":0,"f":3},{"s":"D22","i":"T02I1","sc":1,"f":1},{"s":"D22","i":"T01I2","sc":1,"f":1},{"s":"D22","i":"T02I1","sc":1,"f":3},{"s":"D22","i":"T03I1","sc":1,"f":1},{"s":"D22","i":"T01I1","sc":0,"f":3},{"s":"D22","i":"T03I2","sc":1,"f":1},{"s":"D22","i":"T01I2","sc":0,"f":1},{"s":"D22","i":"T02I2","sc":0,"f":3},{"s":"D22","i":"T03I3","sc":1,"f":1},{"s":"D22","i":"T03I1","sc":1,"f":1},{"s":"D22","i":"T02I2","sc":0,"f":1},{"s":"D22","i":"T01I1","sc":2,"f":3},{"s":"D22","i":"T03I2","sc":1,"f":1},{"s":"D23","i":"T01I1","sc":0,"f":1},{"s":"D23","i":"T01I1","sc":2,"f":3},{"s":"D23","i":"T01I1","sc":0,"f":1},{"s":"D23","i":"T02I1","sc":1,"f":1},{"s":"D23","i":"T01I1","sc":1,"f":1},{"s":"D23","i":"T01I2","sc":0,"f":1},{"s":"D23","i":"T02I1","sc":1,"f":1},{"s":"D23","i":"T01I3","sc":2,"f":3},{"s":"D23","i":"T03I3","sc":0,"f":1},{"s":"D23","i":"T02I2","sc":0,"f":1},{"s":"D23","i":"T03I2","sc":0,"f":1},{"s":"D23","i":"T03I2","sc":1,"f":1},{"s":"D23","i":"T01I2","sc":0,"f":1},{"s":"D23","i":"T01I2","sc":0,"f":1},{"s":"D23","i":"T03I3","sc":0,"f":1},{"s":"D23","i":"T02I2","sc":1,"f":1},{"s":"D23","i":"T02I3","sc":0,"f":1},{"s":"D23","i":"T03I3","sc":0,"f":3},{"s":"D24","i":"T02I1","sc":0,"f":3},{"s":"D24","i":"T01I2","sc":1,"f":1},{"s":"D24","i":"T02I3","sc":1,"f":1},{"s":"D24","i":"T01I2","sc":0,"f":1},{"s":"D24","i":"T01I1","sc":1,"f":1},{"s":"D24","i":"T02I1","sc":0,"f":1},{"s":"D24","i":"T01I2","sc":0,"f":1},{"s":"D24","i":"T01I1","sc":0,"f":1},{"s":"D24","i":"T01I1","sc":0,"f":1},{"s":"D24","i":"T01I2","sc":0,"f":1},{"s":"D24","i":"T01I2","sc":2,"f":3},{"s":"D24","i":"T01I2","sc":0,"f":1},{"s":"D24","i":"T02I1","sc":0,"f":1},{"s":"D24","i":"T02I1","sc":0,"f":1},{"s":"D24","i":"T02I1","sc":1,"f":1},{"s":"D24","i":"T03I3","sc":1,"f":1},{"s":"D24","i":"T02I3","sc":3,"f":3},{"s":"D24","i":"T02I2","sc":0,"f":1},{"s":"D24","i":"T03I1","sc":1,"f":3},{"s":"D24","i":"T03I1","sc":0,"f":1},{"s":"D24","i":"T01I2","sc":0,"f":1},{"s":"D24","i":"T02I2","sc":0,"f":1},{"s":"D25","i":"T01I3","sc":2,"f":3},{"s":"D25","i":"T01I2","sc":0,"f":1},{"s":"D25","i":"T01I2","sc":0,"f":1},{"s":"D25","i":"T02I1","sc":0,"f":1},{"s":"D25","i":"T01I2","sc":1,"f":1},{"s":"D25","i":"T02I1","sc":0,"f":1},{"s":"D25","i":"T02I3","sc":0,"f":1},{"s":"D25","i":"T03I1","sc":1,"f":1},{"s":"D25","i":"T02I2","sc":1,"f":1},{"s":"D25","i":"T02I2","sc":1,"f":3},{"s":"D25","i":"T01I1","sc":1,"f":1},{"s":"D25","i":"T03I2","sc":1,"f":1},{"s":"D25","i":"T01I2","sc":0,"f":1},{"s":"D25","i":"T03I2","sc":0,"f":1},{"s":"D25","i":"T01I1","sc":0,"f":3},{"s":"D25","i":"T01I2","sc":2,"f":3},{"s":"D25","i":"T03I2","sc":2,"f":3},{"s":"D25","i":"T02I3","sc":3,"f":3},{"s":"D25","i":"T01I1","sc":1,"f":1},{"s":"D25","i":"T02I3","sc":1,"f":1},{"s":"D25","i":"T03I1","sc":1,"f":1},{"s":"D26","i":"T01I2","sc":3,"f":3},{"s":"D26","i":"T01I1","sc":0,"f":3},{"s":"D26","i":"T01I1","sc":1,"f":1},{"s":"D26","i":"T01I2","sc":1,"f":1},{"s":"D26","i":"T02I1","sc":1,"f":1},{"s":"D26","i":"T01I1","sc":3,"f":3},{"s":"D26","i":"T01I3","sc":3,"f":3},{"s":"D26","i":"T01I1","sc":1,"f":1},{"s":"D26","i":"T01I2","sc":1,"f":1},{"s":"D26","i":"T01I2","sc":3,"f":3},{"s":"D26","i":"T03I1","sc":1,"f":1},{"s":"D26","i":"T02I2","sc":1,"f":1},{"s":"D26","i":"T03I1","sc":0,"f":1},{"s":"D26","i":"T03I2","sc":1,"f":1},{"s":"D26","i":"T02I3","sc":3,"f":3},{"s":"D26","i":"T03I1","sc":1,"f":3},{"s":"D26","i":"T02I2","sc":0,"f":1},{"s":"D26","i":"T03I2","sc":1,"f":1},{"s":"D26","i":"T02I2","sc":0,"f":1},{"s":"D26","i":"T01I2","sc":1,"f":1},{"s":"D27","i":"T02I1","sc":2,"f":3},{"s":"D27","i":"T01I2","sc":3,"f":3},{"s":"D27","i":"T01I3","sc":0,"f":3},{"s":"D27","i":"T02I1","sc":0,"f":1},{"s":"D27","i":"T01I2","sc":1,"f":1},{"s":"D27","i":"T02I1","sc":1,"f":1},{"s":"D27","i":"T03I2","sc":1,"f":1},{"s":"D27","i":"T01I1","sc":1,"f":1},{"s":"D27","i":"T03I2","sc":1,"f":1},{"s":"D27","i":"T03I1","sc":0,"f":1},{"s":"D27","i":"T01I1","sc":1,"f":1},{"s":"D27","i":"T03I3","sc":0,"f":1},{"s":"D27","i":"T03I2","sc":1,"f":1},{"s":"D27","i":"T02I2","sc":1,"f":1},{"s":"D27","i":"T03I2","sc":0,"f":1},{"s":"D27","i":"T03I1","sc":1,"f":1},{"s":"D27","i":"T03I2","sc":2,"f":3},{"s":"D27","i":"T03I1","sc":1,"f":1},{"s":"D27","i":"T03I2","sc":0,"f":1},{"s":"D27","i":"T01I1","sc":1,"f":1},{"s":"D27","i":"T01I2","sc":1,"f":1},{"s":"D28","i":"T02I1","sc":1,"f":3},{"s":"D28","i":"T01I1","sc":2,"f":3},{"s":"D28","i":"T01I2","sc":0,"f":1},{"s":"D28","i":"T01I1","sc":0,"f":1},{"s":"D28","i":"T01I2","sc":1,"f":1},{"s":"D28","i":"T01I2","sc":1,"f":1},{"s":"D28","i":"T02I2","sc":0,"f":1},{"s":"D28","i":"T02I3","sc":0,"f":3},{"s":"D28","i":"T02I3","sc":2,"f":3},{"s":"D28","i":"T01I2","sc":1,"f":1},{"s":"D28","i":"T02I2","sc":1,"f":1},{"s":"D28","i":"T02I2","sc":1,"f":1},{"s":"D28","i":"T02I2","sc":0,"f":1},{"s":"D28","i":"T02I2","sc":3,"f":3},{"s":"D28","i":"T02I3","sc":0,"f":1},{"s":"D28","i":"T01I1","sc":1,"f":1},{"s":"D28","i":"T02I2","sc":2,"f":3},{"s":"D28","i":"T01I2","sc":1,"f":1},{"s":"D29","i":"T01I2","sc":1,"f":1},{"s":"D29","i":"T02I1","sc":1,"f":1},{"s":"D29","i":"T01I2","sc":1,"f":1},{"s":"D29","i":"T02I1","sc":0,"f":1},{"s":"D29","i":"T01I1","sc":1,"f":1},{"s":"D29","i":"T01I1","sc":1,"f":1},{"s":"D29","i":"T01I2","sc":1,"f":1},{"s":"D29","i":"T02I1","sc":1,"f":1},{"s":"D29","i":"T01I1","sc":2,"f":3},{"s":"D29","i":"T01I1","sc":2,"f":3},{"s":"D29","i":"T02I2","sc":1,"f":1},{"s":"D29","i":"T03I1","sc":1,"f":1},{"s":"D29","i":"T03I2","sc":1,"f":1},{"s":"D29","i":"T02I2","sc":3,"f":3},{"s":"D29","i":"T02I3","sc":2,"f":3},{"s":"D29","i":"T01I2","sc":1,"f":1},{"s":"D29","i":"T02I2","sc":1,"f":1},{"s":"D29","i":"T02I2","sc":2,"f":3},{"s":"D29","i":"T03I2","sc":1,"f":1},{"s":"D29","i":"T03I1","sc":1,"f":1},{"s":"D29","i":"T01I2","sc":1,"f":1},{"s":"D29","i":"T03I2","sc":3,"f":3},{"s":"D29","i":"T03I1","sc":1,"f":1},{"s":"D30","i":"T02I1","sc":0,"f":3},{"s":"D30","i":"T01I2","sc":0,"f":3},{"s":"D30","i":"T01I1","sc":0,"f":1},{"s":"D30","i":"T01I3","sc":2,"f":3},{"s":"D30","i":"T02I1","sc":0,"f":1},{"s":"D30","i":"T01I2","sc":1,"f":1},{"s":"D30","i":"T02I1","sc":0,"f":1},{"s":"D30","i":"T01I1","sc":2,"f":3},{"s":"D30","i":"T01I2","sc":0,"f":1},{"s":"D30","i":"T01I2","sc":0,"f":1},{"s":"D30","i":"T01I3","sc":0,"f":3},{"s":"D30","i":"T01I2","sc":0,"f":1},{"s":"D30","i":"T01I2","sc":2,"f":3},{"s":"D30","i":"T01I1","sc":0,"f":3},{"s":"D30","i":"T01I2","sc":1,"f":1},{"s":"D30","i":"T03I2","sc":1,"f":1},{"s":"D30","i":"T02I3","sc":1,"f":3},{"s":"D30","i":"T01I2","sc":0,"f":1},{"s":"D30","i":"T03I1","sc":1,"f":1},{"s":"D30","i":"T01I2","sc":1,"f":1},{"s":"D30","i":"T02I2","sc":0,"f":1},{"s":"D30","i":"T03I2","sc":1,"f":1},{"s":"D30","i":"T03I2","sc":1,"f":1},{"s":"D30","i":"T01I3","sc":2,"f":3},{"s":"D31","i":"T01I2","sc":1,"f":1},{"s":"D31","i":"T02I1","sc":0,"f":1},{"s":"D31","i":"T01I2","sc":2,"f":3},{"s":"D31","i":"T01I1","sc":1,"f":1},{"s":"D31","i":"T02I1","sc":0,"f":3},{"s":"D31","i":"T01I3","sc":2,"f":3},{"s":"D31","i":"T03I2","sc":0,"f":3},{"s":"D31","i":"T03I2","sc":1,"f":3},{"s":"D31","i":"T01I2","sc":1,"f":1},{"s":"D31","i":"T01I1","sc":0,"f":1},{"s":"D31","i":"T02I3","sc":0,"f":1},{"s":"D31","i":"T03I3","sc":1,"f":1},{"s":"D31","i":"T03I2","sc":1,"f":1},{"s":"D31","i":"T01I1","sc":1,"f":1},{"s":"D31","i":"T01I2","sc":1,"f":1},{"s":"D31","i":"T01I3","sc":1,"f":3},{"s":"D32","i":"T01I1","sc":0,"f":3},{"s":"D32","i":"T02I1","sc":1,"f":1},{"s":"D32","i":"T02I1","sc":1,"f":3},{"s":"D32","i":"T02I1","sc":1,"f":1},{"s":"D32","i":"T01I2","sc":3,"f":3},{"s":"D32","i":"T01I2","sc":1,"f":1},{"s":"D32","i":"T02I3","sc":1,"f":1},{"s":"D32","i":"T02I2","sc":1,"f":3},{"s":"D32","i":"T02I3","sc":0,"f":3},{"s":"D32","i":"T01I1","sc":1,"f":1},{"s":"D32","i":"T01I2","sc":1,"f":3},{"s":"D32","i":"T01I1","sc":3,"f":3},{"s":"D32","i":"T02I2","sc":1,"f":1},{"s":"D32","i":"T02I2","sc":1,"f":1},{"s":"D32","i":"T01I2","sc":1,"f":1},{"s":"D32","i":"T02I2","sc":1,"f":1},{"s":"D32","i":"T02I2","sc":3,"f":3},{"s":"D32","i":"T02I3","sc":3,"f":3},{"s":"D32","i":"T01I2","sc":0,"f":1},{"s":"D32","i":"T01I2","sc":1,"f":1},{"s":"D32","i":"T01I2","sc":1,"f":1},{"s":"D33","i":"T02I1","sc":0,"f":1},{"s":"D33","i":"T01I2","sc":3,"f":3},{"s":"D33","i":"T01I1","sc":1,"f":1},{"s":"D33","i":"T01I2","sc":1,"f":1},{"s":"D33","i":"T01I1","sc":1,"f":1},{"s":"D33","i":"T02I1","sc":2,"f":3},{"s":"D33","i":"T01I1","sc":0,"f":1},{"s":"D33","i":"T01I2","sc":3,"f":3},{"s":"D33","i":"T01I2","sc":1,"f":1},{"s":"D33","i":"T01I1","sc":3,"f":3},{"s":"D33","i":"T02I1","sc":1,"f":1},{"s":"D33","i":"T03I2","sc":1,"f":1},{"s":"D33","i":"T01I2","sc":3,"f":3},{"s":"D33","i":"T03I1","sc":1,"f":1},{"s":"D33","i":"T02I2","sc":0,"f":3},{"s":"D33","i":"T01I1","sc":1,"f":1},{"s":"D33","i":"T01I3","sc":3,"f":3},{"s":"D33","i":"T01I2","sc":1,"f":1},{"s":"D33","i":"T02I3","sc":1,"f":3},{"s":"D33","i":"T03I1","sc":1,"f":1},{"s":"D33","i":"T01I2","sc":1,"f":1},{"s":"D33","i":"T02I2","sc":1,"f":1},{"s":"D34","i":"T01I2","sc":1,"f":1},{"s":"D34","i":"T01I3","sc":2,"f":3},{"s":"D34","i":"T01I2","sc":1,"f":1},{"s":"D34","i":"T02I1","sc":1,"f":1},{"s":"D34","i":"T01I1","sc":0,"f":3},{"s":"D34","i":"T01I1","sc":1,"f":1},{"s":"D34","i":"T02I1","sc":2,"f":3},{"s":"D34","i":"T02I3","sc":0,"f":1},{"s":"D34","i":"T01I2","sc":0,"f":1},{"s":"D34","i":"T01I1","sc":0,"f":1},{"s":"D34","i":"T01I2","sc":0,"f":1},{"s":"D34","i":"T01I3","sc":0,"f":3},{"s":"D34","i":"T03I2","sc":1,"f":1},{"s":"D34","i":"T02I2","sc":0,"f":1},{"s":"D34","i":"T01I1","sc":0,"f":1},{"s":"D34","i":"T03I1","sc":1,"f":1},{"s":"D34","i":"T02I3","sc":0,"f":3},{"s":"D34","i":"T03I1","sc":0,"f":3},{"s":"D34","i":"T02I2","sc":0,"f":3},{"s":"D34","i":"T02I2","sc":0,"f":1},{"s":"D34","i":"T02I2","sc":1,"f":1},{"s":"D34","i":"T03I2","sc":1,"f":3},{"s":"D34","i":"T02I3","sc":0,"f":3},{"s":"D35","i":"T02I1","sc":1,"f":1},{"s":"D35","i":"T01I2","sc":1,"f":1},{"s":"D35","i":"T01I2","sc":1,"f":1},{"s":"D35","i":"T02I1","sc":3,"f":3},{"s":"D35","i":"T01I2","sc":1,"f":1},{"s":"D35","i":"T01I2","sc":0,"f":3},{"s":"D35","i":"T03I1","sc":0,"f":1},{"s":"D35","i":"T02I2","sc":1,"f":1},{"s":"D35","i":"T01I3","sc":1,"f":3},{"s":"D35","i":"T02I2","sc":3,"f":3},{"s":"D36","i":"T01I2","sc":3,"f":3},{"s":"D36","i":"T01I2","sc":1,"f":1},{"s":"D36","i":"T01I2","sc":3,"f":3},{"s":"D36","i":"T02I1","sc":1,"f":1},{"s":"D36","i":"T02I3","sc":1,"f":1},{"s":"D36","i":"T01I1","sc":1,"f":1},{"s":"D36","i":"T01I2","sc":1,"f":1},{"s":"D36","i":"T02I1","sc":1,"f":1},{"s":"D36","i":"T01I1","sc":1,"f":1},{"s":"D36","i":"T01I3","sc":2,"f":3},{"s":"D36","i":"T02I1","sc":0,"f":1},{"s":"D36","i":"T02I2","sc":2,"f":3},{"s":"D36","i":"T02I3","sc":3,"f":3},{"s":"D36","i":"T02I2","sc":3,"f":3},{"s":"D36","i":"T03I2","sc":1,"f":1},{"s":"D36","i":"T03I1","sc":3,"f":3},{"s":"D36","i":"T02I2","sc":1,"f":1},{"s":"D36","i":"T03I1","sc":1,"f":3},{"s":"D36","i":"T03I1","sc":1,"f":1},{"s":"D36","i":"T03I2","sc":3,"f":3},{"s":"D37","i":"T01I2","sc":0,"f":1},{"s":"D37","i":"T01I2","sc":0,"f":1},{"s":"D37","i":"T01I2","sc":0,"f":1},{"s":"D37","i":"T01I1","sc":0,"f":1},{"s":"D37","i":"T02I1","sc":0,"f":1},{"s":"D37","i":"T01I1","sc":0,"f":1},{"s":"D37","i":"T03I1","sc":1,"f":3},{"s":"D37","i":"T02I3","sc":1,"f":3},{"s":"D37","i":"T01I2","sc":0,"f":1},{"s":"D37","i":"T03I2","sc":2,"f":3},{"s":"D37","i":"T02I2","sc":0,"f":1},{"s":"D37","i":"T03I1","sc":2,"f":3},{"s":"D37","i":"T03I2","sc":0,"f":1},{"s":"D38","i":"T01I1","sc":1,"f":1},{"s":"D38","i":"T01I2","sc":0,"f":1},{"s":"D38","i":"T02I1","sc":2,"f":3},{"s":"D38","i":"T01I2","sc":1,"f":1},{"s":"D38","i":"T02I1","sc":0,"f":1},{"s":"D38","i":"T02I1","sc":1,"f":1},{"s":"D38","i":"T02I1","sc":1,"f":1},{"s":"D38","i":"T02I3","sc":1,"f":1},{"s":"D38","i":"T01I1","sc":3,"f":3},{"s":"D38","i":"T03I1","sc":1,"f":1},{"s":"D38","i":"T03I1","sc":1,"f":3},{"s":"D38","i":"T03I2","sc":1,"f":1},{"s":"D38","i":"T01I1","sc":1,"f":1},{"s":"D38","i":"T01I2","sc":1,"f":1},{"s":"D38","i":"T03I1","sc":0,"f":1},{"s":"D38","i":"T02I2","sc":0,"f":1},{"s":"D38","i":"T01I2","sc":3,"f":3},{"s":"D38","i":"T03I1","sc":0,"f":1},{"s":"D38","i":"T03I2","sc":1,"f":3},{"s":"D38","i":"T02I2","sc":3,"f":3},{"s":"D38","i":"T01I2","sc":1,"f":1},{"s":"D38","i":"T02I3","sc":1,"f":1},{"s":"D39","i":"T01I3","sc":2,"f":3},{"s":"D39","i":"T01I2","sc":1,"f":1},{"s":"D39","i":"T01I1","sc":0,"f":1},{"s":"D39","i":"T01I1","sc":1,"f":1},{"s":"D39","i":"T02I1","sc":0,"f":1},{"s":"D39","i":"T01I2","sc":1,"f":1},{"s":"D39","i":"T02I1","sc":0,"f":1},{"s":"D39","i":"T02I1","sc":0,"f":1},{"s":"D39","i":"T01I1","sc":0,"f":3},{"s":"D39","i":"T02I1","sc":0,"f":3},{"s":"D39","i":"T01I1","sc":0,"f":1},{"s":"D39","i":"T01I2","sc":0,"f":1},{"s":"D39","i":"T01I3","sc":2,"f":3},{"s":"D39","i":"T02I3","sc":0,"f":1},{"s":"D39","i":"T01I2","sc":1,"f":1},{"s":"D39","i":"T01I2","sc":0,"f":1},{"s":"D39","i":"T02I2","sc":1,"f":1},{"s":"D39","i":"T02I2","sc":0,"f":1},{"s":"D39","i":"T02I3","sc":0,"f":1},{"s":"D39","i":"T02I3","sc":2,"f":3},{"s":"D39","i":"T02I2","sc":0,"f":1},{"s":"D40","i":"T02I1","sc":0,"f":1},{"s":"D40","i":"T01I2","sc":0,"f":1},{"s":"D40","i":"T01I3","sc":2,"f":3},{"s":"D40","i":"T02I1","sc":0,"f":1},{"s":"D40","i":"T02I1","sc":1,"f":1},{"s":"D40","i":"T01I3","sc":2,"f":3},{"s":"D40","i":"T02I1","sc":0,"f":1},{"s":"D40","i":"T01I2","sc":1,"f":1},{"s":"D40","i":"T01I2","sc":0,"f":1},{"s":"D40","i":"T01I2","sc":1,"f":1},{"s":"D40","i":"T03I1","sc":0,"f":1},{"s":"D40","i":"T01I1","sc":1,"f":1},{"s":"D40","i":"T03I2","sc":1,"f":1},{"s":"D40","i":"T03I3","sc":1,"f":3},{"s":"D40","i":"T03I1","sc":0,"f":1},{"s":"D40","i":"T02I2","sc":0,"f":1},{"s":"D40","i":"T03I2","sc":0,"f":1},{"s":"D40","i":"T02I2","sc":0,"f":1},{"s":"D40","i":"T02I3","sc":0,"f":3},{"s":"D40","i":"T02I2","sc":0,"f":1},{"s":"D40","i":"T01I2","sc":0,"f":1},{"s":"D40","i":"T02I3","sc":1,"f":3}],"content":{"T01I1":{"id":"T01I1","name":"表示数量关系并代入求值","theme":"代数式与整式运算","theme_id":"T01","theme_goal":"能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。","tags":["计算类","逻辑型"],"importance":"核心重点","error_tendency":["思路不清","计算失误"],"pages":"上册68—109","course_standard":"62 / 55","headline":"用字母把数量关系写下来","example":{"title":"教材例题精讲 · 列代数式与代入求值","pages":"上册第 68—72 页（列代数式）、第 76—79 页（代数式的值）","prompt":"某文具店铅笔每支 x 元，笔记本每本 y 元。小明买 3 支铅笔和 2 本笔记本，另付 2 元包装费。\n（1）用代数式表示小明应付的总费用；\n（2）当 x=2，y=5 时，求总费用。","steps":[{"label":"拆数量","content":"铅笔费用 = 单价 × 数量 = 3x；笔记本费用 = 2y。"},{"label":"合起来","content":"总费用 = 3x + 2y + 2，包装费是常数项，直接加在最后。"},{"label":"代值","content":"把 x=2、y=5 代入：3×2 + 2×5 + 2。"},{"label":"计算","content":"= 6 + 10 + 2 = 18（元）。"}],"answer":"（1）3x + 2y + 2；（2）18 元。","note":"代入负数或分数时先加括号；代数式中省略的乘号在代入时要恢复。"},"derivation":{"title":"列代数式的四步法","steps":[{"label":"① 审","content":"圈出“和、差、倍、分、多、少、增加到、减少了”等关键词，明确先算什么、后算什么。"},{"label":"② 设","content":"用字母表示题目中的未知量或变化的量，同一个字母只表示同一个量。"},{"label":"③ 列","content":"按“先乘除、后加减”的顺序，用运算符号把数和字母连接起来。"},{"label":"④ 范","content":"数字写在字母前面；省略乘号；除法写成分数线；带分数化为假分数。"}],"conclusion":"代数式不过是把数量关系用运算符号记下来。代入求值时先把省略的乘号补回去，再按运算顺序算。"},"common_errors":[{"error":"把“a 的 2 倍与 b 的和”写成 2(a+b)","fix":"“2 倍”只作用于 a，应为 2a+b；括号会改变运算顺序。"},{"error":"x=-2 时把 x² 算成 -2²=-4","fix":"负数代入要加括号：(-2)²=4。"},{"error":"把 a×3 写成 a3","fix":"数字要写在字母前面，写成 3a。"},{"error":"代入分数时漏掉括号，如 x=1/2 时 2x 写成 2×1/2 却按 2×1÷2 算","fix":"先加括号再恢复乘号，按运算顺序计算。"}],"tips":["看到“多、少”先判断谁多谁少，再决定加还是减。","代入求值分两步写：先写“当……时，原式=……”，再算结果。","结果带单位时，单位写在括号外。"],"graph_note":"T01 从这里起步。先把数量关系写成式子，后面的化简、求值、解释才有抓手。","evidence":[{"title":"代数式的概念","section":"3.1","section_title":"列代数式表示数量关系","chapter":"第三章 代数式","page":3,"quote":"上述问题中列出的式子5t,n5,450m-720,2d,4a,a2,它们都是用运算符号把数或表示数的字母连接起来的式子,我们称这样的式子为代数式(algebraicexpression)．","kind":"memory"},{"title":"列代数式表示数量关系","section":"3.1","section_title":"列代数式表示数量关系","chapter":"第三章 代数式","page":4,"quote":"在解决一些数学问题与实际问题时,往往需要先把问题中的数量关系用含有数、字母和运算符号的式子表示出来,也就是要列代数式．","kind":"logic"},{"title":"反比例关系","section":"3.1","section_title":"列代数式表示数量关系","chapter":"第三章 代数式","page":7,"quote":"像这样,两个相关联的量,一个量变化,另一个量也随着变化,且这两个量的乘积一定,这两个量就叫作成反比例的量,它们之间的关系叫作反比例关系．","kind":"memory"},{"title":"代数式的值","section":"3.2","section_title":"代数式的值","chapter":"第三章 代数式","page":12,"quote":"一般地,用数值代替代数式中的字母,按照代数式中的运算关系计算得出的结果,叫作代数式的值．","kind":"memory"},{"title":"代入求值","section":"3.2","section_title":"代数式的值","chapter":"第三章 代数式","page":12,"quote":"例1根据下列x,y的值,分别求代数式2x+3y的值:(1)x=15,y=12;(2)x=1,y=12．","kind":"logic"}],"exercises":[{"id":"Q001","type":"填空题","stem":"每支笔x元，买3支笔另付2元包装费，共需多少元？用代数式表示。","answer":"3x+2","explanation":"三支笔共3x元，再加2元。","full":1,"level":"基础"},{"id":"Q002","type":"填空题","stem":"x=4时，代数式2x+3的值是多少？","answer":"11","explanation":"代入x=4，2×4+3=11。","full":1,"level":"基础"},{"id":"Q006","type":"解答题","stem":"长方形的长为(x+3)厘米，宽为x厘米，用含x的整式表示它的周长。","answer":"4x+6厘米","explanation":"周长是长与宽之和的2倍；C=2[(x+3)+x]=2(2x+3)；C=4x+6厘米。","full":3,"level":"提升"},{"id":"Q007","type":"填空题","stem":"x=-2时，x²+3x的值是多少？","answer":"-2","explanation":"(-2)²+3×(-2)=4-6=-2。","full":1,"level":"基础"},{"id":"Q013","type":"填空题","stem":"a=2，b=-1时，2a-b的值是多少？","answer":"5","explanation":"2×2-(-1)=5。","full":1,"level":"基础"},{"id":"Q014","type":"解答题","stem":"某班男生有x人，女生人数比男生人数的2倍少3人。用含x的整式表示全班人数。","answer":"3x-3人","explanation":"女生人数是2x-3人；全班人数=x+(2x-3)；合并得3x-3人。","full":3,"level":"提升"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T01I2":{"id":"T01I2","name":"识别同类项、去括号并化简","theme":"代数式与整式运算","theme_id":"T01","theme_goal":"能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。","tags":["计算类","记忆型"],"importance":"核心重点","error_tendency":["计算失误"],"pages":"上册68—109","course_standard":"62 / 55","headline":"同类项、去括号与整式加减","example":{"title":"教材例题精讲 · 整式化简","pages":"上册第 88—96 页（整式的加减）","prompt":"化简：3(2a - b) - 2(a + 2b)。","steps":[{"label":"去括号","content":"3(2a-b)=6a-3b；-2(a+2b)=-2a-4b，括号前是负号，两项都要变号。"},{"label":"写全式","content":"原式 = 6a - 3b - 2a - 4b。"},{"label":"找同类项","content":"6a 与 -2a 是同类项；-3b 与 -4b 是同类项。"},{"label":"合并","content":"(6-2)a + (-3-4)b = 4a - 7b。"}],"answer":"4a - 7b。","note":"去括号和合并同类项是整式加减的两块基石；每一步只做一件事，便于回查。"},"derivation":{"title":"去括号和合并同类项，顺序别乱","steps":[{"label":"去括号","content":"括号前是“+”，去掉括号后各项不变号；括号前是“-”，去掉括号后各项都变号。"},{"label":"数乘括号","content":"用括号外的数乘括号内的每一项，再把积相加（乘法分配律）。"},{"label":"找同类项","content":"所含字母相同，并且相同字母的指数也相同，才是同类项；常数项彼此也是同类项。"},{"label":"合并","content":"系数相加，字母连同它的指数不变。"}],"conclusion":"整式加减的一般流程：去括号 → 找同类项 → 合并同类项 → 按字母顺序整理。"},"common_errors":[{"error":"括号前是负号，只把第一项变号","fix":"负号要“发给”括号内每一项，逐项检查。"},{"error":"数乘括号时漏乘常数项","fix":"用箭头把括号外的数分别指向括号内每一项。"},{"error":"把 x² 与 x 当成同类项","fix":"同类项要求相同字母的指数也相同。"},{"error":"合并时把字母也相加，写成 4a 变 4a²","fix":"只合并系数，字母和指数保持不变。"}],"tips":["去括号后先在草稿上数一数项数，确认没有漏项。","合并同类项时用不同符号标记不同组，减少看错。","最终结果按字母顺序书写，习惯更规范。"],"graph_note":"接着 T01I1 的代数式往下走。这里练熟整式加减，T02 解方程才不至于卡在计算上。","evidence":[{"title":"单项式","section":"4.1","section_title":"整式","chapter":"第四章 整式的加减","page":22,"quote":"我们来看92t和上一章中遇到过的一些代数式a2,0．9p,13a2h,这些代数式有什么共同特点?这些代数式都是数或字母的积,像这样的代数式叫作单项式(monomial)．","kind":"memory"},{"title":"单项式的系数","section":"4.1","section_title":"整式","chapter":"第四章 整式的加减","page":22,"quote":"单项式中的数字因数叫作这个单项式的系数．","kind":"memory"},{"title":"单项式的次数","section":"4.1","section_title":"整式","chapter":"第四章 整式的加减","page":22,"quote":"一个单项式中,所有字母的指数的和叫作这个单项式的次数．","kind":"memory"},{"title":"多项式与整式","section":"4.1","section_title":"整式","chapter":"第四章 整式的加减","page":24,"quote":"像这样,几个单项式的和叫作多项式(polynomial)．","kind":"memory"},{"title":"多项式的项与次数","section":"4.1","section_title":"整式","chapter":"第四章 整式的加减","page":25,"quote":"19第四章整式的加减2a+3b,12ab-πr2的项和次数分别是什么?多项式里,次数最高的项的次数,叫作这个多项式的次数．","kind":"memory"},{"title":"同类项","section":"4.2","section_title":"整式的加法与减法","chapter":"第四章 整式的加减","page":29,"quote":"像72a与-120a,3m2与2m2,3xy2与-4xy2这样,所含字母相同,并且相同字母的指数也相同的项叫作同类项．","kind":"memory"},{"title":"合并同类项","section":"4.2","section_title":"整式的加法与减法","chapter":"第四章 整式的加减","page":29,"quote":"合并同类项后,所得项的系数是合并前各同类项的系数的和,字母连同它的指数不变．","kind":"logic"},{"title":"去括号","section":"4.2","section_title":"整式的加法与减法","chapter":"第四章 整式的加减","page":32,"quote":"一般地,一个数与一个多项式相乘,需要去括号,去括号就是用括号外的数乘括号内的每一项,再把所得的积相加．","kind":"logic"},{"title":"整式的加减","section":"4.2","section_title":"整式的加法与减法","chapter":"第四章 整式的加减","page":33,"quote":"若该地区某家庭上月用水量为20m3,则应缴水费多少元?合并同类项和去括号是进行整式加减运算的基础,利用它们就可以进行整式的加减运算．","kind":"logic"}],"exercises":[{"id":"Q003","type":"选择题","stem":"下列哪一组是同类项？","answer":"B","explanation":"3x与-2x的字母及其指数相同。","full":1,"level":"基础"},{"id":"Q004","type":"填空题","stem":"化简5x-2x+2x-4。","answer":"5x-4","explanation":"同类项系数5-2+2=5。","full":1,"level":"基础"},{"id":"Q005","type":"填空题","stem":"去括号：3(a+2)=？","answer":"3a+6","explanation":"3分别乘括号内两项。","full":1,"level":"基础"},{"id":"Q008","type":"填空题","stem":"4m与-3m是否为同类项？回答“是”或“否”。","answer":"是","explanation":"字母及指数相同。","full":1,"level":"基础"},{"id":"Q009","type":"解答题","stem":"化简：2(3x-1)-(x+4)。","answer":"5x-6","explanation":"去括号得6x-2-x-4；6x-x=5x，-2-4=-6；结果为5x-6。","full":3,"level":"提升"},{"id":"Q010","type":"填空题","stem":"去括号：-2(2a-3)=？","answer":"-4a+6","explanation":"-2乘-3应得+6。","full":1,"level":"基础"},{"id":"Q012","type":"填空题","stem":"化简3x+2-5x+7。","answer":"-2x+9","explanation":"x项得-2x，常数项得9。","full":1,"level":"基础"},{"id":"Q015","type":"解答题","stem":"化简：3(2a-b)-2(a+2b)。","answer":"4a-7b","explanation":"去括号得6a-3b-2a-4b；a项6a-2a=4a；b项-3b-4b=-7b；结果为4a-7b。","full":3,"level":"提升"},{"id":"Q016","type":"填空题","stem":"化简(a+b)-(a-b)。","answer":"2b","explanation":"去括号后a+b-a+b=2b。","full":1,"level":"基础"},{"id":"Q017","type":"填空题","stem":"化简2x²y-5x²y。","answer":"-3x²y","explanation":"相同字母部分保留，系数2-5=-3。","full":1,"level":"基础"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T01I3":{"id":"T01I3","name":"用整式解释具体问题","theme":"代数式与整式运算","theme_id":"T01","theme_goal":"能用代数式表示简单数量关系、代入求值，并进行整式加减与解释。","tags":["逻辑型","记忆型"],"importance":"基础掌握","error_tendency":["思路不清"],"pages":"上册68—109","course_standard":"62 / 55","headline":"用整式运算解释结论","example":{"title":"教材例题精讲 · 连续整数之和","pages":"上册第 96—100 页（整式加减的应用）","prompt":"设 n 为整数，求三个连续整数 n-1、n、n+1 的和，并说明这个和与 3 有什么关系。","steps":[{"label":"列式","content":"和为 (n-1) + n + (n+1)。"},{"label":"去括号","content":"= n - 1 + n + n + 1。"},{"label":"合并","content":"= 3n。"},{"label":"解释","content":"因为 n 是整数，所以 3n 是 3 的倍数；三个连续整数的和一定是 3 的倍数。"}],"answer":"和为 3n，是 3 的倍数。","note":"“算出来”只是第一步，“说出为什么”才是解释类问题的得分点。"},"derivation":{"title":"用式子讲道理的三步","steps":[{"label":"① 用字母设","content":"把“任意”“连续”“若干个”这类一般情形，用字母表示。"},{"label":"② 用运算推","content":"列式后去括号、合并同类项，把式子化成最简形式。"},{"label":"③ 用文字说","content":"根据化简结果的结构（如 3n、2k+1、-9）说明它表示什么。"}],"conclusion":"化简完发现结果里没有那个字母，就说明结论跟这个字母取什么值没关系——解释类题目靠的正是这一步。"},"common_errors":[{"error":"只算出结果，不写结论","fix":"解释类题必须补一句“所以……”。"},{"error":"设连续整数时漏掉“n 为整数”","fix":"字母的取值范围是结论成立的前提。"},{"error":"把“与 x 无关”说成“x=0”","fix":"化简后不含 x，才对任意 x 都成立。"}],"tips":["看到“无论……都……”优先考虑化简后是否消去字母。","解释题按“列—算—说”三段写，阅卷点一目了然。","连续奇数可设为 2k-1、2k+1，连续偶数可设为 2k、2k+2。"],"graph_note":"T01 学到这里就算收口了。会算只是及格，能拿式子把结论说明白才算到位。","evidence":[{"title":"用代数式表示并解释数量关系","section":"3.1","section_title":"列代数式表示数量关系","chapter":"第三章 代数式","page":3,"quote":"用字母表示数后,同一个代数式可以表示不同实际问题中的数量或数量关系．","kind":"logic"},{"title":"用整式运算说明结论","section":"4.2","section_title":"整式的加法与减法","chapter":"第四章 整式的加减","page":28,"quote":"第四章整式的加减4．2整式的加法与减法数能进行加减运算,整式中的每个字母都表示数,这样,整式与数一样,也可以进行加减运算．","kind":"logic"}],"exercises":[{"id":"Q011","type":"解答题","stem":"设n为整数，求三个连续整数n-1、n、n+1的和，并说明这个和与3有什么关系。","answer":"3n，是3的倍数","explanation":"和为(n-1)+n+(n+1)；合并得3n；n为整数，所以和是3的倍数。","full":3,"level":"提升"},{"id":"Q018","type":"解答题","stem":"小明说：“无论x取什么值，代数式2(x-3)-3(x+1)+x的值都等于-9。”他的说法对吗？请说明理由。","answer":"对；化简结果为-9，与x的取值无关","explanation":"去括号得2x-6-3x-3+x；合并同类项得-9；结果不含x，所以无论x取何值，代数式的值都是-9，说法正确。","full":3,"level":"提升"},{"id":"X011","type":"解答题","stem":"设 k 为整数，用含 k 的整式表示两个连续奇数，并说明它们的和是 4 的倍数。","answer":"(2k-1)+(2k+1)=4k，是 4 的倍数","explanation":"两个连续奇数可设为 2k-1、2k+1；相加得 4k；k 为整数，所以和是 4 的倍数。","full":3,"level":"提升"},{"id":"X012","type":"解答题","stem":"一个两位数，十位数字是 a，个位数字是 b。用整式表示这个两位数，并说明交换十位与个位后，新数与原数之差是 9 的倍数。","answer":"10a+b；(10b+a)-(10a+b)=9(b-a)","explanation":"原数为 10a+b，新数为 10b+a；作差得 9b-9a=9(b-a)，所以差是 9 的倍数。","full":3,"level":"提升"},{"id":"X013","type":"填空题","stem":"无论 x 取何值，代数式 2(x-3)-3(x+1)+x 的值是否发生变化？","answer":"不变，恒为 -9","explanation":"去括号得 2x-6-3x-3+x；合并同类项得 -9，不含 x，所以值不变。","full":1,"level":"基础"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T02I1":{"id":"T02I1","name":"运用等式性质解一元一次方程","theme":"方程与方程组","theme_id":"T02","theme_goal":"能解一元一次方程和二元一次方程组，依据等量关系建立模型并检验答案。","tags":["计算类","记忆型"],"importance":"核心重点","error_tendency":["计算失误"],"pages":"上册110—148；下册87—119","course_standard":"63 / 56","headline":"等式性质与一元一次方程","example":{"title":"教材例题精讲 · 解一元一次方程","pages":"上册第 110—125 页（一元一次方程）","prompt":"解方程：3(x - 2) = 2x + 5。","steps":[{"label":"去括号","content":"3x - 6 = 2x + 5。"},{"label":"移项","content":"把含 x 的项移到左边，常数项移到右边：3x - 2x = 5 + 6。"},{"label":"合并","content":"x = 11。"},{"label":"检验","content":"左边 = 3×(11-2) = 27；右边 = 2×11+5 = 27，左右相等。"}],"answer":"x = 11。","note":"移项的本质是等式两边同加或同减同一个数，所以过桥要变号。"},"derivation":{"title":"解方程的五步与依据","steps":[{"label":"去分母","content":"两边同乘各分母的最小公倍数，每一项都要乘，分子是多项式时加括号。"},{"label":"去括号","content":"用分配律，括号前是负号时各项变号。"},{"label":"移项","content":"依据等式性质 1，移项要变号。"},{"label":"合并同类项","content":"化为 ax = b 的形式。"},{"label":"系数化为 1","content":"两边同除以 a（a≠0），得到 x = b/a。"}],"conclusion":"等式性质 1：两边同加（减）同一个数（式），结果仍相等；等式性质 2：两边同乘（除以）同一个不为 0 的数，结果仍相等。"},"common_errors":[{"error":"移项不变号","fix":"把“移项”改写成“两边同加/同减”，符号自然浮现。"},{"error":"去分母时漏乘不含分母的项","fix":"在每一项下面画横线，逐项确认都乘了最小公倍数。"},{"error":"括号前是负号只变第一项","fix":"负号要乘进括号内每一项。"},{"error":"解完不检验","fix":"把解代回原方程，左右相等才算完成。"}],"tips":["先观察结构，能整体处理的不要急着展开。","每一步只做一种变形，等号对齐写。","解完一定要检验：把解代回原方程，两边对上了才算做完。"],"graph_note":"从整式运算走到方程，这里是 T02 的入口。T02I2 和 T03I1 都从这条等式性质上长出来。","evidence":[{"title":"方程","section":"5.1","section_title":"方程","chapter":"第五章 一元一次方程","page":3,"quote":"像这样,先设出字母表示未知数,然后根据问题中的相等关系,列出一个含有未知数的等式,这样的等式叫作方程(equation)．","kind":"memory"},{"title":"一元一次方程","section":"5.1","section_title":"方程","chapter":"第五章 一元一次方程","page":6,"quote":"Ꮶ观察方程1．2x+1=0．8x+3,3x=4(x-5),0．52x-(1-0．52)x=80,它们有什么共同特征?411第五章一元一次方程一般地,如果方程中只含有一个未知数(元),且含有未知数的式子都是整式,未知数的次数都是1,这样的方程叫作一元一次方程(linearequationwithoneunknown)．","kind":"memory"},{"title":"方程的解与解方程","section":"5.1","section_title":"方程","chapter":"第五章 一元一次方程","page":5,"quote":"一般地,使方程左、右两边的值相等的未知数的值,叫作方程的解(solution)．","kind":"memory"},{"title":"等式的性质","section":"5.1","section_title":"方程","chapter":"第五章 一元一次方程","page":7,"quote":"511第五章一元一次方程一般地,等式有以下性质:等式的性质1等式两边加(或减)同一个数(或式子),结果仍相等．","kind":"logic"},{"title":"移项","section":"5.2","section_title":"解一元一次方程","chapter":"第五章 一元一次方程","page":13,"quote":"像上面那样把等式一边的某项变号后移到另一边,叫作移项．","kind":"logic"},{"title":"解一元一次方程的一般步骤","section":"5.2","section_title":"解一元一次方程","chapter":"第五章 一元一次方程","page":19,"quote":"你能说出每个步骤的依据吗?ՌՏዝᮊረᮊԝՂԝѬጇӑ˞1ᑿ3解一元一次方程的一般步骤包括:去分母、去括号、移项、合并同类项、系数化为1等．","kind":"logic"}],"exercises":[{"id":"Q019","type":"填空题","stem":"解方程x+7=12，x=？","answer":"5","explanation":"等式两边减7，x=5。","full":1,"level":"基础"},{"id":"Q020","type":"填空题","stem":"解方程3x=18，x=？","answer":"6","explanation":"等式两边除以3。","full":1,"level":"基础"},{"id":"Q021","type":"选择题","stem":"方程2(x-1)=8去括号后正确的是哪项？","answer":"B","explanation":"2乘括号内的x和-1。","full":1,"level":"基础"},{"id":"Q022","type":"解答题","stem":"解方程：3(x-2)=2x+5。","answer":"x=11","explanation":"去括号得3x-6=2x+5；移项得3x-2x=5+6；x=11，代回两边均为27。","full":3,"level":"提升"},{"id":"Q023","type":"填空题","stem":"解方程2x-5=9，x=？","answer":"7","explanation":"2x=14，所以x=7。","full":1,"level":"基础"},{"id":"Q024","type":"填空题","stem":"解方程x/3+2=5，x=？","answer":"9","explanation":"x/3=3，所以x=9。","full":1,"level":"基础"},{"id":"Q025","type":"解答题","stem":"解方程：(x-1)/2+(x+1)/3=4。","answer":"x=5","explanation":"同乘6得3(x-1)+2(x+1)=24；展开得5x-1=24；5x=25，x=5。","full":3,"level":"提升"},{"id":"Q026","type":"填空题","stem":"x=3是否为方程2x+1=7的解？回答“是”或“否”。","answer":"是","explanation":"代入左边得7，与右边相等。","full":1,"level":"基础"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T02I2":{"id":"T02I2","name":"用消元法解二元一次方程组","theme":"方程与方程组","theme_id":"T02","theme_goal":"能解一元一次方程和二元一次方程组，依据等量关系建立模型并检验答案。","tags":["计算类","逻辑型"],"importance":"核心重点","error_tendency":["计算失误","思路不清"],"pages":"上册110—148；下册87—119","course_standard":"63 / 56","headline":"消元：先解决掉一个未知数","example":{"title":"教材例题精讲 · 加减消元与代入消元","pages":"下册第 87—105 页（二元一次方程组）","prompt":"解方程组：\n（1）x + y = 9，x - y = 3；\n（2）2x + y = 11，x - y = 1。","steps":[{"label":"（1）观察","content":"两个方程中 y 的系数互为相反数，直接相加消去 y。"},{"label":"（1）相加","content":"(x+y)+(x-y)=9+3，得 2x=12，x=6。"},{"label":"（1）回代","content":"把 x=6 代入 x+y=9，得 y=3。"},{"label":"（2）变形","content":"由 x-y=1 得 y=x-1，代入 2x+y=11。"},{"label":"（2）求解","content":"2x+(x-1)=11，3x=12，x=4；y=4-1=3。"}],"answer":"（1）x=6，y=3；（2）x=4，y=3。","note":"解完要把 x、y 成对写，并代回两个方程检验。"},"derivation":{"title":"代入还是加减，怎么挑","steps":[{"label":"代入法","content":"当某个未知数的系数为 1 或 -1 时，先把它表示成另一个未知数的式子，再代入。"},{"label":"加减法","content":"当同一个未知数的系数相同或互为相反数时，直接相减或相加消元。"},{"label":"系数不同","content":"先找最小公倍数，把某个未知数的系数化成相同或相反，再加减。"},{"label":"回代检验","content":"求出一个未知数后回代，求另一个；最后代回原方程组检验。"}],"conclusion":"消元说的是：用代入或者加减消去一个未知数，二元方程组就退成一元方程；解出来再回代求另一个。"},"common_errors":[{"error":"加减时符号处理错","fix":"把两个方程竖着对齐，同类项对齐后再加减。"},{"error":"回代时代错方程","fix":"优先代回系数简单的那个方程。"},{"error":"只写 x=6，漏写 y=3","fix":"方程组的解是一对数，必须成对写。"},{"error":"系数不同就直接相加","fix":"先变形，把目标未知数的系数化为相同或相反。"}],"tips":["先看系数，再选方法：有 1 用代入，相同相反用加减。","竖式对齐写方程组，减少符号错误。","解完用两个方程都检验一次。"],"graph_note":"这里把 T02I1 的一元方程解法用到两个未知数上，也是 T02I3 列方程组时要用的工具。","evidence":[{"title":"二元一次方程（组）","section":"10.1","section_title":"二元一次方程组的概念","chapter":"第十章 二元一次方程组","page":41,"quote":"上面的两个方程有什么特点?它们与一元一次方程有什么不同?可以看出,在上面两个方程中,每个方程都含有两个未知数(x和y),且含有未知数的式子都是整式,含有未知数的项的次数都是1,像这样的方程叫作二元一次方程(linearequationwithtwounknowns)．","kind":"memory"},{"title":"二元一次方程组的解","section":"10.1","section_title":"二元一次方程组的概念","chapter":"第十章 二元一次方程组","page":42,"quote":"一般地,二元一次方程组的两个方程的公共解,叫作二元一次方程组的解．","kind":"memory"},{"title":"代入消元法","section":"10.2","section_title":"消元——解二元一次方程组","chapter":"第十章 二元一次方程组","page":45,"quote":"这种解二元一次方程组的方法叫作代入消元法,简称代入法．","kind":"logic"},{"title":"加减消元法","section":"10.2","section_title":"消元——解二元一次方程组","chapter":"第十章 二元一次方程组","page":49,"quote":"59第十章二元一次方程组这种解二元一次方程组的方法叫作加减消元法,简称加减法．","kind":"logic"},{"title":"消元策略选择","section":"10.2","section_title":"消元——解二元一次方程组","chapter":"第十章 二元一次方程组","page":49,"quote":"烅烄烆当二元一次方程组的两个方程中同一个未知数的系数既不相等也不互为相反数时,能用加减法解方程组吗?看下面的例子．","kind":"logic"}],"exercises":[{"id":"Q028","type":"解答题","stem":"解方程组：x+y=9，x-y=3。","answer":"x=6，y=3","explanation":"两式相加得2x=12；x=6，代入x+y=9得y=3；解为x=6，y=3，两式均成立。","full":3,"level":"提升"},{"id":"Q029","type":"填空题","stem":"方程组x+y=7，x-y=1中的x是多少？","answer":"4","explanation":"两式相加得2x=8。","full":1,"level":"基础"},{"id":"Q030","type":"填空题","stem":"方程组x+2y=8、x=2中的y是多少？","answer":"3","explanation":"代入2+2y=8，y=3。","full":1,"level":"基础"},{"id":"Q031","type":"解答题","stem":"解方程组：2x+y=11，x-y=1。","answer":"x=4，y=3","explanation":"由x-y=1得y=x-1；代入2x+y=11得3x-1=11，x=4；y=3，原方程组成立。","full":3,"level":"提升"},{"id":"Q032","type":"填空题","stem":"方程组x+y=12、x=2y中的y是多少？","answer":"4","explanation":"3y=12，所以y=4。","full":1,"level":"基础"},{"id":"Q035","type":"填空题","stem":"方程组x+y=5，2x+y=8中的y是多少？","answer":"2","explanation":"两式相减得x=3，代入x+y=5得y=2。","full":1,"level":"基础"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T02I3":{"id":"T02I3","name":"列方程或方程组解决简单实际问题并检验","theme":"方程与方程组","theme_id":"T02","theme_goal":"能解一元一次方程和二元一次方程组，依据等量关系建立模型并检验答案。","tags":["逻辑型"],"importance":"核心重点","error_tendency":["思路不清"],"pages":"上册110—148；下册87—119","course_standard":"63 / 56","headline":"列方程（组）解决实际问题","example":{"title":"教材例题精讲 · 鸡兔同笼","pages":"下册第 105—119 页（实际问题与二元一次方程组）","prompt":"笼中鸡和兔共 10 只，共有 26 只脚。鸡和兔各有多少只？","steps":[{"label":"设","content":"设鸡有 x 只，兔有 y 只。"},{"label":"找等量关系","content":"头数：x+y=10；脚数：2x+4y=26。"},{"label":"解","content":"由 x+y=10 得 y=10-x，代入 2x+4(10-x)=26，得 x=7，y=3。"},{"label":"验与答","content":"头数 7+3=10，脚数 14+12=26，符合题意；鸡 7 只，兔 3 只。"}],"answer":"鸡 7 只，兔 3 只。","note":"实际问题的解要回到情境中检验：数量不能为负，头数、脚数都要对得上。"},"derivation":{"title":"从读题到作答：审、设、列、解、验、答","steps":[{"label":"审","content":"读题，圈出已知量、未知量和关键限制。"},{"label":"设","content":"设未知数，注意单位；两个未知量通常设两个字母。"},{"label":"列","content":"找等量关系，有几个未知数就找几个等量关系。"},{"label":"解","content":"解方程或方程组，得到数学答案。"},{"label":"验","content":"代回原题检验，并检查是否符合实际意义。"},{"label":"答","content":"写清单位与结论。"}],"conclusion":"列方程难在找等量关系，不在解方程。题目里的“共、比、是、等于、多、少”，往往就是等量关系的落点。"},"common_errors":[{"error":"等量关系找错，把“多 3”写成“少 3”","fix":"用文字先写一遍关系，再翻译成式子。"},{"error":"单位不统一","fix":"设未知数时带单位，列式前统一单位。"},{"error":"解完不检验实际意义","fix":"人数、只数、票价不能为负，还要符合整数要求。"}],"tips":["把“设”和“答”写完整，过程分才拿得稳。","复杂问题先画表格整理数量关系。","两个未知量优先考虑方程组，不要硬凑一元。"],"graph_note":"T02 的应用出口在这里。方程和方程组，本质上就是把实际里的数量关系写成模型。","evidence":[{"title":"列一元一次方程解决实际问题","section":"5.3","section_title":"实际问题与一元一次方程","chapter":"第五章 一元一次方程","page":24,"quote":"本节我们重点研究如何用一元一次方程解决实际问题．","kind":"logic"},{"title":"列二元一次方程组解决实际问题","section":"10.3","section_title":"实际问题与二元一次方程组","chapter":"第十章 二元一次方程组","page":54,"quote":"本节我们继续探究如何用二元一次方程组解决实际问题．","kind":"logic"},{"title":"检验方程的解与实际意义","section":"5.1","section_title":"方程","chapter":"第五章 一元一次方程","page":8,"quote":"一般地,从方程解出未知数的值以后,通常需要代入原方程检验,看这个值能否使方程左、右两边的值相等．","kind":"logic"}],"exercises":[{"id":"Q027","type":"填空题","stem":"某数的2倍再加5等于17，这个数是多少？","answer":"6","explanation":"设x，2x+5=17，x=6。","full":1,"level":"基础"},{"id":"Q033","type":"填空题","stem":"钢笔每支x元，练习本每本y元。买两支钢笔和三本练习本共用17元，列出x、y满足的等量关系式。","answer":"2x+3y=17","explanation":"总价为数量乘单价后相加。","full":1,"level":"基础"},{"id":"Q034","type":"解答题","stem":"两张成人票和一张学生票共80元，一张成人票和两张学生票共70元。成人票、学生票的单价各是多少元？","answer":"成人票30元，学生票20元","explanation":"设成人票x元、学生票y元，2x+y=80，x+2y=70；消元得x=30，y=20；成人票30元，学生票20元，代回均符合。","full":3,"level":"提升"},{"id":"Q036","type":"解答题","stem":"笼中鸡和兔共10只，共有26只脚。鸡和兔各有多少只？","answer":"鸡7只，兔3只","explanation":"设鸡x只、兔y只，x+y=10，2x+4y=26；由方程组得y=3，x=7；鸡7只兔3只，脚数14+12=26。","full":3,"level":"提升"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T03I1":{"id":"T03I1","name":"运用不等式性质求解，负数乘除时正确改变方向","theme":"不等式与不等式组","theme_id":"T03","theme_goal":"能解一元一次不等式及简单不等式组，表示解集，并解决范围约束问题。","tags":["计算类","记忆型"],"importance":"核心重点","error_tendency":["概念遗忘","计算失误"],"pages":"下册120—145","course_standard":"63 / 56","headline":"不等式性质：负数乘除要变号","example":{"title":"教材例题精讲 · 解一元一次不等式","pages":"下册第 120—132 页（不等式与不等式组）","prompt":"解不等式：-2x + 3 < 11，并把解集在数轴上表示出来。","steps":[{"label":"移项","content":"-2x < 11 - 3，即 -2x < 8。"},{"label":"系数化 1","content":"两边同除以 -2，不等号方向改变：x > -4。"},{"label":"数轴","content":"在 -4 处画空心点，向右画箭头。"},{"label":"检验","content":"取 x=0，左边 = 3 < 11，成立。"}],"answer":"x > -4。","note":"两边乘（除以）同一个负数，不等号方向必须改变，这是不等式与方程最大的不同。"},"derivation":{"title":"三条性质与解题流程","steps":[{"label":"性质 1","content":"不等式两边加（减）同一个数（式），不等号方向不变。"},{"label":"性质 2","content":"不等式两边乘（除以）同一个正数，不等号方向不变。"},{"label":"性质 3","content":"不等式两边乘（除以）同一个负数，不等号方向改变。"},{"label":"解集表示","content":"含等号用实心点，不含等号用空心点；大于向右，小于向左。"}],"conclusion":"解一元一次不等式的步骤与解方程类似：去分母、去括号、移项、合并、系数化为 1；唯一新增的风险点是“负数乘除变号”。"},"common_errors":[{"error":"两边除以负数不变号","fix":"在系数化为 1 的那一行旁边标注“除以负数，变号”。"},{"error":"数轴端点空心实心画错","fix":"先看有没有等号，再决定空心还是实心。"},{"error":"解集写成 x > -4 却在数轴画成 x < -4","fix":"大于向右，小于向左，箭头方向与不等号一致。"},{"error":"去分母时漏乘","fix":"每一项都乘最小公倍数，分子加括号。"}],"tips":["每变形一步停一下：两边到底在加、减、乘还是除？除数是负数的话，符号得翻。","解集一定要结合数轴检查一遍。","把不等式性质与等式性质列表对照记忆。"],"graph_note":"接着 T02I1 的等式性质往下走，多了一条“乘除负数要变号”，不等式就算入门了。","evidence":[{"title":"不等式","section":"11.1","section_title":"不等式","chapter":"第十一章 不等式与不等式组","page":2,"quote":"汽车要在8:00之前驶过A地,从时间上看,就是以xkm/h的速度行驶210km的时间不到2h,这个不等关系可以表示为210x<2．①从路程上看,就是以xkm/h的速度行驶2h的路程要超过210km,这个不等关系可以表示为2x>210．②像①②这样用符号“<”或“>”表示不等关系的式子,叫作不等式(inequality)．","kind":"memory"},{"title":"不等式的解与解集","section":"11.1","section_title":"不等式","chapter":"第十一章 不等式与不等式组","page":3,"quote":"与方程的解类似,我们把使不等式成立的未知数的值叫作不等式的解．","kind":"memory"},{"title":"不等式的性质","section":"11.1","section_title":"不等式","chapter":"第十一章 不等式与不等式组","page":5,"quote":"一般地,不等式有如下性质:不等式的性质1不等式两边加(或减)同一个数(或式子),不等号的方向不变．","kind":"logic"},{"title":"一元一次不等式的概念","section":"11.2","section_title":"一元一次不等式","chapter":"第十一章 不等式与不等式组","page":12,"quote":"类似于一元一次方程,只含有一个未知数,且含有未知数的式子都是整式,未知数的次数是1的不等式,叫作一元一次不等式(linearinequalitywithoneunknown)．","kind":"memory"}],"exercises":[{"id":"Q037","type":"填空题","stem":"解不等式x+4>9，写出解集。","answer":"x>5","explanation":"两边减4。","full":1,"level":"基础"},{"id":"Q038","type":"填空题","stem":"解不等式2x≤10，写出解集。","answer":"x≤5","explanation":"两边除以正数2，方向不变。","full":1,"level":"基础"},{"id":"Q039","type":"填空题","stem":"解不等式x-3<2，写出解集。","answer":"x<5","explanation":"两边加3。","full":1,"level":"基础"},{"id":"Q040","type":"解答题","stem":"解不等式3x-2≤10，并说明解集在数轴上如何表示。","answer":"x≤4，4处实心点向左","explanation":"两边加2得3x≤12；两边除以3得x≤4；数轴上4处实心点，向左表示。","full":3,"level":"提升"},{"id":"Q041","type":"填空题","stem":"解不等式-2x>6，写出解集。","answer":"x<-3","explanation":"除以负数-2，不等号方向改变。","full":1,"level":"基础"},{"id":"Q042","type":"填空题","stem":"已知a<b，则-a与-b之间应填“>”“<”还是“=”？","answer":">","explanation":"两边乘-1，不等号方向改变。","full":1,"level":"基础"},{"id":"Q043","type":"解答题","stem":"解不等式：-2x+3<11。","answer":"x>-4","explanation":"两边减3得-2x<8；两边除以-2，不等号反向；解集为x>-4；取x=0可检验。","full":3,"level":"提升"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T03I2":{"id":"T03I2","name":"求两个一元一次不等式解集的交集","theme":"不等式与不等式组","theme_id":"T03","theme_goal":"能解一元一次不等式及简单不等式组，表示解集，并解决范围约束问题。","tags":["计算类","逻辑型"],"importance":"核心重点","error_tendency":["思路不清","计算失误"],"pages":"下册120—145","course_standard":"63 / 56","headline":"不等式组：在数轴上找公共部分","example":{"title":"教材例题精讲 · 解一元一次不等式组","pages":"下册第 133—145 页（一元一次不等式组）","prompt":"解不等式组：x + 1 > 3，2x ≤ 10。","steps":[{"label":"分别解","content":"由 x+1>3 得 x>2；由 2x≤10 得 x≤5。"},{"label":"画数轴","content":"在 2 处画空心点向右，在 5 处画实心点向左。"},{"label":"找公共部分","content":"两个解集重叠的部分是 2 < x ≤ 5。"},{"label":"写解集","content":"解集为 2 < x ≤ 5。"}],"answer":"2 < x ≤ 5。","note":"不等式组的解集要同时满足其中每一个不等式，取的是公共部分，不能把两个范围直接拼起来。"},"derivation":{"title":"解不等式组的四句口诀","steps":[{"label":"同大取大","content":"x>a 且 x>b（a<b），解集为 x>b。"},{"label":"同小取小","content":"x<a 且 x<b（a<b），解集为 x<a。"},{"label":"大小小大中间找","content":"x>a 且 x<b（a<b），解集为 a<x<b。"},{"label":"大大小小无解","content":"x>a 且 x<b（a>b），没有公共部分，解集为空。"}],"conclusion":"先把每个不等式单独解出来，再把它们画到同一条数轴上找重叠，最后写出解集。端点是空心还是实心，看原不等式带不带等号。"},"common_errors":[{"error":"把两个解集直接拼成 x>2 或 x≤5","fix":"不等式组要求同时满足，取的是交集：能同时落进两个范围里的数才算。"},{"error":"端点开闭照抄错误","fix":"逐个回看原不等式：有等号实心，无等号空心。"},{"error":"无解时仍写一个范围","fix":"数轴上没有重叠就写“无解”。"},{"error":"分别解时负数不变号","fix":"回到 T03I1 的性质 3。"}],"tips":["先分别解，再统一画在同一条数轴上。","用两种颜色的笔分别画两个解集，重叠部分一目了然。","写完解集用特殊值代入检验。"],"graph_note":"先能解单个不等式（T03I1），再来看两个不等式在数轴上怎么重合出公共部分。这里的功夫直接给 T03I3 用。","evidence":[{"title":"一元一次不等式组","section":"11.3","section_title":"一元一次不等式组","chapter":"第十一章 不等式与不等式组","page":19,"quote":"设用xh将污水抽完,则x同时满足不等式30x>1200,30x<1500．①②类似于方程组,把这两个含有同一个未知数的一元一次不等式合起来,组成一个一元一次不等式组(systemoflinearinequalitieswithoneunknown),记作30x>1200,30x<1500．","kind":"memory"},{"title":"不等式组的解集","section":"11.3","section_title":"一元一次不等式组","chapter":"第十一章 不等式与不等式组","page":20,"quote":"一般地,几个不等式的解集的公共部分,叫作由它们所组成的不等式组的解集．","kind":"memory"},{"title":"求不等式组解集（取公共部分）","section":"11.3","section_title":"一元一次不等式组","chapter":"第十一章 不等式与不等式组","page":20,"quote":"解不等式组就是求它的解集．","kind":"logic"}],"exercises":[{"id":"Q044","type":"选择题","stem":"不等式组x≥-2，x<1的解集在数轴上应如何表示？","answer":"B","explanation":"x≥-2含端点-2，x<1不含端点1，公共部分在两点之间。","full":1,"level":"基础"},{"id":"Q045","type":"填空题","stem":"同时满足x>1、x<5，写出公共解集。","answer":"1<x<5","explanation":"取两个解集交集。","full":1,"level":"基础"},{"id":"Q046","type":"解答题","stem":"解不等式组：x+1>3，2x≤10。","answer":"2<x≤5","explanation":"由x+1>3得x>2；由2x≤10得x≤5；交集为2<x≤5。","full":3,"level":"提升"},{"id":"Q047","type":"填空题","stem":"同时满足x≥-1、x<4，写出公共解集。","answer":"-1≤x<4","explanation":"左端点含-1，右端点不含4。","full":1,"level":"基础"},{"id":"Q048","type":"填空题","stem":"不等式组x>3、x<2的解集是什么？","answer":"无解","explanation":"两个范围没有交集。","full":1,"level":"基础"},{"id":"Q049","type":"解答题","stem":"解不等式组：2x-1≥3，3-x>0。","answer":"2≤x<3","explanation":"2x-1≥3得x≥2；3-x>0得x<3；交集为2≤x<3。","full":3,"level":"提升"},{"id":"Q053","type":"填空题","stem":"解复合不等式-3≤2x+1<7，写出解集。","answer":"-2≤x<3","explanation":"各部分同时减1再除以2。","full":1,"level":"基础"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"},"T03I3":{"id":"T03I3","name":"根据实际限制列不等式并解释取值范围","theme":"不等式与不等式组","theme_id":"T03","theme_goal":"能解一元一次不等式及简单不等式组，表示解集，并解决范围约束问题。","tags":["逻辑型"],"importance":"基础掌握","error_tendency":["思路不清"],"pages":"下册120—145","course_standard":"63 / 56","headline":"列不等式：读懂“至少”和“不超过”","example":{"title":"教材例题精讲 · 范围约束问题","pages":"下册第 140—145 页（实际问题与一元一次不等式组）","prompt":"班级计划至少收集 60 本书，现已有 18 本，其余由 x 名同学每人捐 3 本。至少还需要多少名同学捐书？","steps":[{"label":"设","content":"设还需要 x 名同学捐书。"},{"label":"找不等关系","content":"已有 18 本，加上 3x 本，总数不少于 60 本。"},{"label":"列","content":"18 + 3x ≥ 60。"},{"label":"解","content":"3x ≥ 42，x ≥ 14。"},{"label":"解释","content":"人数取整数，至少需要 14 名同学。"}],"answer":"至少还需要 14 名同学。","note":"“至少”对应 ≥，“不超过”对应 ≤，“不足”对应 <；解出范围后还要看实际意义取整。"},"derivation":{"title":"列不等式的四步","steps":[{"label":"① 设","content":"设未知数，明确单位。"},{"label":"② 译","content":"把“至少、最多、不超过、不低于、不足、超过”翻译成 ≥、≤、<、>。"},{"label":"③ 解","content":"解不等式（组），得到数学范围。"},{"label":"④ 取舍","content":"根据人数、件数等实际意义取整数，并写出结论。"}],"conclusion":"不等式写的是范围。实际题里解完还要过一遍现实条件：人数得是整数、长度不能为负、总量有上限。"},"common_errors":[{"error":"“至少”列成 ≤","fix":"至少 = 不少于 = ≥；不超过 = ≤。"},{"error":"解出 x≥13.5 后直接写 13.5 人","fix":"人数取整数，至少需要 14 人。"},{"error":"忽略“售价不超过 30 元”这类上界条件","fix":"有两个限制就列不等式组，取交集。"},{"error":"不写实际意义","fix":"最后一句要用文字回答题目问的是什么。"}],"tips":["把关键词和不等号做成对照卡片。","解集在数轴上表示后，再结合实际情况截取整数点。","答案要带单位，并回读题目确认问的是“至少”还是“至多”。"],"graph_note":"T03 的出口在这里：不等式组会解了，才有底气把“至少”“不超过”这些说法落到数上。","evidence":[{"title":"列不等式表示范围约束","section":"11.1","section_title":"不等式","chapter":"第十一章 不等式与不等式组","page":2,"quote":"我们常用不等式来表示不等关系．","kind":"logic"},{"title":"用不等式解决实际问题","section":"11.3","section_title":"一元一次不等式组","chapter":"第十一章 不等式与不等式组","page":25,"quote":"用不等式解决实际问题也与方程类似:首先要分析问题中的数量关系,找出不等关系,通过设未知数、列不等式,把实际问题转化为数学问341第十一章不等式与不等式组题;然后通过解不等式获得数学结论;最后讨论数学结论是否符合实际意义,并用数学结论解释实际问题．","kind":"logic"},{"title":"检验取值范围的实际意义","section":"11.3","section_title":"一元一次不等式组","chapter":"第十一章 不等式与不等式组","page":25,"quote":"用不等式解决实际问题也与方程类似:首先要分析问题中的数量关系,找出不等关系,通过设未知数、列不等式,把实际问题转化为数学问341第十一章不等式与不等式组题;然后通过解不等式获得数学结论;最后讨论数学结论是否符合实际意义,并用数学结论解释实际问题．","kind":"logic"}],"exercises":[{"id":"Q050","type":"填空题","stem":"每张票5元，买x张的费用不超过30元，应列什么不等式？","answer":"5x≤30","explanation":"费用为5x，“不超过”对应≤。","full":1,"level":"基础"},{"id":"Q051","type":"填空题","stem":"一件商品原价x元，优惠5元后价格不超过30元，应列什么不等式？","answer":"x-5≤30","explanation":"优惠后为x-5。","full":1,"level":"基础"},{"id":"Q052","type":"解答题","stem":"班级计划至少收集60本书，现已有18本，其余由x名同学每人捐3本。至少还需要多少名同学捐书？","answer":"14人","explanation":"列出18+3x≥60；得3x≥42，x≥14；人数为整数，至少还需14人。","full":3,"level":"提升"},{"id":"Q054","type":"解答题","stem":"某商品成本为20元，售价为x元。要求每件至少获利5元，且售价不超过30元，求售价x的取值范围。","answer":"25≤x≤30元","explanation":"至少获利5元，x-20≥5，即x≥25；售价不超过30元，所以x≤30；两条件同时满足：25≤x≤30元。","full":3,"level":"提升"},{"id":"X031","type":"解答题","stem":"一个长方形的长为 12 cm，周长为不超过 40 cm。设宽为 x cm，求 x 的取值范围。","answer":"0 < x ≤ 8","explanation":"周长 = 2(12+x) ≤ 40，得 12+x ≤ 20，x ≤ 8；宽为正数，所以 0 < x ≤ 8。","full":3,"level":"提升"},{"id":"X032","type":"填空题","stem":"某次测验共 20 道题，答对一题得 5 分，不答或答错得 0 分。要得 80 分以上，至少要答对多少道题？","answer":"17 道","explanation":"设答对 x 道，5x > 80，x > 16；x 取整数，至少 17 道。","full":1,"level":"基础"}],"exercise_note":"课后同型训练：按教材课后习题题型改编，覆盖基础与提升两档。"}},"mindmap":{"canvas":{"width":1260,"height":800},"legend":[{"color":"memory","label":"记忆型","desc":"概念、法则、性质为主"},{"color":"logic","label":"逻辑型（知识型）","desc":"运算、推理、建模为主"},{"color":"foundation","label":"前置基础","desc":"思维导图外的先备知识"}],"themes":[{"id":"T01","name":"代数式与整式运算","goal":"能用代数式表示数量关系、代入求值，并进行整式加减与解释。","points":["T01I1","T01I3","T01I2"],"error_rate":0.5781,"color":"logic"},{"id":"T02","name":"方程与方程组","goal":"能解一元一次方程和二元一次方程组，依据等量关系建模并检验。","points":["T02I3","T02I1","T02I2"],"error_rate":0.5546,"color":"logic"},{"id":"T03","name":"不等式与不等式组","goal":"能解一元一次不等式（组），表示解集，并解决范围约束问题。","points":["T03I3","T03I1","T03I2"],"error_rate":0.5934,"color":"logic"}],"nodes":[{"id":"T03I3","name":"根据实际限制列不等式并解释取值范围","label":"根据实际限制列不等式并解释取值范围","theme":"不等式与不等式组","theme_id":"T03","kind":"point","type":"逻辑型","tags":["逻辑型"],"importance":"基础掌握","tier":"重点","error_rate":0.5455,"error_rate_text":"54.5%","parent_id":"T03I2","parent_name":"求两个一元一次不等式解集的交集","pages":"下册120—145","x":1050,"y":606},{"id":"T01I1","name":"表示数量关系并代入求值","label":"表示数量关系并代入求值","theme":"代数式与整式运算","theme_id":"T01","kind":"point","type":"逻辑型","tags":["计算类","逻辑型"],"importance":"核心重点","tier":"重点","error_rate":0.5022,"error_rate_text":"50.2%","parent_id":"F01","parent_name":"字母表示数、代数式的概念","pages":"上册68—109","x":250,"y":214},{"id":"T01I3","name":"用整式解释具体问题","label":"用整式解释具体问题","theme":"代数式与整式运算","theme_id":"T01","kind":"point","type":"逻辑型","tags":["逻辑型","记忆型"],"importance":"基础掌握","tier":"重点","error_rate":0.4762,"error_rate_text":"47.6%","parent_id":"T01I1","parent_name":"表示数量关系并代入求值","pages":"上册68—109","x":250,"y":606},{"id":"T02I3","name":"列方程或方程组解决简单实际问题并检验","label":"列方程或方程组解决简单实际问题并检验","theme":"方程与方程组","theme_id":"T02","kind":"point","type":"逻辑型","tags":["逻辑型"],"importance":"核心重点","tier":"次重点","error_rate":0.4609,"error_rate_text":"46.1%","parent_id":"T02I2","parent_name":"用消元法解二元一次方程组","pages":"上册110—148；下册87—119","x":650,"y":606},{"id":"T02I1","name":"运用等式性质解一元一次方程","label":"运用等式性质解一元一次方程","theme":"方程与方程组","theme_id":"T02","kind":"point","type":"记忆型","tags":["计算类","记忆型"],"importance":"核心重点","tier":"次重点","error_rate":0.4494,"error_rate_text":"44.9%","parent_id":"F03","parent_name":"等式的性质","pages":"上册110—148；下册87—119","x":650,"y":214},{"id":"T03I1","name":"运用不等式性质求解，负数乘除时正确改变方向","label":"运用不等式性质求解，负数乘除时正确改变方向","theme":"不等式与不等式组","theme_id":"T03","kind":"point","type":"记忆型","tags":["计算类","记忆型"],"importance":"核心重点","tier":"次重点","error_rate":0.434,"error_rate_text":"43.4%","parent_id":"T02I1","parent_name":"运用等式性质解一元一次方程","pages":"下册120—145","x":1050,"y":214},{"id":"T02I2","name":"用消元法解二元一次方程组","label":"用消元法解二元一次方程组","theme":"方程与方程组","theme_id":"T02","kind":"point","type":"逻辑型","tags":["计算类","逻辑型"],"importance":"核心重点","tier":"次重点","error_rate":0.4295,"error_rate_text":"43.0%","parent_id":"T02I1","parent_name":"运用等式性质解一元一次方程","pages":"上册110—148；下册87—119","x":650,"y":410},{"id":"T01I2","name":"识别同类项、去括号并化简","label":"识别同类项、去括号并化简","theme":"代数式与整式运算","theme_id":"T01","kind":"point","type":"记忆型","tags":["计算类","记忆型"],"importance":"核心重点","tier":"注意点","error_rate":0.3296,"error_rate_text":"33.0%","parent_id":"F02","parent_name":"整式概念与去括号法则","pages":"上册68—109","x":250,"y":410},{"id":"T03I2","name":"求两个一元一次不等式解集的交集","label":"求两个一元一次不等式解集的交集","theme":"不等式与不等式组","theme_id":"T03","kind":"point","type":"逻辑型","tags":["计算类","逻辑型"],"importance":"核心重点","tier":"注意点","error_rate":0.3125,"error_rate_text":"31.2%","parent_id":"T03I1","parent_name":"运用不等式性质求解","pages":"下册120—145","x":1050,"y":410},{"id":"F01","name":"字母表示数","label":"字母表示数","detail":"字母表示数、代数式的概念","kind":"foundation","type":"基础","x":250,"y":82},{"id":"F02","name":"整式与去括号","label":"整式与去括号","detail":"整式概念、有理数运算、去括号法则","kind":"foundation","type":"基础","x":78,"y":410},{"id":"F03","name":"等式的性质","label":"等式的性质","detail":"等式两边同加同减、同乘同除","kind":"foundation","type":"基础","x":650,"y":82},{"id":"F04","name":"数轴与解集","label":"数轴与解集","detail":"用数轴表示解集、端点开闭","kind":"foundation","type":"基础","x":1050,"y":82},{"id":"F05","name":"实际问题审题","label":"实际问题审题","detail":"找等量关系与不等关系","kind":"foundation","type":"基础","x":850,"y":722}],"edges":[{"from":"T01I1","to":"T01I2","kind":"main"},{"from":"T01I2","to":"T01I3","kind":"main"},{"from":"T02I1","to":"T02I2","kind":"main"},{"from":"T02I2","to":"T02I3","kind":"main"},{"from":"T03I1","to":"T03I2","kind":"main"},{"from":"T03I2","to":"T03I3","kind":"main"},{"from":"T01I2","to":"T02I1","kind":"cross","label":"迁移"},{"from":"T02I1","to":"T03I1","kind":"cross","label":"迁移"},{"from":"F01","to":"T01I1","kind":"foundation","label":"前置"},{"from":"F02","to":"T01I2","kind":"foundation","label":"前置"},{"from":"F03","to":"T02I1","kind":"foundation","label":"前置"},{"from":"F04","to":"T03I2","kind":"foundation","label":"前置"},{"from":"F05","to":"T02I3","kind":"foundation","label":"前置"},{"from":"F05","to":"T03I3","kind":"foundation","label":"前置"}]},"sample":{"students":[{"id":"S01","class":"测试班A","grade":7},{"id":"S02","class":"测试班A","grade":7},{"id":"S03","class":"测试班B","grade":7},{"id":"S04","class":"测试班B","grade":7}],"responses":[{"student":"S01","indicator":"T01I1","item":"Q001","score":4,"full":4},{"student":"S01","indicator":"T01I1","item":"Q002","score":4,"full":4},{"student":"S01","indicator":"T01I2","item":"Q004","score":3,"full":4},{"student":"S01","indicator":"T01I2","item":"Q005","score":4,"full":4},{"student":"S01","indicator":"T01I3","item":"Q011","score":3,"full":4},{"student":"S01","indicator":"T01I3","item":"Q012","score":3,"full":4},{"student":"S01","indicator":"T02I1","item":"Q019","score":4,"full":4},{"student":"S01","indicator":"T02I1","item":"Q020","score":4,"full":4},{"student":"S01","indicator":"T02I2","item":"Q028","score":3,"full":4},{"student":"S01","indicator":"T02I2","item":"Q029","score":4,"full":4},{"student":"S01","indicator":"T02I3","item":"Q036","score":3,"full":4},{"student":"S01","indicator":"T02I3","item":"Q037","score":3,"full":4},{"student":"S01","indicator":"T03I1","item":"Q041","score":3,"full":4},{"student":"S01","indicator":"T03I1","item":"Q042","score":4,"full":4},{"student":"S01","indicator":"T03I2","item":"Q046","score":3,"full":4},{"student":"S01","indicator":"T03I2","item":"Q047","score":3,"full":4},{"student":"S01","indicator":"T03I3","item":"Q052","score":2,"full":4},{"student":"S01","indicator":"T03I3","item":"Q053","score":2,"full":4},{"student":"S02","indicator":"T01I1","item":"Q001","score":2,"full":4},{"student":"S02","indicator":"T01I1","item":"Q002","score":3,"full":4},{"student":"S02","indicator":"T01I2","item":"Q004","score":3,"full":4},{"student":"S02","indicator":"T01I2","item":"Q005","score":3,"full":4},{"student":"S02","indicator":"T01I3","item":"Q011","score":2,"full":4},{"student":"S02","indicator":"T01I3","item":"Q012","score":2,"full":4},{"student":"S02","indicator":"T02I1","item":"Q019","score":3,"full":4},{"student":"S02","indicator":"T02I1","item":"Q020","score":4,"full":4},{"student":"S02","indicator":"T02I2","item":"Q028","score":2,"full":4},{"student":"S02","indicator":"T02I2","item":"Q029","score":3,"full":4},{"student":"S02","indicator":"T02I3","item":"Q036","score":1,"full":4},{"student":"S02","indicator":"T02I3","item":"Q037","score":2,"full":4},{"student":"S02","indicator":"T03I1","item":"Q041","score":2,"full":4},{"student":"S02","indicator":"T03I1","item":"Q042","score":3,"full":4},{"student":"S02","indicator":"T03I2","item":"Q046","score":2,"full":4},{"student":"S02","indicator":"T03I2","item":"Q047","score":2,"full":4},{"student":"S02","indicator":"T03I3","item":"Q052","score":1,"full":4},{"student":"S02","indicator":"T03I3","item":"Q053","score":1,"full":4},{"student":"S03","indicator":"T01I1","item":"Q001","score":1,"full":4},{"student":"S03","indicator":"T01I1","item":"Q002","score":2,"full":4},{"student":"S03","indicator":"T01I2","item":"Q004","score":2,"full":4},{"student":"S03","indicator":"T01I2","item":"Q005","score":3,"full":4},{"student":"S03","indicator":"T01I3","item":"Q011","score":1,"full":4},{"student":"S03","indicator":"T01I3","item":"Q012","score":1,"full":4},{"student":"S03","indicator":"T02I1","item":"Q019","score":3,"full":4},{"student":"S03","indicator":"T02I1","item":"Q020","score":3,"full":4},{"student":"S03","indicator":"T02I2","item":"Q028","score":2,"full":4},{"student":"S03","indicator":"T02I2","item":"Q029","score":2,"full":4},{"student":"S03","indicator":"T02I3","item":"Q036","score":2,"full":4},{"student":"S03","indicator":"T02I3","item":"Q037","score":3,"full":4},{"student":"S03","indicator":"T03I1","item":"Q041","score":2,"full":4},{"student":"S03","indicator":"T03I1","item":"Q042","score":2,"full":4},{"student":"S03","indicator":"T03I2","item":"Q046","score":1,"full":4},{"student":"S03","indicator":"T03I2","item":"Q047","score":2,"full":4},{"student":"S03","indicator":"T03I3","item":"Q052","score":1,"full":4},{"student":"S03","indicator":"T03I3","item":"Q053","score":0,"full":4},{"student":"S04","indicator":"T01I1","item":"Q001","score":0,"full":4},{"student":"S04","indicator":"T01I1","item":"Q002","score":1,"full":4},{"student":"S04","indicator":"T01I2","item":"Q004","score":1,"full":4},{"student":"S04","indicator":"T01I2","item":"Q005","score":2,"full":4},{"student":"S04","indicator":"T01I3","item":"Q011","score":0,"full":4},{"student":"S04","indicator":"T01I3","item":"Q012","score":1,"full":4},{"student":"S04","indicator":"T02I1","item":"Q019","score":2,"full":4},{"student":"S04","indicator":"T02I1","item":"Q020","score":2,"full":4},{"student":"S04","indicator":"T02I2","item":"Q028","score":1,"full":4},{"student":"S04","indicator":"T02I2","item":"Q029","score":1,"full":4},{"student":"S04","indicator":"T02I3","item":"Q036","score":1,"full":4},{"student":"S04","indicator":"T02I3","item":"Q037","score":1,"full":4},{"student":"S04","indicator":"T03I1","item":"Q041","score":1,"full":4},{"student":"S04","indicator":"T03I1","item":"Q042","score":2,"full":4},{"student":"S04","indicator":"T03I2","item":"Q046","score":0,"full":4},{"student":"S04","indicator":"T03I2","item":"Q047","score":1,"full":4},{"student":"S04","indicator":"T03I3","item":"Q052","score":0,"full":4},{"student":"S04","indicator":"T03I3","item":"Q053","score":0,"full":4}]},"precomputed":{"data_quality":{"responses":813,"students":40,"classes":2,"points":9,"coverage":0.8194},"warnings":[{"rank":1,"point_id":"T03I3","point_name":"根据实际限制列不等式并解释取值范围","error_rate":0.5455,"error_rate_text":"54.5%","parent_id":"T03I2","parent_name":"求两个一元一次不等式解集的交集","parent_external":false,"reason":"根据实际限制列不等式后，解集与取值范围的表达依赖不等式组。","student_text":"「求两个一元一次不等式解集的交集」学习仍有欠缺","teacher_text":"「求两个一元一次不等式解集的交集」再讲一下吧","action":"先补「求两个一元一次不等式解集的交集」，再回练「根据实际限制列不等式并解释取值范围」"},{"rank":2,"point_id":"T01I1","point_name":"表示数量关系并代入求值","error_rate":0.5022,"error_rate_text":"50.2%","parent_id":"F01","parent_name":"字母表示数、代数式的概念","parent_external":true,"reason":"列代数式的前提是用字母表示数，并识别代数式的书写规范。","student_text":"「字母表示数、代数式的概念」学习仍有欠缺","teacher_text":"「字母表示数、代数式的概念」再讲一下吧","action":"先补「字母表示数、代数式的概念」，再回练「表示数量关系并代入求值」"},{"rank":3,"point_id":"T01I3","point_name":"用整式解释具体问题","error_rate":0.4762,"error_rate_text":"47.6%","parent_id":"T01I1","parent_name":"表示数量关系并代入求值","parent_external":false,"reason":"先用代数式准确表示数量关系，才谈得上用整式解释问题。","student_text":"「表示数量关系并代入求值」学习仍有欠缺","teacher_text":"「表示数量关系并代入求值」再讲一下吧","action":"先补「表示数量关系并代入求值」，再回练「用整式解释具体问题」"}]},"filtered":0};</script>
+<script>
+/*
+  ============================================================================
+  前端逻辑地图（按执行顺序）
+    utils        格式化、聚合、掌握度判定
+    analysis     computeModel：在浏览器里按同一口径重算（导入新数据时用）
+    mind map     首页思维导图绘制
+    home         首页渲染
+    student      学生端渲染
+    teacher      教师端渲染
+    drawer       知识点详情抽屉（例题/推导/习题/证据）
+    import       JSON / CSV 机器接入
+    route        页面切换
+  可调节的参数：
+    CONFIG.mastery.*                     掌握度阈值（来自 model.json）
+    CONFIG.baseline_error_rate           预警基线
+    CONFIG.warning_top_n                 预警取前几个
+    STATE 初始值                          默认打开哪个页面/哪个学生/哪个班
+  ============================================================================
+*/
+(function(){
+  "use strict";
+  const D = window.APP_DATA;          // 由 build_site.py 注入的完整数据包
+  const KP = D.points;                // 9 个知识点
+  const KPMAP = Object.fromEntries(KP.map(p => [p.id, p]));
+  const CONFIG = D.config;            // 分析口径，来自 engine.py 的 CONFIG
+  const BASE = CONFIG.baseline_error_rate;  // 30% 预警基线
+  // 初始状态：可调节默认首页、默认学生、默认班级
+  const STATE = {
+    view: "home",                     // home | student | teacher
+    student: (D.students[0] || {}).id || "",
+    teacherClass: "ALL",              // ALL 或具体班级名
+    dataset: "demo"
+  };
+  let STUDENTS = D.students.map(s => ({...s}));
+  let RAW = D.responses.map(r => ({...r}));
+  let M = null;
+
+  /* ---------- utils：格式化 / 聚合 / 掌握度判定 ---------- */
+  /* 可调节：masteryOf 的阈值来自 CONFIG.mastery，改 model.json 或 engine.py 生效 */
+  const $ = (sel, root) => (root || document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const pct = (x, d = 1) => (Number.isFinite(x) ? (x * 100).toFixed(d) : "0.0") + "%";
+  const num = (x, d = 1) => Number.isFinite(x) ? x.toFixed(d) : "0.0";
+  const unique = arr => Array.from(new Set(arr));
+  function masteryOf(err){
+    if (err <= CONFIG.mastery.mastered_max_error) return "掌握";
+    if (err <= CONFIG.mastery.partial_max_error) return "部分掌握";
+    return "未掌握";
+  }
+  function agg(rows){
+    let score = 0, full = 0;
+    rows.forEach(r => { score += r.sc; full += r.f; });
+    const rate = full ? score / full : 0;
+    return {attempts: rows.length, score, full, rate, err: full ? 1 - rate : 0};
+  }
+  function masteryClass(m){
+    return m === "掌握" ? "m-mastered" : (m === "部分掌握" ? "m-partial" : "m-weak");
+  }
+  function typeBadge(t, small){
+    const cls = t === "记忆型" ? "memory" : "logic";
+    return `<span class="badge ${cls}">${esc(t)}</span>`;
+  }
+  function tierClass(t){ return t === "重点" ? "tier-focus" : (t === "次重点" ? "tier-mid" : "tier-note"); }
+  function toast(msg){
+    const el = $("#toast");
+    el.textContent = msg;
+    el.classList.add("on");
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove("on"), 2400);
+  }
+  function splitLines(text, max, maxLines){
+    const chars = Array.from(String(text || ""));
+    const lines = [];
+    let cur = "";
+    for (const ch of chars){
+      if (Array.from(cur).length >= max && lines.length < maxLines - 1){
+        lines.push(cur); cur = "";
+      }
+      cur += ch;
+    }
+    if (cur) lines.push(cur);
+    if (lines.length > maxLines){
+      const out = lines.slice(0, maxLines);
+      out[maxLines - 1] = out[maxLines - 1].slice(0, Math.max(1, max - 1)) + "…";
+      return out;
+    }
+    if (lines.length === maxLines && Array.from(lines[maxLines - 1]).length > max){
+      lines[maxLines - 1] = Array.from(lines[maxLines - 1]).slice(0, max - 1).join("") + "…";
+    }
+    return lines;
+  }
+
+  /* ---------- analysis：浏览器内重算模型（导入新数据时走这里） ---------- */
+  /* computeModel 输出与 engine.py 同口径：错误率、掌握度、班级对比、预警 */
+  function computeModel(students, responses){
+    const byS = new Map(students.map(s => [s.id, []]));
+    responses.forEach(r => { if (byS.has(r.s)) byS.get(r.s).push(r); });
+    const clsOf = Object.fromEntries(students.map(s => [s.id, s.class]));
+    const classes = unique(students.map(s => s.class)).sort();
+
+    let points = KP.map(kp => {
+      const rows = responses.filter(r => r.i === kp.id);
+      const st = agg(rows);
+      const classRates = {};
+      classes.forEach(c => {
+        const cr = rows.filter(r => clsOf[r.s] === c);
+        if (cr.length){
+          const cs = agg(cr);
+          classRates[c] = {attempts: cs.attempts, score: cs.score, full: cs.full, rate: cs.rate, err: cs.err};
+        }
+      });
+      return {...kp, ...st, mastery: masteryOf(st.err), classRates};
+    });
+    const ranked = points.slice().sort((a, b) => b.err - a.err || b.attempts - a.attempts || a.id.localeCompare(b.id));
+    const n = ranked.length;
+    const top = Math.max(1, Math.round(n * CONFIG.tiers[0].ratio));
+    let mid = Math.max(1, Math.round(n * CONFIG.tiers[1].ratio));
+    if (top + mid >= n) mid = Math.max(0, n - top - 1);
+    ranked.forEach((p, i) => {
+      p.rank = i + 1;
+      p.tier = i < top ? "重点" : (i < top + mid ? "次重点" : "注意点");
+    });
+    points = ranked;
+    const byId = Object.fromEntries(points.map(p => [p.id, p]));
+
+    const studentRows = students.map(stu => {
+      const rows = byS.get(stu.id) || [];
+      const pstats = KP.map(kp => {
+        const sub = rows.filter(r => r.i === kp.id);
+        if (!sub.length) return null;
+        const a = agg(sub);
+        return {...kp, ...a, mastery: masteryOf(a.err)};
+      }).filter(Boolean);
+      const total = agg(rows);
+      const eligible = pstats.filter(p => p.err > 0.0001 && p.attempts >= 2);
+      const pool = eligible.length ? eligible : pstats.filter(p => p.err > 0.0001);
+      const weakAll = pool.slice().sort((a, b) => (b.full - b.score) - (a.full - a.score) || b.err - a.err || b.attempts - a.attempts || a.id.localeCompare(b.id));
+      const warnAll = pool.slice().sort((a, b) => b.err - a.err || b.attempts - a.attempts || a.id.localeCompare(b.id));
+      let weak = weakAll.filter(p => p.err >= BASE).slice(0, 3);
+      if (weak.length < 3){
+        weak = weak.slice();
+        for (const p of weakAll){ if (!weak.includes(p)) weak.push(p); if (weak.length === 3) break; }
+      }
+      const strong = pstats.slice().sort((a, b) => a.err - b.err || b.attempts - a.attempts || a.id.localeCompare(b.id)).slice(0, 3);
+      const counts = {掌握: 0, 部分掌握: 0, 未掌握: 0};
+      pstats.forEach(p => counts[p.mastery]++);
+      const warnings = warnAll.slice(0, 3).map((p, i) => ({
+        rank: i + 1, point_id: p.id, point_name: p.name, error_rate: p.err, attempts: p.attempts,
+        parent_id: p.parent_id, parent_name: p.parent_name, parent_external: p.parent_external,
+        reason: p.parent_reason,
+        student_text: `「${p.parent_name}」学习仍有欠缺`,
+        action: `先补「${p.parent_name}」，再回练「${p.name}」`
+      }));
+      return {
+        ...stu, attempts: rows.length, score: total.score, full: total.full,
+        rate: total.rate, err: total.err, points: pstats, weak_points: weak,
+        strong_points: strong, mastery_counts: counts, warnings,
+        advice_summary: weak.length
+          ? `优先补「${weak.slice(0, 3).map(p => p.name).join("」「")}」。先按上面的逐条建议改错，再用同型题各练 3—5 道。`
+          : "当前作答覆盖的知识点较少，建议先完成一轮完整练习后再生成个性化建议。"
+      };
+    });
+
+    const byClass = {};
+    classes.forEach(c => {
+      const rows = studentRows.filter(s => s.class === c);
+      const rates = rows.filter(s => s.attempts > 0).map(s => s.rate);
+      const avg = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : 0;
+      const dist = [
+        {label: "不及格", range: "0—59%", count: rates.filter(r => r < 0.6).length},
+        {label: "及格", range: "60—69%", count: rates.filter(r => r >= 0.6 && r < 0.7).length},
+        {label: "良好", range: "70—84%", count: rates.filter(r => r >= 0.7 && r < 0.85).length},
+        {label: "优秀", range: "85—100%", count: rates.filter(r => r >= 0.85).length}
+      ];
+      byClass[c] = {
+        id: c, student_count: rows.length, avg, pass: rates.length ? rates.filter(r => r >= 0.6).length / rates.length : 0,
+        excellent: rates.length ? rates.filter(r => r >= 0.85).length / rates.length : 0,
+        distribution: dist,
+        warnings: warningsFor(points.map(p => ({...p, err: p.classRates[c] ? p.classRates[c].err : p.err, attempts: p.classRates[c] ? p.classRates[c].attempts : 0})), 3)
+      };
+    });
+
+    const sortedStudents = studentRows.slice();
+    classes.forEach(c => {
+      const rows = sortedStudents.filter(s => s.class === c).sort((a, b) => b.rate - a.rate || a.id.localeCompare(b.id));
+      rows.forEach((s, i) => { s.class_rank = i + 1; s.class_size = rows.length; });
+    });
+
+    const warnings = warningsFor(points, CONFIG.warning_top_n);
+    const teaching = teachingAdvice(studentRows, points);
+    const attention = attentionList(studentRows);
+    return {points, byId, classes: byClass, students: studentRows, warnings, teaching, attention, allResponses: responses};
+  }
+
+  function warningsFor(points, n){
+    return points.filter(p => p.attempts > 0).slice().sort((a, b) => b.err - a.err || a.id.localeCompare(b.id)).slice(0, n).map((p, i) => ({
+      rank: i + 1, point_id: p.id, point_name: p.name, error_rate: p.err, error_rate_text: pct(p.err), attempts: p.attempts,
+      parent_id: p.parent_id, parent_name: p.parent_name, parent_external: p.parent_external,
+      reason: p.parent_reason,
+      student_text: `「${p.parent_name}」学习仍有欠缺`,
+      teacher_text: `「${p.parent_name}」再讲一下吧`,
+      action: `先补「${p.parent_name}」，再回练「${p.name}」`
+    }));
+  }
+
+  function moduleTags(kp){
+    return [
+      {c: "重要性", l: kp.importance},
+      ...kp.tags.map(t => ({c: "知识点类型", l: t})),
+      ...kp.error_tendency.map(t => ({c: "错因倾向", l: t})),
+      {c: "上级知识点追溯", l: kp.parent_id ? "有上级" : "无上级"}
+    ];
+  }
+  function moduleText(c, l){
+    const m = D.modules.find(x => x["模块类别"] === c && x["模块标签"] === l);
+    return m ? m["可拼接建议话术"] : "";
+  }
+  function teachingAdvice(students, points){
+    const counter = new Map();
+    const seenStudent = new Map();
+    students.forEach(s => {
+      const seen = new Set();
+      s.weak_points.forEach(p => {
+        moduleTags(p).forEach(t => {
+          const k = t.c + "|" + t.l;
+          if (seen.has(k)) return;
+          seen.add(k);
+          counter.set(k, (counter.get(k) || 0) + 1);
+        });
+      });
+    });
+    const total = students.length || 1;
+    const all = Array.from(counter.entries()).map(([k, count]) => {
+      const [c, l] = k.split("|");
+      return {category: c, label: l, count, share: count / total, text: moduleText(c, l)};
+    }).sort((a, b) => b.count - a.count);
+    const pick = (cat, n) => all.filter(x => x.category === cat).slice(0, n);
+    const imp = pick("重要性", 1), types = pick("知识点类型", 1), errs = pick("错因倾向", 1);
+    const focus = all.filter(x => x.category === "知识点类型" || x.category === "错因倾向").slice(0, 3);
+    const topPoints = points.slice().sort((a, b) => b.err - a.err).slice(0, 3);
+    const actions = [];
+    if (focus.length) actions.push(`班课先按「${focus.map(x => x.label).join("」「")}」组织一轮 10 分钟微专题。`);
+    actions.push(`用「${topPoints.map(p => p.name).join("」「")}」做当堂变式，先补前置节点再回练。`);
+    actions.push("对重点关注对象按个人建议单独立项，三天后回收同型题正确率。");
+    const ranked = ["重要性", "知识点类型", "错因倾向"].map(c => all.find(x => x.category === c)).filter(Boolean);
+    const lead = ranked.length ? `全班 ${students.length} 人的建议汇总起来，「${ranked.map(x => x.label).join("」「")}」这几类最突出。` : "";
+    const parts = [];
+    imp.concat(types, errs).forEach(x => parts.push(x.text));
+    return {
+      sample_size: students.length, top_modules: all.slice(0, 12),
+      paragraph: lead + "\n" + parts.join("\n"),
+      actions
+    };
+  }
+  function attentionList(students){
+    const rows = students.map(s => {
+      const weakAll = s.points.filter(p => p.attempts >= CONFIG.attention.min_attempts && p.err >= CONFIG.attention.weak_error_rate)
+        .sort((a, b) => b.err - a.err);
+      return {
+        id: s.id, class: s.class, rate: s.rate, weak_count: weakAll.length,
+        weak_points: weakAll.slice(0, 4).map(p => ({id: p.id, name: p.name, error_rate: p.err}))
+      };
+    });
+    rows.sort((a, b) => b.weak_count - a.weak_count || a.rate - b.rate || a.id.localeCompare(b.id));
+    rows.forEach((r, i) => {
+      r.attention_rank = i + 1;
+      r.level = r.weak_count >= 5 ? "高" : (r.weak_count >= 3 ? "中" : "低");
+    });
+    return rows;
+  }
+
+  /* ---------- mind map：首页思维导图（inline SVG，无外部依赖） ---------- */
+  /* 可调节：节点坐标来自 model.json 的 mindmap，红=记忆型 蓝=逻辑型 */
+  function renderMap(){
+    const mm = D.mindmap;
+    const nodes = mm.nodes;
+    const byId = Object.fromEntries(nodes.map(n => [n.id, n]));
+    function dims(n){ return n.kind === "point" ? {w: 210, h: 76} : {w: 150, h: 44}; }
+    function anchor(a, b){
+      const da = dims(a), db = dims(b);
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const len = Math.max(0.001, Math.hypot(dx, dy));
+      const ux = dx / len, uy = dy / len;
+      const t1 = Math.min((da.w / 2) / Math.max(0.001, Math.abs(ux)), (da.h / 2) / Math.max(0.001, Math.abs(uy)));
+      const t2 = Math.min((db.w / 2) / Math.max(0.001, Math.abs(ux)), (db.h / 2) / Math.max(0.001, Math.abs(uy)));
+      return {x1: a.x + ux * t1, y1: a.y + uy * t1, x2: b.x - ux * t2, y2: b.y - uy * t2};
+    }
+    const edges = mm.edges.map(e => {
+      const a = byId[e.from], b = byId[e.to];
+      if (!a || !b) return "";
+      const p = anchor(a, b);
+      const mx = (p.x1 + p.x2) / 2, my = (p.y1 + p.y2) / 2;
+      const vertical = Math.abs(p.x2 - p.x1) < Math.abs(p.y2 - p.y1);
+      const d = vertical
+        ? `M${p.x1},${p.y1} C${p.x1},${my} ${p.x2},${my} ${p.x2},${p.y2}`
+        : `M${p.x1},${p.y1} C${mx},${p.y1} ${mx},${p.y2} ${p.x2},${p.y2}`;
+      return `<path d="${d}" fill="none" stroke="${e.kind === "main" ? "#93A3AA" : (e.kind === "cross" ? "#C9A24A" : "#BEB4A1")}" stroke-width="${e.kind === "main" ? 1.7 : 1.3}" ${e.kind === "cross" ? 'stroke-dasharray="6 4"' : (e.kind === "foundation" ? 'stroke-dasharray="2 4"' : "")} marker-end="url(#ar-${e.kind})" opacity=".9"/>`;
+    }).join("");
+
+    const pointNodes = nodes.filter(n => n.kind === "point");
+    const themeHeads = mm.themes.map(t => {
+      const xs = t.points.map(id => byId[id].x);
+      const x = xs.reduce((a, b) => a + b, 0) / xs.length;
+      return `<g>
+        <text x="${x}" y="146" text-anchor="middle" font-size="10.5" letter-spacing="2" fill="#96A5AB" font-weight="700">${esc(t.id)}</text>
+        <text x="${x}" y="163" text-anchor="middle" font-size="13.5" fill="#3B4F58" font-weight="700">${esc(t.name)}</text>
+        <line x1="${x - 118}" y1="172" x2="${x + 118}" y2="172" stroke="#DED4C1" stroke-width="1"/>
+      </g>`;
+    }).join("");
+
+    const nodeSvg = nodes.map(n => {
+      const d = dims(n);
+      if (n.kind === "foundation"){
+        return `<g class="node" data-node="${esc(n.id)}" tabindex="0" role="button" aria-label="前置基础 ${esc(n.name)}">
+          <rect class="node-bg" x="${n.x - d.w / 2}" y="${n.y - d.h / 2}" width="${d.w}" height="${d.h}" rx="11" fill="#F4EFE3" stroke="#C6B99F" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="${n.x}" y="${n.y + 4}" text-anchor="middle" font-size="12" fill="#6D6047" font-weight="600">${esc(n.name)}</text>
+          <title>${esc(n.name)}：${esc(n.detail || "")}</title>
+        </g>`;
+      }
+      const color = n.type === "记忆型" ? "#C24B36" : "#2D6AA0";
+      const bg = n.type === "记忆型" ? "#FBEAE5" : "#E9F1FA";
+      const lines = splitLines(n.name, 12, 2);
+      const lineSvg = lines.length === 1
+        ? `<text x="${n.x - 94}" y="${n.y + 4}" font-size="14.5" fill="#1B2C34" font-weight="700">${esc(lines[0])}</text>`
+        : `<text x="${n.x - 94}" y="${n.y - 2}" font-size="14" fill="#1B2C34" font-weight="700">${esc(lines[0])}</text><text x="${n.x - 94}" y="${n.y + 17}" font-size="14" fill="#1B2C34" font-weight="700">${esc(lines[1])}</text>`;
+      return `<g class="node" data-node="${esc(n.id)}" tabindex="0" role="button" aria-label="${esc(n.name)}，错误率 ${esc(n.error_rate_text)}">
+        <rect class="node-bg" x="${n.x - d.w / 2}" y="${n.y - d.h / 2}" width="${d.w}" height="${d.h}" rx="14" fill="${bg}" stroke="${color}" stroke-width="1.2"/>
+        <path d="M${n.x - d.w / 2 + 7},${n.y - d.h / 2} h-1 a6,6 0 0 0 -6,6 v${d.h - 12} a6,6 0 0 0 6,6 h1 z" fill="${color}"/>
+        <rect x="${n.x - d.w / 2 + 2}" y="${n.y - d.h / 2 + 10}" width="6" height="${d.h - 20}" rx="3" fill="${color}"/>
+        <text x="${n.x - 94}" y="${n.y - 23}" font-size="9.5" letter-spacing="1" fill="#7E9098" font-weight="600">${esc(n.id)} · ${esc(n.type)}</text>
+        <rect x="${n.x + 36}" y="${n.y - 32}" width="66" height="18" rx="9" fill="#FFFFFF" opacity=".78"/>
+        <text x="${n.x + 69}" y="${n.y - 19}" text-anchor="middle" font-size="10" fill="${color}" font-weight="700">${esc(n.error_rate_text)}</text>
+        ${lineSvg}
+        <text x="${n.x - 94}" y="${n.y + 34}" font-size="9.5" fill="#7E9098">${esc(n.importance)} · ${esc(n.tier)}</text>
+      </g>`;
+    }).join("");
+
+    return `<svg class="map" id="map-svg" viewBox="0 0 ${mm.canvas.width} ${mm.canvas.height}" role="img" aria-label="知识点思维导图">
+      <defs>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#20313A" flood-opacity=".08"/></filter>
+        <marker id="ar-main" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#93A3AA"/></marker>
+        <marker id="ar-cross" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#C9A24A"/></marker>
+        <marker id="ar-foundation" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#BEB4A1"/></marker>
+      </defs>
+      ${themeHeads}
+      ${edges}
+      ${nodeSvg}
+    </svg>`;
+  }
+
+  /* ---------- home：首页（思维导图 + 概览卡片） ---------- */
+  function renderHome(){
+    const q = M.allResponses.length;
+    const classes = Object.keys(M.classes).length;
+    const coverage = D.precomputed.data_quality.coverage;
+    const top = M.points[0];
+    return `
+    <section class="hero wrap">
+      <div>
+        <p class="eyebrow">SMART LEARNING COMPANION · 校赛演示</p>
+        <h1>一次考试，看得见<br>每个错点<em>从哪来</em></h1>
+        <p class="lead">9 个知识点按逻辑关系连成一张图，红蓝两色区分记忆型和逻辑型；点开任意一个节点，能看到教材例题、推导过程和课后习题。学生端看自己的易错点，教师端看两个班的共性问题和教学建议。</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-go="student">查看学生端 →</button>
+          <button class="btn btn-ghost" data-go="teacher">进入教师端</button>
+        </div>
+      </div>
+      <aside class="snapshot">
+        <h3>本次分析 · DATA SNAPSHOT</h3>
+        <div class="snap-row"><span>知识点</span><b>${M.points.length}<small>个</small></b></div>
+        <div class="snap-row"><span>学生 / 班级</span><b>${M.students.length}<small>人</small> · ${classes}<small>班</small></b></div>
+        <div class="snap-row"><span>有效作答</span><b>${q}<small>条</small></b></div>
+        <div class="snap-row"><span>学生—知识点覆盖率</span><b>${pct(coverage)}</b></div>
+        <div class="snap-row"><span>最高错误率</span><b>${pct(top.err)}<small>${esc(top.id)}</small></b></div>
+      </aside>
+    </section>
+
+    <section class="section wrap" id="map-section">
+      <div class="sec-head">
+        <div><p class="eyebrow">KNOWLEDGE MAP</p><h2>知识点是连成一条路的</h2><p>实线是学习顺序，虚线是跨主题迁移，点线是前置基础。颜色也有用处：红色偏记忆，蓝色偏逻辑（知识型）。</p></div>
+        <div class="legend"><span><i class="dot memory"></i>记忆型</span><span><i class="dot logic"></i>逻辑型（知识型）</span><span><i class="dot foundation"></i>前置基础</span></div>
+      </div>
+      <div class="card map-card">
+        <div class="map-toolbar">
+          <div class="legend"><span>9 个知识点 · 3 条主题链 · 5 个前置基础节点</span></div>
+          <div class="map-note">点击节点 → 教材例题 / 推导 / 课后习题 / 学情</div>
+        </div>
+        <div class="map-scroll">${renderMap()}</div>
+      </div>
+      <div class="theme-grid">${M.classes ? D.mindmap.themes.map(t => {
+        const pts = t.points.map(id => M.byId[id]);
+        const err = pts.reduce((a, p) => a + p.score, 0) / Math.max(1, pts.reduce((a, p) => a + p.full, 0));
+        const focus = pts.filter(p => p.tier === "重点").length;
+        return `<article class="card theme-card" data-t="${t.id}">
+          <div class="tid">${t.id} · THEME</div>
+          <h3>${esc(t.name)}</h3>
+          <p class="goal">${esc(t.goal)}</p>
+          <div class="theme-foot"><div><b>${pct(1 - err)}</b><span>主题平均得分率</span></div><div><span>重点节点 ${focus} 个</span><span>共 ${pts.length} 个知识点</span></div></div>
+        </article>`;
+      }).join("") : ""}</div>
+    </section>
+
+    <section class="section wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">EARLY WARNING</p><h2>学习预警：错得最多的三个点，问题多半在上一级</h2><p>取错误率最高的三个知识点，顺着前置关系往上找一层，往往能落到一个更早的概念上。学生端叫“学习仍有欠缺”，教师端叫“再讲一下吧”。</p></div>
+      </div>
+      <div class="warn-grid">${M.warnings.map(w => `
+        <article class="warn-card">
+          <div class="warn-kicker">预警 0${w.rank} · ${esc(w.point_id)}</div>
+          <div class="warn-trigger">错误率最高：<b>${esc(w.point_name)}</b> · ${w.error_rate_text}</div>
+          <div class="warn-arrow">↑ 往上找前置点</div>
+          <p class="warn-parent">「${esc(w.parent_name)}」</p>
+          <p class="warn-reason">${esc(w.reason)}</p>
+          <div class="warn-chips"><span class="chip student">学生端 · 学习仍有欠缺</span><span class="chip teacher">教师端 · 再讲一下吧</span></div>
+        </article>`).join("")}</div>
+    </section>
+
+    <section class="section wrap">
+      <div class="sec-head"><div><p class="eyebrow">HOW IT WORKS</p><h2>一张图，三件事</h2></div></div>
+      <div class="how-grid">
+        <article class="card how-card"><span class="how-num">01</span><h4>看清结构</h4><p>9 个知识点按“表示—化简—解释”“方程—方程组—应用”“不等式—不等式组—应用”三条链串起来，谁在谁前面，一眼能看清。</p></article>
+        <article class="card how-card"><span class="how-num">02</span><h4>定位漏洞</h4><p>个人错题按知识点归堆，先看错得最多的三个；再顺着前置关系往上找，那句“这题不会”往往能落到某个更早的概念上。</p></article>
+        <article class="card how-card"><span class="how-num">03</span><h4>给出动作</h4><p>学生端给出一句话的个人建议，教师端把最高频的建议模块汇总成班课动作，顺带圈出要重点关注的学生。</p></article>
+      </div>
+    </section>`;
+  }
+
+  /* ---------- student：学生端（个人高频易错 + 学习建议 + 学习预警） ---------- */
+  function renderStudent(){
+    const s = M.students.find(x => x.id === STATE.student) || M.students[0];
+    if (!s) return `<div class="wrap"><div class="empty">暂无学生数据</div></div>`;
+    const options = M.classes ? Object.keys(M.classes).map(c => {
+      const rows = M.students.filter(x => x.class === c);
+      return `<optgroup label="${esc(c)}">${rows.map(r => `<option value="${esc(r.id)}" ${r.id === s.id ? "selected" : ""}>${esc(r.id)} · ${pct(r.rate)}</option>`).join("")}</optgroup>`;
+    }).join("") : "";
+    const weak = s.weak_points;
+    const heat = KP.map(kp => {
+      const p = M.byId[kp.id];
+      const sp = s.points.find(x => x.id === p.id);
+      if (!sp) return `<button class="m-weak no-data" disabled><div class="hid">${esc(p.id)}</div><div class="hname">${esc(p.name)}</div><div class="hval" style="color:#9AA9AF">未作答</div></button>`;
+      return `<button class="${masteryClass(sp.mastery)}" data-point="${esc(p.id)}" title="点击查看教材例题与建议">
+        <div class="hid">${esc(p.id)} · ${esc(sp.mastery)}</div>
+        <div class="hname">${esc(p.name)}</div>
+        <div class="hval" style="color:${sp.err >= 0.4 ? "var(--red)" : (sp.err > 0.2 ? "var(--gold)" : "var(--teal)")}">${pct(sp.err)}</div>
+        <div class="hbar"><i style="width:${Math.max(4, sp.err * 100)}%;background:${sp.err >= 0.4 ? "var(--red)" : (sp.err > 0.2 ? "var(--gold)" : "var(--teal)")}"></i></div>
+      </button>`;
+    }).join("");
+
+    return `
+    <section class="wrap">
+      <div class="page-head">
+        <div><p class="eyebrow">STUDENT VIEW · 个人画像</p><h1>错题看懂了，下一步练什么</h1><div class="sub">个人易错高频考点 · 学习建议 · 学习预警</div></div>
+        <div class="selectors"><label class="sr" for="studentSel">选择学生</label><select class="select" id="studentSel">${options}</select></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><span>个人得分率</span><b>${pct(s.rate)}</b><small>${num(s.score)} / ${num(s.full)} 分</small></div>
+        <div class="kpi"><span>班内排名</span><b>${s.class_rank || "-"}<small style="font-size:12px"> / ${s.class_size || "-"}</small></b><small>${esc(s.class)}</small></div>
+        <div class="kpi"><span>高频易错点</span><b>${weak.length}</b><small>错误率 ≥ ${pct(BASE, 0)} 的前三个</small></div>
+        <div class="kpi"><span>已覆盖知识点</span><b>${s.points.length}<small style="font-size:12px"> / ${M.points.length}</small></b><small>作答 ${s.attempts} 条</small></div>
+      </div>
+
+      <div class="profile">
+        <div class="card profile-main">
+          <div class="avatar">${esc(s.id)}</div>
+          <div><h2>${esc(s.id)} 的学习画像</h2><div class="meta">${esc(s.class)} · 七年级 · 已作答 ${s.attempts} 条 · 覆盖 ${s.points.length} 个知识点</div>
+            <div class="wc-tags" style="margin-top:9px">${s.points.slice().sort((a,b)=>b.err-a.err).slice(0,3).map(p=>`<span class="badge plain">${esc(p.id)}</span>`).join("")}</div>
+          </div>
+          <div class="ring" style="--p:${(s.rate * 100).toFixed(1)}"><i>${pct(s.rate, 0)}</i></div>
+        </div>
+        <div class="card mastery-box">
+          <div><b style="color:var(--teal)">${s.mastery_counts["掌握"]}</b><span>掌握</span></div>
+          <div><b style="color:var(--gold)">${s.mastery_counts["部分掌握"]}</b><span>部分掌握</span></div>
+          <div><b style="color:var(--red)">${s.mastery_counts["未掌握"]}</b><span>未掌握</span></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <section class="card panel">
+          <h3>个人易错高频考点</h3>
+          <p class="ph-sub">按自己的错误率从高到低，取前三个；每一条后面都配了怎么练。</p>
+          ${weak.length ? weak.map((p, i) => {
+            const lost = p.full - p.score;
+            return `<article class="weak-card">
+              <div class="wc-head">
+                <div class="rankbox">0${i + 1}</div>
+                <div style="flex:1;min-width:0">
+                  <p class="wc-title">${esc(p.name)}</p>
+                  <div class="wc-tags">${typeBadge(p.primary_type)}<span class="badge plain">${esc(p.id)}</span>${p.tags.filter(t => t !== p.primary_type).map(t => `<span class="badge plain">${esc(t)}</span>`).join("")}<span class="badge ${p.mastery === "未掌握" ? "memory" : (p.mastery === "掌握" ? "logic" : "plain")}">${esc(p.mastery)}</span></div>
+                </div>
+                <div class="rate"><b style="color:${p.err >= 0.4 ? "var(--red)" : (p.err > 0.2 ? "var(--gold)" : "var(--teal)")}">${pct(p.err)}</b><span>错误率</span></div>
+              </div>
+              <div class="bar"><i style="width:${Math.max(3, p.err * 100)}%"></i></div>
+              <div class="wc-meta"><span>作答 ${p.attempts} 次 · 失分 ${num(lost)} / ${num(p.full)}</span><span>${esc(p.importance)} · ${esc(p.pages)}</span></div>
+              <details class="advice"><summary>查看这条知识点的学习建议</summary><p>${esc(p.advice)}</p></details>
+            </article>`;
+          }).join("") : `<div class="empty">暂无明显薄弱点，继续保持。</div>`}
+        </section>
+
+        <aside class="warn-side">
+          <section class="card panel">
+            <h3>学习预警</h3>
+            <p class="ph-sub">取自己错得最多的三个点，顺着前置关系往上找一层，看看卡在哪个更早的概念上。</p>
+            ${s.warnings.map(w => `
+              <article class="warn-card">
+                <div class="warn-kicker">预警 0${w.rank} · ${esc(w.point_id)}</div>
+                <div class="warn-trigger"><b>${esc(w.point_name)}</b> 错误率 ${pct(w.error_rate)} · 作答 ${w.attempts || "-"} 次</div>
+                <div class="warn-arrow">↑ 可能未听懂</div>
+                <p class="warn-parent">「${esc(w.parent_name)}」<span style="font-size:11px;color:#A0523D;font-weight:600">学习仍有欠缺</span></p>
+                <p class="warn-reason">${esc(w.reason)}</p>
+                <div class="warn-chips"><span class="chip student">先补前置，再回练当前点</span></div>
+              </article>`).join("")}
+          </section>
+          <div class="advice-dark">
+            <h4>学习建议 · 一句话版</h4>
+            <p>${esc(s.advice_summary)}</p>
+          </div>
+        </aside>
+      </div>
+
+      <section class="card panel mt16">
+        <h3>九个知识点的个人掌握热力</h3>
+        <p class="ph-sub">绿色为掌握，金色为部分掌握，红色为未掌握；点开任一格查看教材例题、推导与课后习题。</p>
+        <div class="heat">${heat}</div>
+      </section>
+    </section>`;
+  }
+
+  /* ---------- teacher：教师端（重点汇总 / 成绩分析 / 两班对比 / 重点关注） ---------- */
+  function renderTeacher(){
+    const cls = STATE.teacherClass;
+    const all = cls === "ALL";
+    const students = all ? M.students : M.students.filter(s => s.class === cls);
+    const points = M.points.map(p => all ? p : {
+      ...p,
+      err: p.classRates[cls] ? p.classRates[cls].err : p.err,
+      rate: p.classRates[cls] ? p.classRates[cls].rate : p.rate,
+      attempts: p.classRates[cls] ? p.classRates[cls].attempts : 0
+    });
+    const classInfo = all ? null : M.classes[cls];
+    const avg = all ? students.reduce((a, s) => a + s.rate, 0) / Math.max(1, students.length) : classInfo.avg;
+    const pass = all ? students.filter(s => s.rate >= 0.6).length / Math.max(1, students.length) : classInfo.pass;
+    const excellent = all ? students.filter(s => s.rate >= 0.85).length / Math.max(1, students.length) : classInfo.excellent;
+    const warnings = all ? M.warnings : warningsFor(points, 3);
+    const teaching = all ? M.teaching : teachingAdvice(students, points);
+    const attention = all ? M.attention : attentionList(students);
+    const attentionHigh = attention.filter(a => a.level === "高").length;
+    const dist = all ? [
+      {label: "不及格", range: "0—59%", count: students.filter(s => s.rate < 0.6).length},
+      {label: "及格", range: "60—69%", count: students.filter(s => s.rate >= 0.6 && s.rate < 0.7).length},
+      {label: "良好", range: "70—84%", count: students.filter(s => s.rate >= 0.7 && s.rate < 0.85).length},
+      {label: "优秀", range: "85—100%", count: students.filter(s => s.rate >= 0.85).length}
+    ] : classInfo.distribution;
+    const maxDist = Math.max(1, ...dist.map(d => d.count));
+    const themes = D.mindmap.themes.map(t => {
+      const pts = t.points.map(id => points.find(p => p.id === id)).filter(Boolean);
+      const score = pts.reduce((a, p) => a + (p.classRates && !all && p.classRates[cls] ? p.classRates[cls].score : p.score), 0);
+      const full = pts.reduce((a, p) => a + (p.classRates && !all && p.classRates[cls] ? p.classRates[cls].full : p.full), 0);
+      return {...t, err: full ? 1 - score / full : 0};
+    });
+    const cids = Object.keys(M.classes);
+    const focusCount = points.filter(p => p.tier === "重点").length;
+    const midCount = points.filter(p => p.tier === "次重点").length;
+    const noteCount = points.filter(p => p.tier === "注意点").length;
+
+    return `
+    <section class="wrap">
+      <div class="page-head">
+        <div><p class="eyebrow">TEACHER VIEW · 班级驾驶舱</p><h1>先看共性，再找具体的人</h1><div class="sub">重点知识点汇总 · 成绩分析 · 两班对比 · 重点关注对象 · 教学建议</div></div>
+        <div class="selectors">
+          <div class="seg" id="classSeg">${["ALL", ...cids].map(c => `<button data-class="${esc(c)}" class="${c === cls ? "active" : ""}">${c === "ALL" ? "全部班级" : esc(c)}</button>`).join("")}</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><span>平均得分率</span><b>${pct(avg)}</b><small>${students.length} 名学生</small></div>
+        <div class="kpi"><span>及格率</span><b>${pct(pass)}</b><small>得分率 ≥ 60%</small></div>
+        <div class="kpi"><span>优秀率</span><b>${pct(excellent)}</b><small>得分率 ≥ 85%</small></div>
+        <div class="kpi"><span>重点关注对象</span><b>${attentionHigh}<small style="font-size:12px"> 人</small></b><small>薄弱点 ≥ 5 个</small></div>
+      </div>
+
+      <section class="card panel">
+        <h3>重点知识点汇总</h3>
+        <p class="ph-sub">按错误率从高到低排：最高的三成是重点（${focusCount} 个），中间四成是次重点（${midCount} 个），剩下三成算注意点（${noteCount} 个）。${all ? "" : `当前显示 ${esc(cls)} 的错误率；分层仍按全年级口径。`}</p>
+        <div style="overflow-x:auto">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>知识点</th><th>类型</th><th>错误率${all ? "" : "（" + esc(cls) + "）"}</th><th>层级</th><th>${cids.map(c => esc(c)).join(" / ")}</th><th>前置节点</th></tr></thead>
+            <tbody>${points.map(p => `
+              <tr>
+                <td style="font-family:var(--serif);color:#A99772">${String(p.rank).padStart(2, "0")}</td>
+                <td><div class="pt-name">${esc(p.name)}</div><div class="pt-id">${esc(p.id)} · ${esc(p.importance)}</div></td>
+                <td>${typeBadge(p.primary_type)}</td>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-bar" style="flex:1"><i style="width:${Math.max(3, p.err * 100)}%;background:${p.err >= 0.45 ? "var(--red)" : (p.err >= BASE ? "var(--gold)" : "var(--teal)")}"></i></div><b style="font-family:var(--serif);font-size:12px">${pct(p.err)}</b></div></td>
+                <td><span class="tier ${tierClass(p.tier)}">${esc(p.tier)}</span></td>
+                <td style="font-size:11px;color:#5D7078">${cids.map(c => `<span style="display:inline-block;min-width:52px">${p.classRates[c] ? pct(p.classRates[c].err, 0) : "—"}</span>`).join("")}</td>
+                <td style="font-size:11px;color:#7A8B92">${esc(p.parent_name)}</td>
+              </tr>`).join("")}</tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="two-col mt16">
+        <section class="card panel">
+          <h3>成绩分布</h3><p class="ph-sub">按学生个人总得分率分档，观察尾部与头部。</p>
+          ${dist.map(d => `<div class="chart-row"><span class="lab">${esc(d.label)} <span style="color:#9AA9AF">${esc(d.range)}</span></span><div class="track"><i style="width:${(d.count / maxDist) * 100}%"></i></div><span class="val">${d.count} 人</span></div>`).join("")}
+        </section>
+        <section class="card panel">
+          <h3>主题得分率</h3><p class="ph-sub">三个主题的加权得分率，快速判断先补哪一块。</p>
+          ${themes.map(t => `<div class="chart-row"><span class="lab">${esc(t.id)} ${esc(t.name)}</span><div class="track ${t.err >= 0.45 ? "red" : ""}"><i style="width:${Math.max(3, (1 - t.err) * 100)}%"></i></div><span class="val">${pct(1 - t.err)}</span></div>`).join("")}
+          <div class="hint">主题得分率：把该主题所有知识点的得分合起来，再除以满分合计；不能拿三个知识点的百分比直接平均。</div>
+        </section>
+      </div>
+
+      <section class="card panel mt16">
+        <h3>两班对比</h3><p class="ph-sub">逐知识点对比错误率；差值超过 10 个百分点标红，提示两班教学进度或掌握结构存在差异。</p>
+        <div class="compare-row" style="font-size:10px;color:#7B8B91;letter-spacing:.08em"><span>知识点</span><span>${esc(cids[0] || "班级一")}</span><span>${esc(cids[1] || "班级二")}</span><span style="text-align:right">差值</span></div>
+        ${points.map(p => {
+          const a = p.classRates[cids[0]] ? p.classRates[cids[0]].err : null;
+          const b = p.classRates[cids[1]] ? p.classRates[cids[1]].err : null;
+          const gap = a != null && b != null ? Math.abs(a - b) : null;
+          return `<div class="compare-row">
+            <span><b style="font-weight:600">${esc(p.name)}</b><span style="color:#9AA9AF;margin-left:5px;font-size:9.5px">${esc(p.id)}</span></span>
+            <div class="dual"><div class="track"><i style="width:${a == null ? 0 : Math.max(3, a * 100)}%"></i></div><span style="font-size:9.5px;color:#6E8088">${a == null ? "—" : pct(a)}</span></div>
+            <div class="dual c2"><div class="track"><i style="width:${b == null ? 0 : Math.max(3, b * 100)}%"></i></div><span style="font-size:9.5px;color:#6E8088">${b == null ? "—" : pct(b)}</span></div>
+            <span class="gap ${gap != null && gap > 0.1 ? "warn" : ""}">${gap == null ? "—" : (gap * 100).toFixed(1) + "pp"}</span>
+          </div>`;
+        }).join("")}
+        <div class="two-col mt16">
+          ${cids.map(c => {
+            const ci = M.classes[c];
+            return `<div style="background:#FBF6E9;border:1px solid #EADFC8;border-radius:12px;padding:12px 14px">
+              <div style="font-size:11px;letter-spacing:.1em;color:#8A9AA0;font-weight:700">${esc(c)}</div>
+              <div style="display:flex;gap:18px;margin-top:6px;flex-wrap:wrap"><span style="font-size:11px;color:#63767E">平均 <b style="font-family:var(--serif);font-size:16px;color:#22343D">${pct(ci.avg)}</b></span><span style="font-size:11px;color:#63767E">及格 <b style="font-family:var(--serif);font-size:16px;color:#22343D">${pct(ci.pass)}</b></span><span style="font-size:11px;color:#63767E">优秀 <b style="font-family:var(--serif);font-size:16px;color:#22343D">${pct(ci.excellent)}</b></span></div>
+            </div>`;
+          }).join("")}
+        </div>
+      </section>
+
+      <section class="card panel mt16">
+        <h3>重点关注对象</h3><p class="ph-sub">什么算薄弱点：同一个知识点至少做过 2 次、错误率 ≥ 40%；按薄弱点个数从多到少排，个数一样时看总分。</p>
+        <div style="overflow-x:auto">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>学生</th><th>班级</th><th>得分率</th><th>薄弱点</th><th>主要薄弱知识点</th><th>关注级别</th></tr></thead>
+            <tbody>${attention.slice(0, all ? 8 : 6).map(a => `
+              <tr>
+                <td style="font-family:var(--serif);color:#A99772">${String(a.attention_rank).padStart(2, "0")}</td>
+                <td><b>${esc(a.id)}</b></td><td>${esc(a.class)}</td><td>${pct(a.rate)}</td><td>${a.weak_count} 个</td>
+                <td><div class="weakchips">${a.weak_points.slice(0, 3).map(w => `<span>${esc(w.name)} ${pct(w.error_rate, 0)}</span>`).join("")}</div></td>
+                <td><span class="att-level ${a.level === "高" ? "lv-high" : (a.level === "中" ? "lv-mid" : "lv-low")}">${esc(a.level)}</span></td>
+              </tr>`).join("")}</tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="two-col mt16">
+        <section class="card panel">
+          <h3>教学建议</h3><p class="ph-sub">汇总学生端出现最多的学习建议模块，落到班级层面的教学动作上。</p>
+          <div class="teaching-para">${esc(teaching.paragraph || "暂无足够数据生成教学建议。")}</div>
+          <ul class="action-list">${teaching.actions.map(a => `<li>${esc(a)}</li>`).join("")}</ul>
+          <div class="module-cloud">${teaching.top_modules.slice(0, 8).map(m => `<span>${esc(m.category)} · ${esc(m.label)} <b>${m.count}</b></span>`).join("")}</div>
+          <div class="hint">统计办法：每人的前三个薄弱点各算一次；同一个人同一个模块只记一次，免得被反复放大。</div>
+        </section>
+        <section class="card panel">
+          <h3>班级学习预警</h3><p class="ph-sub">取错误率最高的三个点，再顺着前置关系往上找：那句“没听懂”可能出在更早的地方。</p>
+          ${warnings.map(w => `
+            <article class="warn-card" style="margin-bottom:10px">
+              <div class="warn-kicker">预警 0${w.rank} · ${esc(w.point_id)}</div>
+              <div class="warn-trigger"><b>${esc(w.point_name)}</b> 错误率 ${w.error_rate_text}</div>
+              <div class="warn-arrow">↑ 建议再讲</div>
+              <p class="warn-parent">「${esc(w.parent_name)}」<span style="font-size:11px;color:#2B5E8C;font-weight:600">再讲一下吧</span></p>
+              <p class="warn-reason">${esc(w.reason)}</p>
+              <div class="warn-chips"><span class="chip teacher">${esc(w.action)}</span></div>
+            </article>`).join("")}
+        </section>
+      </div>
+
+      <details class="card import-card mt16" id="importCard">
+        <summary>接入新数据，用同一套模型跑一遍（JSON / CSV）</summary>
+        <div class="import-row">
+          <input class="file-input" type="file" id="importFile" accept=".json,.csv">
+          <button class="btn btn-primary" id="loadSample" style="padding:8px 15px;font-size:12px">载入 4 人示例</button>
+          <button class="btn btn-ghost" id="resetData" style="padding:8px 15px;font-size:12px">恢复演示数据</button>
+          <span id="importStatus" style="font-size:11px;color:#7A8B92"></span>
+        </div>
+        <div class="hint">
+          JSON：<span class="code">{ "students": [{ "id": "S01", "class": "A班" }], "responses": [{ "student": "S01", "indicator": "T01I1", "score": 1, "full": 1 }] }</span><br>
+          CSV 列名：<span class="code">student,indicator,score,full</span>，UTF-8 编码。未知知识点、满分 ≤ 0、得分越界的记录会被自动过滤，并在下方提示。
+        </div>
+      </details>
+    </section>`;
+  }
+
+  /* ---------- drawer：知识点详情抽屉（例题 / 推导 / 课后习题 / 教材证据） ---------- */
+  function openPoint(pid){
+    const c = D.content[pid];
+    const p = M.byId[pid];
+    if (!c || !p) return;
+    const sp = (M.students.find(s => s.id === STATE.student) || {}).points?.find(x => x.id === pid);
+    const drawer = $("#drawer");
+    const overall = p;
+    const classRates = Object.entries(overall.classRates || {}).map(([k, v]) => `<span class="stat-mini" style="display:block"><span>${esc(k)}</span><b>${pct(v.err)}</b></span>`).join("");
+    drawer.innerHTML = `
+      <div class="drawer-head">
+        <button class="drawer-close" id="drawerClose" aria-label="关闭">×</button>
+        <div class="did">${esc(p.id)} · ${esc(p.theme)} · ${esc(p.pages)}</div>
+        <h2>${esc(p.name)}</h2>
+        <div class="drawer-meta"><span>${esc(p.tags.join(" / "))}</span><span>${esc(p.importance)}</span><span>全班错误率 ${pct(p.err)}</span>${sp ? `<span>我的错误率 ${pct(sp.err)}</span>` : ""}</div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button data-tab="example" class="active">教材例题</button>
+        <button data-tab="derive">推导过程</button>
+        <button data-tab="exercise">课后习题</button>
+        <button data-tab="data">学情数据</button>
+        <button data-tab="advice">学习建议</button>
+      </div>
+      <div class="drawer-body">
+        <section class="tabpane active" data-pane="example">
+          <div class="prompt">${esc(c.example.prompt)}</div>
+          <div style="margin-top:14px">${c.example.steps.map(s => `<div class="stepline"><b>${esc(s.label)}</b><div>${esc(s.content)}</div></div>`).join("")}</div>
+          <div class="answerbox">${esc(c.example.answer)}</div>
+          <div class="note">${esc(c.example.note)}</div>
+          <div class="note" style="color:#9AA9AF">对应教材：${esc(c.example.pages)}</div>
+        </section>
+
+        <section class="tabpane" data-pane="derive">
+          <h3 style="font-family:var(--serif);font-size:17px;margin:0 0 10px">${esc(c.derivation.title)}</h3>
+          <div>${c.derivation.steps.map(s => `<div class="stepline"><b>${esc(s.label)}</b><div>${esc(s.content)}</div></div>`).join("")}</div>
+          <div class="conclusion">${esc(c.derivation.conclusion)}</div>
+        </section>
+
+        <section class="tabpane" data-pane="exercise">
+          <p class="ph-sub" style="font-size:11.5px;color:#7A8B92;margin:0 0 12px">${esc(c.exercise_note)} · 共 ${c.exercises.length} 题</p>
+          ${c.exercises.map(q => `<article class="ex-card">
+            <div class="ex-top"><span class="eid">${esc(q.id)}</span><span class="badge plain">${esc(q.type)}</span><span class="badge ${q.level === "基础" ? "logic" : "memory"}">${esc(q.level)}</span><span style="margin-left:auto;font-size:9.5px;color:#9AA9AF">${q.full} 分</span></div>
+            <p class="ex-stem">${esc(q.stem)}</p>
+            <details><summary>查看答案与解析</summary><div class="ex-answer"><b>答案：</b>${esc(q.answer)}<br><b>解析：</b>${esc(q.explanation)}</div></details>
+          </article>`).join("")}
+        </section>
+
+        <section class="tabpane" data-pane="data">
+          <div class="stat-split">
+            <div class="stat-mini"><span>全班错误率</span><b style="color:${overall.err >= 0.45 ? "var(--red)" : "var(--gold)"}">${pct(overall.err)}</b></div>
+            <div class="stat-mini"><span>分层</span><b>${esc(overall.tier)}</b></div>
+            <div class="stat-mini"><span>作答人次</span><b>${overall.attempts}</b></div>
+            <div class="stat-mini"><span>掌握判定</span><b>${esc(overall.mastery)}</b></div>
+          </div>
+          ${sp ? `<div class="prompt" style="font-size:12px">我的作答：${sp.attempts} 次，得分 ${num(sp.score)} / ${num(sp.full)}，错误率 ${pct(sp.err)}，判定为「${esc(sp.mastery)}」。</div>` : `<div class="note">当前学生尚未作答该知识点。</div>`}
+          <h4 style="font-size:12px;margin:16px 0 6px">两班错误率</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${classRates || "<div class='note'>暂无分班数据</div>"}</div>
+          <h4 style="font-size:12px;margin:16px 0 6px">前置关系</h4>
+          <div class="note">直接前置节点：<b>${esc(p.parent_name)}</b>${p.parent_external ? "（思维导图外的基础节点）" : "（导图内节点）"}。${esc(p.parent_reason)}</div>
+          <div class="note">教材原文依据：</div>
+          ${c.evidence.map(e => `<div class="err-card" style="border-left-color:var(--gold);background:#FBF6E9"><b>${esc(e.title)}</b> <span style="color:#9AA9AF">${esc(e.chapter)} · 第 ${e.page} 页</span><span>${esc(e.quote)}</span></div>`).join("")}
+        </section>
+
+        <section class="tabpane" data-pane="advice">
+          <h3 style="font-family:var(--serif);font-size:17px;margin:0 0 8px">这条知识点的学习建议</h3>
+          <div class="teaching-para">${esc(p.advice)}</div>
+          <h4 style="font-size:13px;margin:18px 0 6px">常见错误</h4>
+          ${c.common_errors.map(e => `<div class="err-card"><b>${esc(e.error)}</b><span>${esc(e.fix)}</span></div>`).join("")}
+          <h4 style="font-size:13px;margin:18px 0 6px">提分小提示</h4>
+          <ul class="tip-list">${c.tips.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+        </section>
+      </div>`;
+    drawer.classList.add("on");
+    drawer.setAttribute("aria-hidden", "false");
+    $("#drawer-overlay").classList.add("on");
+    document.body.style.overflow = "hidden";
+    $("#drawerClose").onclick = closeDrawer;
+    $$(".tabs button", drawer).forEach(btn => btn.onclick = () => {
+      $$(".tabs button", drawer).forEach(b => b.classList.remove("active"));
+      $$(".tabpane", drawer).forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      const pane = $(`.tabpane[data-pane="${btn.dataset.tab}"]`, drawer);
+      if (pane) pane.classList.add("active");
+    });
+    drawer.scrollTop = 0;
+  }
+  function closeDrawer(){
+    $("#drawer").classList.remove("on");
+    $("#drawer").setAttribute("aria-hidden", "true");
+    $("#drawer-overlay").classList.remove("on");
+    document.body.style.overflow = "";
+  }
+
+  /* ---------- bindings ---------- */
+  function bindHome(){
+    $$("[data-go]").forEach(b => b.onclick = () => { location.hash = b.dataset.go; });
+    const svg = $("#map-svg");
+    if (svg){
+      const activate = id => {
+        if (KPMAP[id]) openPoint(id);
+        else {
+          const n = D.mindmap.nodes.find(x => x.id === id);
+          if (n) toast(`前置基础：${n.name} · ${n.detail || ""}`);
+        }
+      };
+      svg.addEventListener("click", e => {
+        const g = e.target.closest("[data-node]");
+        if (g) activate(g.dataset.node);
+      });
+      svg.addEventListener("keydown", e => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const g = e.target.closest("[data-node]");
+        if (g){ e.preventDefault(); activate(g.dataset.node); }
+      });
+      $$(".theme-card").forEach(card => card.onclick = () => { $("#map-section").scrollIntoView({behavior:"smooth", block:"start"}); });
+    }
+  }
+  function bindStudent(){
+    const sel = $("#studentSel");
+    if (sel) sel.onchange = () => { STATE.student = sel.value; render(); };
+    $$("[data-point]").forEach(b => b.onclick = () => openPoint(b.dataset.point));
+  }
+  function bindTeacher(){
+    $$("#classSeg button").forEach(b => b.onclick = () => { STATE.teacherClass = b.dataset.class; render(); });
+    $$("tbody tr").forEach(() => {});
+    const file = $("#importFile");
+    if (file) file.onchange = e => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const text = String(reader.result || "");
+          const result = f.name.toLowerCase().endsWith(".csv") ? parseCSV(text) : parseJSON(text);
+          applyImport(result.students, result.responses, result.note);
+        } catch (err) {
+          toast("导入失败：" + err.message);
+        }
+      };
+      reader.readAsText(f, "utf-8");
+    };
+    const sample = $("#loadSample");
+    if (sample) sample.onclick = loadSampleData;
+    const reset = $("#resetData");
+    if (reset) reset.onclick = () => {
+      STUDENTS = D.students.map(s => ({...s}));
+      RAW = D.responses.map(r => ({...r}));
+      STATE.dataset = "demo";
+      M = computeModel(STUDENTS, RAW);
+      STATE.student = M.students[0].id;
+      const st = $("#importStatus");
+      if (st) st.textContent = "已恢复演示数据";
+      render();
+      toast("已恢复 40 名学生、813 条作答的演示数据");
+    };
+    // 点击表格行打开学生
+    $$("tbody tr[data-student]").forEach(tr => tr.onclick = () => {
+      STATE.student = tr.dataset.student;
+      location.hash = "student";
+    });
+  }
+  function render(){
+    const view = $("#view");
+    if (STATE.view === "home") view.innerHTML = renderHome();
+    else if (STATE.view === "student") view.innerHTML = renderStudent();
+    else view.innerHTML = renderTeacher();
+    $$("#nav button").forEach(b => b.classList.toggle("active", b.dataset.view === STATE.view));
+    if (STATE.view === "home") bindHome();
+    else if (STATE.view === "student") bindStudent();
+    else bindTeacher();
+  }
+
+  /* ---------- import：机器接入（粘贴 JSON / 上传 CSV 后重算） ---------- */
+  function normResp(r){
+    const s = r.student ?? r.student_id ?? r.s ?? r.uid;
+    const i = r.indicator ?? r.point ?? r.i ?? r.knowledge_id;
+    const sc = Number(r.score ?? r.sc ?? r.points);
+    const f = Number(r.full ?? r.f ?? r.max_score ?? r.full_score);
+    if (!s || !i || !Number.isFinite(sc) || !Number.isFinite(f) || f <= 0 || sc < 0 || sc > f) return null;
+    if (!KPMAP[i]) return null;
+    return {s: String(s), i: String(i), sc, f};
+  }
+  function parseJSON(text){
+    const obj = JSON.parse(text);
+    const arr = Array.isArray(obj) ? obj : (obj.responses || obj.records || obj.data || []);
+    const responses = arr.map(normResp).filter(Boolean);
+    let students = Array.isArray(obj.students) ? obj.students.map(x => ({id: String(x.id ?? x.student ?? x.student_id), class: String(x.class ?? x.class_id ?? "导入数据"), grade: x.grade ?? 7})).filter(x => x.id) : [];
+    if (!students.length){
+      const ids = unique(responses.map(r => r.s));
+      students = ids.map(id => {
+        const old = STUDENTS.find(s => s.id === id);
+        return {id, class: old ? old.class : "导入数据", grade: 7};
+      });
+    }
+    const ids = new Set(students.map(s => s.id));
+    responses.forEach(r => { if (!ids.has(r.s)){ students.push({id: r.s, class: "导入数据", grade: 7}); ids.add(r.s); } });
+    return {students, responses, note: `JSON：${responses.length} 条有效作答，${students.length} 名学生`};
+  }
+  function parseCSV(text){
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length < 2) throw new Error("CSV 没有数据行");
+    const head = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
+    const idx = name => head.indexOf(name);
+    const is = idx("student"), ii = idx("indicator"), isc = idx("score"), ifull = idx("full");
+    if ([is, ii, isc, ifull].some(x => x < 0)) throw new Error("CSV 需要列 student,indicator,score,full");
+    const responses = [];
+    for (let k = 1; k < lines.length; k++){
+      const cols = lines[k].split(",").map(c => c.trim().replace(/^"|"$/g, ""));
+      const r = normResp({student: cols[is], indicator: cols[ii], score: cols[isc], full: cols[ifull]});
+      if (r) responses.push(r);
+    }
+    const ids = unique(responses.map(r => r.s));
+    const students = ids.map(id => {
+      const old = STUDENTS.find(s => s.id === id);
+      return {id, class: old ? old.class : "导入数据", grade: 7};
+    });
+    return {students, responses, note: `CSV：${responses.length} 条有效作答，${students.length} 名学生`};
+  }
+  function loadSampleData(){
+    const responses = (D.sample.responses || []).map(normResp).filter(Boolean);
+    const students = (D.sample.students || []).map(x => ({id: String(x.id), class: String(x.class || "示例班"), grade: x.grade || 7}));
+    applyImport(students, responses, `示例数据：${responses.length} 条作答，${students.length} 名学生`);
+  }
+  function applyImport(students, responses, note){
+    if (!students.length || !responses.length) throw new Error("没有有效记录");
+    STUDENTS = students;
+    RAW = responses;
+    STATE.dataset = "imported";
+    M = computeModel(STUDENTS, RAW);
+    STATE.student = M.students[0].id;
+    STATE.teacherClass = "ALL";
+    const status = $("#importStatus");
+    render();
+    const st = $("#importStatus");
+    if (st) st.textContent = note + "；已用同一模型重算";
+    toast(note);
+  }
+
+  /* ---------- route：页面切换与初始化 ---------- */
+  function route(){
+    const v = (location.hash || "#home").slice(1);
+    if (v.startsWith("point=")){
+      STATE.view = "home";
+      render();
+      openPoint(v.slice(6));
+      return;
+    }
+    const parts = v.split("/");
+    if (parts[0] === "teacher" && parts[1] === "sample"){
+      STATE.view = "teacher";
+      render();
+      loadSampleData();
+      return;
+    }
+    if (parts[0] === "student" && parts[1] && M.students.some(s => s.id === parts[1])) STATE.student = parts[1];
+    if (parts[0] === "teacher" && parts[1] && (parts[1] === "ALL" || M.classes[parts[1]])) STATE.teacherClass = parts[1];
+    STATE.view = ["home","student","teacher"].includes(parts[0]) ? parts[0] : "home";
+    render();
+    window.scrollTo({top:0, behavior:"auto"});
+  }
+  $("#nav").addEventListener("click", e => {
+    const b = e.target.closest("[data-view]");
+    if (b) location.hash = b.dataset.view;
+  });
+  $("#drawer-overlay").addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+  window.addEventListener("hashchange", route);
+
+  M = computeModel(STUDENTS, RAW);
+  if (!STATE.student && M.students.length) STATE.student = M.students[0].id;
+  route();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+[
+ {
+  "rank": 1,
+  "point_id": "T03I3",
+  "point_name": "根据实际限制列不等式并解释取值范围",
+  "error_rate": 0.5455,
+  "error_rate_text": "54.5%",
+  "parent_id": "T03I2",
+  "parent_name": "求两个一元一次不等式解集的交集",
+  "parent_external": false,
+  "reason": "根据实际限制列不等式后，解集与取值范围的表达依赖不等式组。",
+  "student_text": "「求两个一元一次不等式解集的交集」学习仍有欠缺",
+  "teacher_text": "「求两个一元一次不等式解集的交集」再讲一下吧",
+  "action": "先补「求两个一元一次不等式解集的交集」，再回练「根据实际限制列不等式并解释取值范围」"
+ },
+ {
+  "rank": 2,
+  "point_id": "T01I1",
+  "point_name": "表示数量关系并代入求值",
+  "error_rate": 0.5022,
+  "error_rate_text": "50.2%",
+  "parent_id": "F01",
+  "parent_name": "字母表示数、代数式的概念",
+  "parent_external": true,
+  "reason": "列代数式的前提是用字母表示数，并识别代数式的书写规范。",
+  "student_text": "「字母表示数、代数式的概念」学习仍有欠缺",
+  "teacher_text": "「字母表示数、代数式的概念」再讲一下吧",
+  "action": "先补「字母表示数、代数式的概念」，再回练「表示数量关系并代入求值」"
+ },
+ {
+  "rank": 3,
+  "point_id": "T01I3",
+  "point_name": "用整式解释具体问题",
+  "error_rate": 0.4762,
+  "error_rate_text": "47.6%",
+  "parent_id": "T01I1",
+  "parent_name": "表示数量关系并代入求值",
+  "parent_external": false,
+  "reason": "先用代数式准确表示数量关系，才谈得上用整式解释问题。",
+  "student_text": "「表示数量关系并代入求值」学习仍有欠缺",
+  "teacher_text": "「表示数量关系并代入求值」再讲一下吧",
+  "action": "先补「表示数量关系并代入求值」，再回练「用整式解释具体问题」"
+ }
+]
