@@ -75,7 +75,7 @@ python build_site.py         # 读 model/ + data/，写 web/index.html
 | 学习预警 | 错误率最高 3 个点，沿思维导图向上找**直接前置节点** | 3 个 |
 | 重点关注对象 | 作答次数 ≥2 且存在薄弱知识点 | 2 次 / 40% |
 
-思维导图的红色 = **记忆型**，蓝色 = **逻辑型（知识型）**；灰色外圈节点 = 思维导图之外的先备基础（F01—F05）。
+思维导图的紫色 = **记忆型**，蓝色 = **逻辑型（知识型）**；灰色外圈节点 = 思维导图之外的先备基础（F01—F05）。
 
 ---
 
@@ -138,7 +138,7 @@ python engine.py --responses new.csv --students new_students.json --out model_ne
 
 | 变量 | 含义 |
 |---|---|
-| `--red` / `--red-bg` / `--red-soft` | 记忆型主色与浅底 |
+| `--purple` / `--purple-bg` / `--purple-soft` | 记忆型主色与浅底 |
 | `--blue` / `--blue-bg` | 逻辑型主色与浅底 |
 | `--ink` / `--ink2` / `--muted` | 文字层级 |
 | `--paper` / `--card` | 页面底色 / 卡片底色 |
@@ -200,7 +200,7 @@ python engine.py --responses 新作答.json --students 新名单.json --out mode
 | 预警从 3 个改成 5 个 | `engine.py` → `CONFIG["warning_top_n"] = 5`，重跑 |
 | 掌握线从 20% 改成 25% | `engine.py` → `CONFIG["mastery"]["mastered_max_error"] = 0.25`，重跑 |
 | 换一个知识点前置关系 | `engine.py` → `PARENTS[编号]`，重跑 |
-| 换网页主色 | `site_template.html` → `:root` 的 `--red` / `--blue`，重跑 `build_site.py` |
+| 换网页主色 | `site_template.html` → `:root` 的 `--purple` / `--blue`，重跑 `build_site.py` |
 | 换一道教材例题 | `content_bank.py` → `CONTENT[编号]["example"]`，重跑 |
 | 新增一个知识点 | 同步改 `data/knowledge_points.json`、`content_bank.py` 的 `CONTENT`、`engine.py` 的 `PARENTS` / `POSITIONS` / `EDGES` |
 | 换学生数据 | 替换 `data/responses_raw.json` 与 `data/students.json`，重跑全流程 |
